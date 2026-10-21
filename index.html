@@ -151,7 +151,7 @@
         .video-dots-left { left: 8px; }
         .video-dots-right { right: 8px; }
 
-        /* Khung Cộng đồng Mạng xã hội nghiêng 3D giống mẫu */
+        /* Khung Cộng đồng Mạng xã hội nghiêng 3D */
         .community-frame {
             position: relative;
             border-radius: 12px;
@@ -513,7 +513,7 @@
             </div>
         </section>
 
-        <!-- 9. TIN TỨC NỔI BẬT (NẰM SAU PHẦN ĐĂNG KÝ - CHUẨN THEO ẢNH MẪU) -->
+        <!-- 9. TIN TỨC NỔI BẬT -->
         <section id="tin-tuc" class="bg-[#f4f5f7] py-16">
             <div class="max-w-6xl mx-auto px-4">
                 <div class="text-center mb-10 relative">
@@ -528,12 +528,8 @@
                     </div>
                 </div>
 
-                <!-- Lưới 3 cột Tin tức -->
-                <div id="newsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Render bằng JS -->
-                </div>
+                <div id="newsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
 
-                <!-- Link Xem thêm bên dưới -->
                 <div class="text-center mt-10">
                     <a href="#tin-tuc" id="dom_newsMoreLink" data-link-key="newsMoreLink" class="admin-link inline-flex items-center gap-2 text-brand font-medium hover:underline text-sm md:text-base">
                         <i class="fa-solid fa-arrow-right-long"></i>
@@ -556,20 +552,16 @@
                     <div class="w-36 h-1 bg-yellow-400 mx-auto mt-3"></div>
                 </div>
 
-                <!-- Lưới 3 cột Cộng đồng (Facebook, TikTok, YouTube) -->
-                <div id="communityContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Render bằng JS -->
-                </div>
+                <div id="communityContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
             </div>
         </section>
 
     </div>
 
-    <!-- 11. FOOTER CHÂN TRANG (CHUẨN THEO ẢNH MẪU image_6119f8.png) -->
+    <!-- 11. FOOTER CHÂN TRANG -->
     <footer class="bg-[#eaeef5] text-gray-900 py-14 border-t border-gray-300">
         <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
             
-            <!-- Cột 1: Logo (2 cột) -->
             <div class="lg:col-span-2 flex flex-col items-start">
                 <a href="#" onclick="showHomePage(); return false;" class="flex items-center">
                     <img id="dom_footer_logo" src="" class="h-14 w-auto object-contain hidden" alt="Logo Footer">
@@ -583,7 +575,6 @@
                 </a>
             </div>
 
-            <!-- Cột 2: VỀ EEC EDUCATION (3 cột) -->
             <div class="lg:col-span-3">
                 <h3 data-key="footerCol1Title" class="editable text-lg font-black text-brand uppercase">
                     VỀ EEC EDUCATION
@@ -597,7 +588,6 @@
                 </ul>
             </div>
 
-            <!-- Cột 3: THÔNG TIN CÔNG TY (4 cột) -->
             <div class="lg:col-span-4">
                 <h3 data-key="footerCol2Title" class="editable text-lg font-black text-brand uppercase">
                     THÔNG TIN CÔNG TY
@@ -630,7 +620,6 @@
                 </ul>
             </div>
 
-            <!-- Cột 4: LIÊN HỆ (3 cột) -->
             <div class="lg:col-span-3">
                 <h3 data-key="footerCol3Title" class="editable text-lg font-black text-brand uppercase">
                     LIÊN HỆ
@@ -647,7 +636,6 @@
                     </div>
                 </div>
 
-                <!-- 4 Icon Mạng xã hội tròn màu trắng -->
                 <div class="flex items-center gap-3">
                     <a href="https://www.facebook.com/EECeducation.vn" target="_blank" data-link-key="link_fb" class="admin-link w-9 h-9 rounded-full bg-white shadow flex items-center justify-center text-gray-900 hover:scale-110 transition">
                         <i class="fa-brands fa-facebook-f text-base"></i>
@@ -948,7 +936,7 @@
 
     <!-- LOGIC XỬ LÝ CHÍNH -->
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKAtRQxOfqLcNTjlgBJNbwTLlpOsxxz_sjQkjXysrgUz7HcAhHcCdp4CLMjAV_0_uPcA/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPoLuoc7Ee9JbNSVSEEWOCbIQnregikTJn8ToQzGFNykmac6Vvk4L6-znUzsFVvCNyOw/exec";
         
         let currentConfig = {};
         let menuArray = [];
@@ -987,193 +975,231 @@
             document.execCommand(cmd, false, value);
         }
 
+        // Hàm chuẩn hóa số điện thoại: luôn ép về chuỗi (String) và khôi phục số 0 ở đầu nếu bị Google Sheets cắt mất
+        function normalizePhoneString(val) {
+            if (val === undefined || val === null || val === "") return "0362938989";
+            let str = String(val).trim();
+            if (/^[35789]\d{8}$/.test(str)) {
+                str = "0" + str;
+            }
+            return str;
+        }
+
         function extractYouTubeId(url) {
             if (!url) return "";
             const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-            const match = url.match(regExp);
+            const match = String(url).match(regExp);
             return (match && match[1]) ? match[1] : "";
+        }
+
+        // Khởi tạo dữ liệu mặc định an toàn
+        function initDefaultDataIfEmpty() {
+            if (!Array.isArray(bannersArray) || bannersArray.length === 0) {
+                bannersArray = [{
+                    img: currentConfig.bannerImage || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80",
+                    link: "#tu-van",
+                    title: "ĐẠT IELTS SPEAKING 6.5 TRONG 6 THÁNG TỪ CON SỐ 0",
+                    subtitle: "ƯU ĐÃI HỌC PHÍ LÊN ĐẾN 40% - LỘ TRÌNH TINH GỌN 1 KÈM 1"
+                }];
+            }
+            if (!Array.isArray(eventsArray) || eventsArray.length === 0) {
+                eventsArray = [
+                    { img: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80", link: "#tu-van", title: "Combo E2E3 Giao tiếp nâng cao" },
+                    { img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80", link: "#tu-van", title: "Lớp giao tiếp tiếng Anh toàn diện" },
+                    { img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80", link: "#tu-van", title: "Combo E1E2 Giao tiếp thành thạo" },
+                    { img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&q=80", link: "#tu-van", title: "Ưu đãi học phí lên tới 40%" }
+                ];
+            }
+            if (!Array.isArray(menuArray) || menuArray.length === 0) {
+                menuArray = [
+                    { id: "m1", title: "Về EEC", type: "link", link: "#tai-sao", content: "", children: [] },
+                    { id: "m2", title: "Tiếng Anh người lớn", type: "link", link: "#khoa-hoc-vip", content: "", children: [] },
+                    { id: "m3", title: "Luyện thi TOEIC", type: "link", link: "#khoa-hoc-vip", content: "", children: [] },
+                    { id: "m4", title: "Tiếng Anh trẻ em", type: "link", link: "#khoa-hoc-vip", content: "", children: [] },
+                    { id: "m5", title: "Đội ngũ giáo viên", type: "link", link: "#giang-vien", content: "", children: [] },
+                    { id: "m6", title: "Thư viện", type: "link", link: "#tin-tuc", content: "", children: [] }
+                ];
+            }
+            if (!Array.isArray(reasonsArray) || reasonsArray.length === 0) {
+                reasonsArray = [
+                    { icon: "fa-solid fa-flag", color: "#0c389b", title: "Phương pháp dạy ĐỘC QUYỀN", desc: "Phương pháp học hiệu quả bao gồm Text-based, Task-based, Communicative Language Teaching." },
+                    { icon: "fa-solid fa-file-lines", color: "#eab308", title: "Tài liệu học ĐỘC QUYỀN", desc: "Hệ thống bài học và giáo trình độc quyền theo chuẩn lộ trình Cambridge." },
+                    { icon: "fa-solid fa-users", color: "#0c389b", title: "Giảng viên CHUYÊN NGHIỆP", desc: "Đội ngũ giảng viên giàu kinh nghiệm đồng hành cùng học viên." },
+                    { icon: "fa-solid fa-award", color: "#0c389b", title: "Chất lượng dịch vụ TẬN TÂM", desc: "Dịch vụ chăm sóc và hỗ trợ học viên 24/7." }
+                ];
+            }
+            if (!Array.isArray(coursesArray) || coursesArray.length === 0) {
+                coursesArray = [
+                    {
+                        title: "TIẾNG ANH GIAO TIẾP CHO NGƯỜI ĐI LÀM",
+                        desc: "♦ <b>4 khoá</b> học trực tuyến, 1 giáo viên kèm 1 học viên với mục tiêu giúp học viên nắm vững các kiến thức cơ bản về từ vựng, ngữ pháp và 44 âm (theo bảng phiên âm quốc tế IPA). Sau khoá học, học viên có thể giao tiếp các chủ đề từ cơ bản đến nâng cao, từ cuộc sống hàng ngày (mua sắm, hỏi đường, nhà hàng, khách sạn,...) đến môi trường làm việc chuyên nghiệp (viết email, báo cáo, thuyết trình, đàm phán...).<br>♦ Đầu ra các khóa học tương đương các trình độ từ A1 đến B2 (theo khung tham chiếu CEFR)",
+                        detailDesc: "<ul><li><b>Lộ trình cá nhân hóa:</b> Thiết kế riêng theo ngành nghề.</li><li><b>Thực hành thực tế:</b> Giao tiếp, viết email, thuyết trình, đàm phán.</li></ul>",
+                        img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80"
+                    },
+                    {
+                        title: "TIẾNG ANH TRẺ EM ONLINE",
+                        desc: "♦ <b>4 khoá học trực tuyến, với hình thức lớp 1-1 hoặc 1-4.</b> Mỗi khoá học kéo dài trong 50 buổi, với các chủ điểm ngữ pháp, từ vựng quen thuộc, giúp bé có thể ứng dụng ngay trong cuộc sống hàng ngày.<br>♦ Bé sẽ được phát triển toàn diện 4 kĩ năng: nghe, nói, đọc, viết; đặc biệt là kĩ năng giao tiếp. Phương pháp dạy học đa dạng, khơi gợi sự tò mò, hứng thú tìm hiểu ngôn ngữ của bé và giúp bé không còn ngại ngùng khi nói trước người khác.",
+                        detailDesc: "<ul><li><b>Phương pháp phản xạ tự nhiên:</b> Học qua trò chơi, hình ảnh trực quan.</li></ul>",
+                        img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
+                    }
+                ];
+            }
+            if (!Array.isArray(teachersArray) || teachersArray.length === 0) {
+                teachersArray = [
+                    { name: "CÔ LAN PHƯƠNG", role: "Giảng viên EEC", exp: "Hơn 10 năm kinh nghiệm giảng dạy", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" },
+                    { name: "CÔ MINH THUÝ", role: "Giảng viên EEC", exp: "Hơn 5 năm kinh nghiệm giảng dạy", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80" }
+                ];
+            }
+            if (!Array.isArray(achievementsArray) || achievementsArray.length === 0) {
+                achievementsArray = [
+                    { number: "99%", label: "Học viên hài lòng<br>với khóa học" },
+                    { number: "55000", label: "Học viên khắp Đông Nam Á" },
+                    { number: "35000", label: "Học viên đạt chứng chỉ IELTS" },
+                    { number: "#10", label: "Dành cho người học<br>tiếng Anh" }
+                ];
+            }
+            if (!Array.isArray(testimonialsArray) || testimonialsArray.length === 0) {
+                testimonialsArray = [
+                    {
+                        prefix: "Học viên",
+                        name: "Ngọc Linh",
+                        img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80",
+                        content: "Mình đang theo học lớp cô Thảo, học siêu thích luôn, mình cực ấn tượng với giọng của cô, đỉnh lắm luôn ý. Cô dạy dễ hiểu lại nhiệt tình. Đợt dịch mình học onl ở trên trường, tuy nhiên không được tương tác như học ở đây, lần đầu mình học onl mà tương tác nhiều như này luôn í. Trước mình hay bị ngại ấy, nhưng ở đây em cảm thấy thoải mái với tự tin nói chuyện với giao tiếp bằng tiếng anh hơn nhiều luôn."
+                    },
+                    {
+                        prefix: "Học viên",
+                        name: "Quang Trung",
+                        img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
+                        content: "Em cảm ơn cô Từ Liêm rất nhiều. 20 buổi trôi qua nhanh thật. Nhờ cô truyền cảm hứng mà em từ người rụt rè chẳng bao giờ dám giao tiếp với ai bằng tiếng anh mà giờ em có thể tự tin nói chuyện với sếp người Sing như người bản địa rồi haha. Trước giờ em nói toàn bặp bẹ từng từ một, từ sau khi hoàn thành khóa học, em học được cách nhấn nhá từng từ, từng câu, ending sound rồi nối âm, luyến láy các kiểu."
+                    }
+                ];
+            }
+            if (!Array.isArray(studentVideosArray) || studentVideosArray.length === 0) {
+                studentVideosArray = [
+                    { youtubeUrl: "https://youtu.be/XGm8vrJ7Kaw", thumb: "" },
+                    { youtubeUrl: "https://youtu.be/fmv92iJ9nYg", thumb: "" },
+                    { youtubeUrl: "https://youtu.be/zLWUOsj8PXc", thumb: "" }
+                ];
+            }
+            if (!Array.isArray(newsArray) || newsArray.length === 0) {
+                newsArray = [
+                    {
+                        category: "Blog",
+                        title: "CÁC MẪU CÂU HỎI PHỎNG VẤN TIẾNG ANH KINH ĐIỂN",
+                        desc: "Bạn đang có lịch hẹn phỏng vấn tiếng Anh ở các doanh nghiệp nước ngoài hoặc các công ty yêu cầu phỏng vấn bằng tiếng Anh...",
+                        img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80",
+                        link: "#tu-van"
+                    },
+                    {
+                        category: "Tiếng Anh cho trẻ em",
+                        title: "PHƯƠNG PHÁP HỌC TIẾNG ANH HIỆU QUẢ CHO TRẺ",
+                        desc: "Học tiếng Anh cho trẻ em hiện nay được các bậc phụ huynh chú trọng và quan tâm hàng đầu tuy nhiên không phải ai cũng...",
+                        img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80",
+                        link: "#tu-van"
+                    },
+                    {
+                        category: "Tiếng Anh cho trẻ em",
+                        title: "BÍ QUYẾT ĐỂ TRẺ HỨNG THÚ HỌC TIẾNG ANH",
+                        desc: "Với xu hướng thời đại 4.0 ngày nay, tiếng Anh là ngôn ngữ được sử dụng như một phương tiện giao tiếp không thể thiếu...",
+                        img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80",
+                        link: "#tu-van"
+                    }
+                ];
+            }
+            if (!Array.isArray(communityArray) || communityArray.length === 0) {
+                communityArray = [
+                    {
+                        platform: "facebook",
+                        handle: "fb.com/EECeducation.vn",
+                        img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
+                        bullets: "<ul><li>Cách dùng của danh từ đếm được và danh từ không đếm được trong tiếng Anh</li><li>Tại sao ngữ điệu và nhịp điệu trong tiếng Anh lại quan trọng?</li></ul>",
+                        btnText: "Đăng ký theo dõi",
+                        link: "https://www.facebook.com/EECeducation.vn"
+                    },
+                    {
+                        platform: "tiktok",
+                        handle: "@giaotieptienganh.eec",
+                        img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=80",
+                        bullets: "<ul><li>Những mẫu câu dùng để động viên, an ủi</li><li>Idioms chủ đề \"Âm nhạc\"</li><li>Các cặp từ dễ phát âm nhầm trong tiếng Anh</li></ul>",
+                        btnText: "Đăng ký theo dõi",
+                        link: "https://www.tiktok.com/@eeceducation.vn"
+                    },
+                    {
+                        platform: "youtube",
+                        handle: "youtube.com/@eecenglish",
+                        img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600&q=80",
+                        bullets: "<ul><li>Luyện shadowing tiếng Anh</li><li>Học tiếng Anh qua phim và bài hát</li><li>Học từ vựng tiếng Anh qua các bài phát biểu nổi tiếng</li></ul>",
+                        btnText: "Đăng ký theo dõi",
+                        link: "https://www.youtube.com/@eecenglish"
+                    }
+                ];
+            }
+        }
+
+        function renderAllSectionsSafely() {
+            try { applyConfigToDOM(); } catch(e) { console.error("applyConfigToDOM err:", e); }
+            try { renderNavigationMenu(); } catch(e) { console.error("renderNavigationMenu err:", e); }
+            try { renderBannersSlider(); } catch(e) { console.error("renderBannersSlider err:", e); }
+            try { renderEventsSlider(); } catch(e) { console.error("renderEventsSlider err:", e); }
+            try { renderReasonsSection(); } catch(e) { console.error("renderReasonsSection err:", e); }
+            try { renderCoursesList(); } catch(e) { console.error("renderCoursesList err:", e); }
+            try { renderTeachersSection(); } catch(e) { console.error("renderTeachersSection err:", e); }
+            try { renderAchievementsSection(); } catch(e) { console.error("renderAchievementsSection err:", e); }
+            try { renderTestimonialsSection(); } catch(e) { console.error("renderTestimonialsSection err:", e); }
+            try { renderStudentVideosSection(); } catch(e) { console.error("renderStudentVideosSection err:", e); }
+            try { renderNewsSection(); } catch(e) { console.error("renderNewsSection err:", e); }
+            try { renderCommunitySection(); } catch(e) { console.error("renderCommunitySection err:", e); }
+            try { checkAuth(); } catch(e) { console.error("checkAuth err:", e); }
         }
 
         // 1. Tải cấu hình từ Google Sheets
         async function loadConfig() {
+            // Render ngay dữ liệu mặc định để trang không bao giờ bị trống
+            initDefaultDataIfEmpty();
+            renderAllSectionsSafely();
+
             try {
                 let res = await fetch(APPS_SCRIPT_URL);
                 if (!res.ok) throw new Error("Network error");
-                currentConfig = await res.json();
+                const rawConfig = await res.json();
                 
-                try { menuArray = JSON.parse(currentConfig.menuData || "[]"); } catch(e) { menuArray = []; }
-                try { bannersArray = JSON.parse(currentConfig.bannersData || "[]"); } catch(e) { bannersArray = []; }
-                try { eventsArray = JSON.parse(currentConfig.eventsData || "[]"); } catch(e) { eventsArray = []; }
-                try { reasonsArray = JSON.parse(currentConfig.reasonsData || "[]"); } catch(e) { reasonsArray = []; }
-                try { coursesArray = JSON.parse(currentConfig.coursesData || "[]"); } catch(e) { coursesArray = []; }
-                try { teachersArray = JSON.parse(currentConfig.teachersData || "[]"); } catch(e) { teachersArray = []; }
-                try { achievementsArray = JSON.parse(currentConfig.achievementsData || "[]"); } catch(e) { achievementsArray = []; }
-                try { testimonialsArray = JSON.parse(currentConfig.testimonialsData || "[]"); } catch(e) { testimonialsArray = []; }
-                try { studentVideosArray = JSON.parse(currentConfig.studentVideosData || "[]"); } catch(e) { studentVideosArray = []; }
-                try { newsArray = JSON.parse(currentConfig.newsData || "[]"); } catch(e) { newsArray = []; }
-                try { communityArray = JSON.parse(currentConfig.communityData || "[]"); } catch(e) { communityArray = []; }
+                // Chuyển mọi giá trị từ Sheet sang String an toàn & tự động khôi phục số 0 ở đầu cho SĐT
+                currentConfig = {};
+                for (let k in rawConfig) {
+                    currentConfig[k] = (rawConfig[k] !== undefined && rawConfig[k] !== null) ? String(rawConfig[k]) : "";
+                }
+                currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
+                
+                try { if (currentConfig.menuData) menuArray = JSON.parse(currentConfig.menuData); } catch(e) {}
+                try { if (currentConfig.bannersData) bannersArray = JSON.parse(currentConfig.bannersData); } catch(e) {}
+                try { if (currentConfig.eventsData) eventsArray = JSON.parse(currentConfig.eventsData); } catch(e) {}
+                try { if (currentConfig.reasonsData) reasonsArray = JSON.parse(currentConfig.reasonsData); } catch(e) {}
+                try { if (currentConfig.coursesData) coursesArray = JSON.parse(currentConfig.coursesData); } catch(e) {}
+                try { if (currentConfig.teachersData) teachersArray = JSON.parse(currentConfig.teachersData); } catch(e) {}
+                try { if (currentConfig.achievementsData) achievementsArray = JSON.parse(currentConfig.achievementsData); } catch(e) {}
+                try { if (currentConfig.testimonialsData) testimonialsArray = JSON.parse(currentConfig.testimonialsData); } catch(e) {}
+                try { if (currentConfig.studentVideosData) studentVideosArray = JSON.parse(currentConfig.studentVideosData); } catch(e) {}
+                try { if (currentConfig.newsData) newsArray = JSON.parse(currentConfig.newsData); } catch(e) {}
+                try { if (currentConfig.communityData) communityArray = JSON.parse(currentConfig.communityData); } catch(e) {}
 
-                // Fallback dữ liệu mặc định
-                if (bannersArray.length === 0) {
-                    bannersArray = [{
-                        img: currentConfig.bannerImage || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80",
-                        link: "#tu-van",
-                        title: "ĐẠT IELTS SPEAKING 6.5 TRONG 6 THÁNG TỪ CON SỐ 0",
-                        subtitle: "ƯU ĐÃI HỌC PHÍ LÊN ĐẾN 40% - LỘ TRÌNH TINH GỌN 1 KÈM 1"
-                    }];
-                }
-                if (menuArray.length === 0) {
-                    menuArray = [
-                        { id: "m1", title: "Về EEC", type: "link", link: "#tai-sao", content: "", children: [] },
-                        { id: "m2", title: "Khóa học VIP", type: "link", link: "#khoa-hoc-vip", content: "", children: [] },
-                        { id: "m3", title: "Đội ngũ giáo viên", type: "link", link: "#giang-vien", content: "", children: [] },
-                        { id: "m4", title: "Thư viện", type: "link", link: "#tin-tuc", content: "", children: [] }
-                    ];
-                }
-                if (reasonsArray.length === 0) {
-                    reasonsArray = [
-                        { icon: "fa-solid fa-flag", color: "#0c389b", title: "Phương pháp dạy ĐỘC QUYỀN", desc: "Phương pháp học hiệu quả bao gồm Text-based, Task-based, Communicative Language Teaching." },
-                        { icon: "fa-solid fa-file-lines", color: "#eab308", title: "Tài liệu học ĐỘC QUYỀN", desc: "Hệ thống bài học và giáo trình độc quyền theo chuẩn lộ trình Cambridge." },
-                        { icon: "fa-solid fa-users", color: "#0c389b", title: "Giảng viên CHUYÊN NGHIỆP", desc: "Đội ngũ giảng viên giàu kinh nghiệm đồng hành cùng học viên." },
-                        { icon: "fa-solid fa-award", color: "#0c389b", title: "Chất lượng dịch vụ TẬN TÂM", desc: "Dịch vụ chăm sóc và hỗ trợ học viên 24/7." }
-                    ];
-                }
-                if (coursesArray.length === 0) {
-                    coursesArray = [
-                        {
-                            title: "TIẾNG ANH GIAO TIẾP CHO NGƯỜI ĐI LÀM",
-                            desc: "♦ <b>4 khoá</b> học trực tuyến, 1 giáo viên kèm 1 học viên với mục tiêu giúp học viên nắm vững các kiến thức cơ bản về từ vựng, ngữ pháp và 44 âm (theo bảng phiên âm quốc tế IPA). Sau khoá học, học viên có thể giao tiếp các chủ đề từ cơ bản đến nâng cao, từ cuộc sống hàng ngày (mua sắm, hỏi đường, nhà hàng, khách sạn,...) đến môi trường làm việc chuyên nghiệp (viết email, báo cáo, thuyết trình, đàm phán...).<br>♦ Đầu ra các khóa học tương đương các trình độ từ A1 đến B2 (theo khung tham chiếu CEFR)",
-                            detailDesc: "<ul><li><b>Lộ trình cá nhân hóa:</b> Thiết kế riêng theo ngành nghề.</li><li><b>Thực hành thực tế:</b> Giao tiếp, viết email, thuyết trình, đàm phán.</li></ul>",
-                            img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80"
-                        },
-                        {
-                            title: "TIẾNG ANH TRẺ EM ONLINE",
-                            desc: "♦ <b>4 khoá học trực tuyến, với hình thức lớp 1-1 hoặc 1-4.</b> Mỗi khoá học kéo dài trong 50 buổi, với các chủ điểm ngữ pháp, từ vựng quen thuộc, giúp bé có thể ứng dụng ngay trong cuộc sống hàng ngày.<br>♦ Bé sẽ được phát triển toàn diện 4 kĩ năng: nghe, nói, đọc, viết; đặc biệt là kĩ năng giao tiếp. Phương pháp dạy học đa dạng, khơi gợi sự tò mò, hứng thú tìm hiểu ngôn ngữ của bé và giúp bé không còn ngại ngùng khi nói trước người khác.",
-                            detailDesc: "<ul><li><b>Phương pháp phản xạ tự nhiên:</b> Học qua trò chơi, hình ảnh trực quan.</li></ul>",
-                            img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
-                        }
-                    ];
-                }
-                if (teachersArray.length === 0) {
-                    teachersArray = [
-                        { name: "CÔ LAN PHƯƠNG", role: "Giảng viên EEC", exp: "Hơn 10 năm kinh nghiệm giảng dạy", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" },
-                        { name: "CÔ MINH THUÝ", role: "Giảng viên EEC", exp: "Hơn 5 năm kinh nghiệm giảng dạy", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80" }
-                    ];
-                }
-                if (achievementsArray.length === 0) {
-                    achievementsArray = [
-                        { number: "99%", label: "Học viên hài lòng<br>với khóa học" },
-                        { number: "55000", label: "Học viên khắp Đông Nam Á" },
-                        { number: "35000", label: "Học viên đạt chứng chỉ IELTS" },
-                        { number: "#10", label: "Dành cho người học<br>tiếng Anh" }
-                    ];
-                }
-                if (testimonialsArray.length === 0) {
-                    testimonialsArray = [
-                        {
-                            prefix: "Học viên",
-                            name: "Ngọc Linh",
-                            img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80",
-                            content: "Mình đang theo học lớp cô Thảo, học siêu thích luôn, mình cực ấn tượng với giọng của cô, đỉnh lắm luôn ý. Cô dạy dễ hiểu lại nhiệt tình. Đợt dịch mình học onl ở trên trường, tuy nhiên không được tương tác như học ở đây, lần đầu mình học onl mà tương tác nhiều như này luôn í. Trước mình hay bị ngại ấy, nhưng ở đây em cảm thấy thoải mái với tự tin nói chuyện với giao tiếp bằng tiếng anh hơn nhiều luôn."
-                        },
-                        {
-                            prefix: "Học viên",
-                            name: "Quang Trung",
-                            img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
-                            content: "Em cảm ơn cô Từ Liêm rất nhiều. 20 buổi trôi qua nhanh thật. Nhờ cô truyền cảm hứng mà em từ người rụt rè chẳng bao giờ dám giao tiếp với ai bằng tiếng anh mà giờ em có thể tự tin nói chuyện với sếp người Sing như người bản địa rồi haha. Trước giờ em nói toàn bặp bẹ từng từ một, từ sau khi hoàn thành khóa học, em học được cách nhấn nhá từng từ, từng câu, ending sound rồi nối âm, luyến láy các kiểu."
-                        }
-                    ];
-                }
-                if (studentVideosArray.length === 0) {
-                    studentVideosArray = [
-                        { youtubeUrl: "https://youtu.be/XGm8vrJ7Kaw", thumb: "" },
-                        { youtubeUrl: "https://youtu.be/fmv92iJ9nYg", thumb: "" },
-                        { youtubeUrl: "https://youtu.be/zLWUOsj8PXc", thumb: "" }
-                    ];
-                }
-                if (newsArray.length === 0) {
-                    newsArray = [
-                        {
-                            category: "Blog",
-                            title: "CÁC MẪU CÂU HỎI PHỎNG VẤN TIẾNG ANH KINH ĐIỂN",
-                            desc: "Bạn đang có lịch hẹn phỏng vấn tiếng Anh ở các doanh nghiệp nước ngoài hoặc các công ty yêu cầu phỏng vấn bằng tiếng Anh...",
-                            img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80",
-                            link: "#tu-van"
-                        },
-                        {
-                            category: "Tiếng Anh cho trẻ em",
-                            title: "PHƯƠNG PHÁP HỌC TIẾNG ANH HIỆU QUẢ CHO TRẺ",
-                            desc: "Học tiếng Anh cho trẻ em hiện nay được các bậc phụ huynh chú trọng và quan tâm hàng đầu tuy nhiên không phải ai cũng...",
-                            img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80",
-                            link: "#tu-van"
-                        },
-                        {
-                            category: "Tiếng Anh cho trẻ em",
-                            title: "BÍ QUYẾT ĐỂ TRẺ HỨNG THÚ HỌC TIẾNG ANH",
-                            desc: "Với xu hướng thời đại 4.0 ngày nay, tiếng Anh là ngôn ngữ được sử dụng như một phương tiện giao tiếp không thể thiếu...",
-                            img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80",
-                            link: "#tu-van"
-                        }
-                    ];
-                }
-                if (communityArray.length === 0) {
-                    communityArray = [
-                        {
-                            platform: "facebook",
-                            handle: "fb.com/EECeducation.vn",
-                            img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
-                            bullets: "<ul><li>Cách dùng của danh từ đếm được và danh từ không đếm được trong tiếng Anh</li><li>Tại sao ngữ điệu và nhịp điệu trong tiếng Anh lại quan trọng?</li></ul>",
-                            btnText: "Đăng ký theo dõi",
-                            link: "https://www.facebook.com/EECeducation.vn"
-                        },
-                        {
-                            platform: "tiktok",
-                            handle: "@giaotieptienganh.eec",
-                            img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=80",
-                            bullets: "<ul><li>Những mẫu câu dùng để động viên, an ủi</li><li>Idioms chủ đề \"Âm nhạc\"</li><li>Các cặp từ dễ phát âm nhầm trong tiếng Anh</li></ul>",
-                            btnText: "Đăng ký theo dõi",
-                            link: "https://www.tiktok.com/@eeceducation.vn"
-                        },
-                        {
-                            platform: "youtube",
-                            handle: "youtube.com/@eecenglish",
-                            img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600&q=80",
-                            bullets: "<ul><li>Luyện shadowing tiếng Anh</li><li>Học tiếng Anh qua phim và bài hát</li><li>Học từ vựng tiếng Anh qua các bài phát biểu nổi tiếng</li></ul>",
-                            btnText: "Đăng ký theo dõi",
-                            link: "https://www.youtube.com/@eecenglish"
-                        }
-                    ];
-                }
-
-                applyConfigToDOM();
-                renderNavigationMenu();
-                renderBannersSlider();
-                renderEventsSlider();
-                renderReasonsSection();
-                renderCoursesList();
-                renderTeachersSection();
-                renderAchievementsSection();
-                renderTestimonialsSection();
-                renderStudentVideosSection();
-                renderNewsSection();
-                renderCommunitySection();
-                checkAuth();
+                initDefaultDataIfEmpty();
+                renderAllSectionsSafely();
             } catch (e) { 
-                console.error("Lỗi tải cấu hình:", e); 
+                console.error("Lỗi tải cấu hình từ Sheet:", e); 
             }
         }
 
-        // 2. Áp dụng cấu hình chung lên DOM
+        // 2. Áp dụng cấu hình chung lên DOM (Đã bọc String an toàn 100%, không bao giờ crash)
         function applyConfigToDOM() {
-            const color = currentConfig.primaryColor || "#0c389b";
+            const color = String(currentConfig.primaryColor || "#0c389b");
             document.documentElement.style.setProperty('--primary-color', color);
             document.getElementById('set_primaryColor').value = color;
             document.getElementById('set_primaryColorHex').value = color;
             
-            document.getElementById('dom_siteTitle').textContent = currentConfig.siteTitle || "STUDYBEEENGLISH";
-            document.getElementById('set_siteTitle').value = currentConfig.siteTitle || "STUDYBEEENGLISH";
+            document.getElementById('dom_siteTitle').textContent = String(currentConfig.siteTitle || "STUDYBEEENGLISH");
+            document.getElementById('set_siteTitle').value = String(currentConfig.siteTitle || "STUDYBEEENGLISH");
             
-            if (currentConfig.favicon) document.getElementById('dynamic-favicon').href = currentConfig.favicon;
+            if (currentConfig.favicon) document.getElementById('dynamic-favicon').href = String(currentConfig.favicon);
 
             // Hiển thị Logo ở Header & Footer
             const logoImg = document.getElementById('dom_logo');
@@ -1181,12 +1207,13 @@
             const footerLogoImg = document.getElementById('dom_footer_logo');
             const footerLogoFallback = document.getElementById('dom_footer_logo_fallback');
 
-            if (currentConfig.logo && currentConfig.logo.trim() !== "") {
-                logoImg.src = currentConfig.logo;
+            const logoUrl = String(currentConfig.logo || "").trim();
+            if (logoUrl !== "") {
+                logoImg.src = logoUrl;
                 logoImg.classList.remove('hidden');
                 logoFallback.classList.add('hidden');
                 if (footerLogoImg) {
-                    footerLogoImg.src = currentConfig.logo;
+                    footerLogoImg.src = logoUrl;
                     footerLogoImg.classList.remove('hidden');
                     footerLogoFallback.classList.add('hidden');
                 }
@@ -1202,15 +1229,21 @@
             // Đổ chữ cho các thẻ [data-key]
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
-                if (currentConfig[key]) el.innerHTML = currentConfig[key];
+                if (currentConfig[key] !== undefined && currentConfig[key] !== "") {
+                    el.innerHTML = String(currentConfig[key]);
+                }
                 el.oninput = () => { currentConfig[key] = el.innerHTML; };
             });
 
-            // Liên kết MXH & Cấu hình Email CC
+            // Chuẩn hóa lại số điện thoại để luôn có số 0 ở đầu
+            currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
+
             const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject'];
             settingKeys.forEach(k => {
                 const inputEl = document.getElementById('set_' + k);
-                if (inputEl && currentConfig[k] !== undefined) inputEl.value = currentConfig[k];
+                if (inputEl && currentConfig[k] !== undefined) {
+                    inputEl.value = String(currentConfig[k]);
+                }
             });
 
             if (currentConfig.link_phone) {
@@ -1219,17 +1252,23 @@
                 if (fPhone) fPhone.textContent = currentConfig.link_phone;
             }
             if (currentConfig.link_email) {
-                document.getElementById('dom_link_email').textContent = currentConfig.link_email;
+                document.getElementById('dom_link_email').textContent = String(currentConfig.link_email);
                 const fEmail = document.getElementById('dom_footer_email_link');
-                if (fEmail) fEmail.textContent = currentConfig.link_email;
+                if (fEmail) fEmail.textContent = String(currentConfig.link_email);
             }
 
             document.querySelectorAll('.admin-link').forEach(el => {
                 const key = el.getAttribute('data-link-key');
-                if (key && currentConfig[key]) {
-                    if (key === 'link_phone') el.href = "tel:" + currentConfig[key].replace(/\s+/g, '');
-                    else if (key === 'link_email') el.href = "mailto:" + currentConfig[key].trim();
-                    else el.href = currentConfig[key];
+                if (key && currentConfig[key] !== undefined && currentConfig[key] !== "") {
+                    const valStr = String(currentConfig[key]).trim();
+                    if (key === 'link_phone') {
+                        const phoneClean = normalizePhoneString(valStr).replace(/\s+/g, '');
+                        el.href = "tel:" + phoneClean;
+                    } else if (key === 'link_email') {
+                        el.href = "mailto:" + valStr;
+                    } else {
+                        el.href = valStr;
+                    }
                 }
             });
         }
@@ -1962,7 +2001,7 @@
             }
         }
 
-        // 11. Render TIN TỨC NỔI BẬT (Chuẩn theo ảnh mẫu image_6119f5.jpg)
+        // 11. Render TIN TỨC NỔI BẬT
         function renderNewsSection() {
             const container = document.getElementById('newsContainer');
             if (!container) return;
@@ -1975,7 +2014,6 @@
                             <i class="fa fa-trash"></i> Xóa
                         </button>
 
-                        <!-- Hình ảnh bài viết -->
                         <div class="relative aspect-[16/10] w-full overflow-hidden bg-gray-200 mb-4 shadow-sm">
                             <a href="${item.link || '#tu-van'}" onclick="return handleNewsClick(event, ${idx})">
                                 <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="News">
@@ -1993,7 +2031,6 @@
                             </div>
                         </div>
 
-                        <!-- Nhãn Danh mục (Pill xám xanh) -->
                         <div class="mb-3">
                             <span class="inline-flex items-center gap-2 bg-[#dfe5f2] text-gray-900 font-bold text-xs md:text-sm px-4 py-1.5 rounded-md">
                                 <span oninput="newsArray[${idx}].category = this.innerHTML" class="editable">${item.category}</span>
@@ -2001,12 +2038,10 @@
                             </span>
                         </div>
 
-                        <!-- Tiêu đề bài viết -->
                         <h3 oninput="newsArray[${idx}].title = this.innerHTML" class="editable font-black text-gray-900 text-base md:text-lg uppercase leading-snug mb-2.5">
                             ${item.title}
                         </h3>
 
-                        <!-- Mô tả ngắn -->
                         <div oninput="newsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm md:text-[15px] leading-relaxed text-justify">
                             ${item.desc}
                         </div>
@@ -2053,7 +2088,7 @@
             }
         }
 
-        // 12. Render CỘNG ĐỒNG HỌC TIẾNG ANH CHẤT LƯỢNG (Chuẩn theo ảnh mẫu image_6119f5.jpg)
+        // 12. Render CỘNG ĐỒNG HỌC TIẾNG ANH CHẤT LƯỢNG
         function renderCommunitySection() {
             const container = document.getElementById('communityContainer');
             if (!container) return;
@@ -2073,7 +2108,6 @@
                 container.insertAdjacentHTML('beforeend', `
                     <div class="flex flex-col justify-between">
                         <div>
-                            <!-- Nhãn tên kênh nghiêng phía trên -->
                             <div class="flex items-center gap-2 mb-3 pl-2 transform -rotate-6 origin-bottom-left">
                                 <div class="w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shadow">
                                     ${iconHtml}
@@ -2081,7 +2115,6 @@
                                 <span oninput="communityArray[${idx}].handle = this.innerHTML" class="editable font-bold text-gray-800 text-sm">${item.handle}</span>
                             </div>
 
-                            <!-- Khung ảnh viền vàng đổ bóng xanh -->
                             <div class="community-frame aspect-[16/10] mb-5 relative group">
                                 <img src="${item.img}" class="w-full h-full object-cover" alt="${item.handle}">
                                 <div class="admin-only hidden absolute top-2 left-2 right-2 bg-gray-900/90 text-white p-1.5 rounded flex justify-between items-center text-[11px] z-20">
@@ -2097,13 +2130,11 @@
                                 </div>
                             </div>
 
-                            <!-- Danh sách chủ đề (Rich Text) -->
                             <div oninput="communityArray[${idx}].bullets = this.innerHTML" class="editable rich-content text-gray-800 text-sm md:text-[15px] leading-relaxed mb-6 px-1">
                                 ${item.bullets}
                             </div>
                         </div>
 
-                        <!-- Nút Đăng ký theo dõi bên dưới -->
                         <a href="${item.link || '#'}" target="_blank" onclick="return handleCommunityClick(event, ${idx})" class="block w-full border border-brand text-brand font-medium py-2.5 px-4 rounded-md text-center hover:bg-brand hover:text-white transition text-sm md:text-base">
                             <span oninput="communityArray[${idx}].btnText = this.innerHTML" class="editable">${item.btnText || 'Đăng ký theo dõi'}</span>
                             <i class="fa-solid fa-arrow-right-long ml-1.5 text-xs"></i>
@@ -2307,6 +2338,7 @@
                 const el = document.getElementById('set_' + k);
                 if (el) currentConfig[k] = el.value.trim();
             });
+            currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
 
             applyConfigToDOM();
             document.getElementById('settingsModal').classList.add('hidden');
@@ -2344,10 +2376,10 @@
                     el.onclick = (e) => {
                         e.preventDefault();
                         const key = el.getAttribute('data-link-key');
-                        const currentVal = currentConfig[key] || "";
+                        const currentVal = String(currentConfig[key] || "");
                         const newVal = prompt(`Chỉnh sửa thông tin / đường dẫn (${key}):`, currentVal);
                         if (newVal !== null && newVal.trim() !== "") {
-                            currentConfig[key] = newVal.trim();
+                            currentConfig[key] = (key === 'link_phone') ? normalizePhoneString(newVal.trim()) : newVal.trim();
                             applyConfigToDOM();
                         }
                     };
@@ -2377,6 +2409,7 @@
                 currentConfig[el.getAttribute('data-key')] = el.innerHTML;
             });
 
+            currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
             currentConfig.menuData = JSON.stringify(menuArray);
             currentConfig.bannersData = JSON.stringify(bannersArray);
             currentConfig.eventsData = JSON.stringify(eventsArray);
@@ -2533,7 +2566,7 @@
             }
         });
 
-        // 17. Gửi Form Tư Vấn (Kèm gửi Email phản hồi cho học viên & CC)
+        // 17. Gửi Form Tư Vấn
         document.getElementById('consultForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitConsultBtn');
@@ -2543,7 +2576,7 @@
             const payload = {
                 action: 'submit_form',
                 name: document.getElementById('f_name').value.trim(),
-                phone: document.getElementById('f_phone').value.trim(),
+                phone: normalizePhoneString(document.getElementById('f_phone').value.trim()),
                 year: document.getElementById('f_year').value.trim(),
                 email: document.getElementById('f_email').value.trim(),
                 type: document.getElementById('f_type').value,
