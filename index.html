@@ -3,410 +3,2575 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="dom_siteTitle">EEC Education</title>
+    <title id="dom_siteTitle">STUDYBEEENGLISH - Nền tảng học tiếng Anh trực tuyến</title>
     <link id="dynamic-favicon" rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" type="image/x-icon">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap');
         :root { --primary-color: #0c389b; }
-        body { font-family: 'Roboto', sans-serif; scroll-behavior: smooth; }
+        body { font-family: 'Roboto', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+        h1, h2, h3, .font-heading { font-family: 'Montserrat', sans-serif; }
+        
         .bg-brand { background-color: var(--primary-color); }
         .text-brand { color: var(--primary-color); }
         .border-brand { border-color: var(--primary-color); }
-        .bg-brand-orange { background-color: #f1c40f; }
+        
+        /* Inline Edit Styles */
+        .editable { outline: none; transition: all 0.2s; }
+        .editable.is-admin:hover { outline: 2px dashed #f1c40f; background: rgba(241, 196, 15, 0.12); cursor: text; border-radius: 4px; }
+        .editable.is-admin:focus { outline: 2px solid #f1c40f; background: rgba(255, 255, 255, 0.98); color: #111 !important; padding: 4px 8px; border-radius: 6px; }
+        
+        /* Admin Link Edit Indicator */
+        .admin-link.is-admin { position: relative; }
+        .admin-link.is-admin:hover::after {
+            content: '✎ Sửa Link'; position: absolute; top: -26px; left: 50%; transform: translateX(-50%);
+            background: #f1c40f; color: #000; padding: 2px 6px; font-size: 11px; border-radius: 4px;
+            font-weight: bold; white-space: nowrap; z-index: 100; pointer-events: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
 
+        /* Chế độ cắt ảnh hình tròn cho Avatar */
+        .crop-circle .cropper-view-box,
+        .crop-circle .cropper-face {
+            border-radius: 50%;
+        }
+
+        /* Khung Thành tựu 3D */
+        .achieve-card {
+            background-color: #eaeef7;
+            border: 1.5px solid var(--primary-color);
+            border-radius: 6px;
+            box-shadow: 4px 5px 0px #1e293b;
+            transition: transform 0.2s;
+        }
+        .achieve-card:hover { transform: translateY(-3px); }
+
+        /* Nhãn treo có ghim vàng */
+        .motto-badge {
+            background-color: var(--primary-color);
+            color: #facc15;
+            box-shadow: 4px 5px 0px #0f172a;
+            position: relative;
+            display: inline-block;
+        }
+        .motto-pin {
+            position: absolute;
+            top: -10px;
+            width: 3.5px;
+            height: 16px;
+            background-color: #facc15;
+        }
+        .motto-pin::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: -2.2px;
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        /* Khung ảnh học viên vát chéo */
+        .student-photo-slant {
+            position: relative;
+            width: 260px;
+            height: 195px;
+            margin: 0 auto;
+            transform: perspective(600px) rotateY(-8deg) skewY(-4deg);
+            border: 2.5px solid #0f172a;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #d8e2ef 0%, #ffffff 100%);
+            box-shadow: -5px 6px 0px #eab308;
+            overflow: hidden;
+        }
+
+        /* Khung hộp chia sẻ học viên */
+        .student-review-box {
+            background-color: #dbe3f3;
+            border: 1.5px solid var(--primary-color);
+            border-radius: 4px;
+            position: relative;
+        }
+        .student-name-badge {
+            background-color: var(--primary-color);
+            box-shadow: 4px 4px 0px #000000;
+            display: inline-block;
+            padding: 10px 28px;
+        }
+
+        /* Khung Video Học Viên */
+        .video-outer-card {
+            background-color: #fff8eb;
+            border-radius: 8px;
+            padding: 14px 28px 20px 28px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .video-outer-card::before,
+        .video-outer-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 65px;
+            height: 45px;
+            background-color: #f5b935;
+            z-index: 1;
+        }
+        .video-outer-card::before {
+            left: 0;
+            clip-path: polygon(0 25%, 100% 100%, 0 100%);
+        }
+        .video-outer-card::after {
+            right: 0;
+            clip-path: polygon(100% 25%, 100% 100%, 0 100%);
+        }
+        .video-dots-left, .video-dots-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 64px;
+            background-image: radial-gradient(var(--primary-color) 2px, transparent 2px);
+            background-size: 6px 12px;
+            z-index: 2;
+        }
+        .video-dots-left { left: 8px; }
+        .video-dots-right { right: 8px; }
+
+        /* Khung Cộng đồng Mạng xã hội nghiêng 3D giống mẫu */
+        .community-frame {
+            position: relative;
+            border-radius: 12px;
+            border: 2px solid #eab308;
+            box-shadow: 6px 6px 0px var(--primary-color);
+            overflow: hidden;
+            background: #fff;
+        }
+        
         .prep-form-bg { background: linear-gradient(135deg, #01378A 0%, #0070F4 100%); }
         .prep-input { width: 100%; padding: 12px 16px; border-radius: 8px; color: #333; outline: none; font-size: 14px; border: none; }
         .prep-label { display: block; color: white; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+
+        /* Floating Contact */
+        .floating-contact { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 40; }
+        .floating-contact a { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.25); transition: transform 0.2s; }
+        .floating-contact a:hover { transform: scale(1.1); }
+
+        /* Rich Text Content */
+        .rich-content ul { list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        .rich-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
+        .rich-content li { margin-bottom: 0.35rem; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <header class="bg-white shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="#" class="text-3xl font-black text-brand tracking-tighter">EEC EDUCATION</a>
-            <div class="flex items-center gap-4">
-                <span id="welcomeMsg" class="font-bold text-gray-600 hidden"></span>
-                <button id="loginBtn" class="text-brand font-bold px-4 py-2 border border-brand rounded hover:bg-gray-50">Đăng nhập</button>
-                <button id="logoutBtn" class="hidden text-red-600 font-bold px-4 py-2 border border-red-600 rounded hover:bg-red-50">Đăng xuất</button>
-                <button id="adminToggleBtn" class="hidden bg-yellow-400 text-black px-4 py-2 rounded font-bold hover:bg-yellow-500"><i class="fa fa-edit"></i> Chỉnh sửa Web</button>
-            </div>
+    <!-- Thanh công cụ Định dạng Văn bản & Quản trị (Chỉ hiện cho Admin) -->
+    <div id="adminToolbar" class="hidden fixed bottom-6 left-6 z-50 flex flex-col gap-2.5">
+        <div class="bg-gray-900 text-white p-2.5 rounded-xl shadow-2xl flex items-center gap-2 border border-gray-700">
+            <span class="text-xs text-yellow-400 font-bold mr-1"><i class="fa fa-pen-nib"></i> Định dạng:</span>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('bold')" class="w-8 h-8 rounded hover:bg-gray-700 font-bold" title="In đậm (Ctrl+B)"><i class="fa fa-bold"></i></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('italic')" class="w-8 h-8 rounded hover:bg-gray-700 italic" title="In nghiêng (Ctrl+I)"><i class="fa fa-italic"></i></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('underline')" class="w-8 h-8 rounded hover:bg-gray-700 underline" title="Gạch chân (Ctrl+U)"><i class="fa fa-underline"></i></button>
+            <button type="button" onmousedown="event.preventDefault(); formatDoc('insertUnorderedList')" class="w-8 h-8 rounded hover:bg-gray-700" title="Danh sách chấm tròn"><i class="fa fa-list-ul"></i></button>
+            <input type="color" onchange="formatDoc('foreColor', this.value)" class="w-7 h-7 rounded cursor-pointer bg-transparent border-0" title="Đổi màu chữ đang bôi đen">
         </div>
-    </header>
 
-    <!-- Admin Panel -->
-    <div id="adminPanel" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative">
-            <button onclick="document.getElementById('adminPanel').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"><i class="fa fa-times"></i></button>
-            <h2 class="text-2xl font-bold text-brand mb-6 border-b pb-2"><i class="fa fa-cogs"></i> Quản trị nội dung Website</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 bg-gray-100 p-4 rounded">
-                    <div>
-                        <label class="block font-bold mb-1">Màu chủ đạo (Mã Hex):</label>
-                        <input type="color" id="edit_primaryColor" class="w-full h-10 rounded cursor-pointer">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">Tên Website (Title tab):</label>
-                        <input type="text" id="edit_siteTitle" class="w-full border p-2 rounded">
-                    </div>
-                    <div>
-                        <label class="block font-bold mb-1">Favicon (Tải lên Drive):</label>
-                        <input type="file" id="edit_favicon" accept="image/*,.ico" class="w-full border p-2 rounded bg-white">
-                    </div>
-                </div>
+        <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="openMenuManagerModal()" class="bg-purple-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-purple-700 transition flex items-center gap-1.5 text-sm">
+                <i class="fa fa-bars-staggered"></i> Sửa Menu & Trang con
+            </button>
+            <button type="button" id="openSettingsModalBtn" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-blue-700 transition flex items-center gap-1.5 text-sm">
+                <i class="fa fa-cogs"></i> Cài đặt Web & Email CC
+            </button>
+            <button type="button" id="saveChangesBtn" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-full shadow-2xl hover:bg-green-700 transition flex items-center gap-2 text-sm">
+                <i class="fa fa-save"></i> LƯU GIAO DIỆN
+            </button>
+        </div>
+    </div>
 
-                <div>
-                    <label class="block font-bold mb-1">Tiêu đề Banner:</label>
-                    <input type="text" id="edit_heroTitle" class="w-full border p-2 rounded">
-                    <label class="block font-bold mb-1 mt-2">Ảnh Banner (Tải lên Drive):</label>
-                    <input type="file" id="edit_bannerImage" accept="image/*" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Mô tả Banner:</label>
-                    <textarea id="edit_heroSubtitle" rows="4" class="w-full border p-2 rounded"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold mb-1">Tên Khóa 1:</label>
-                    <input type="text" id="edit_course1Title" class="w-full border p-2 rounded">
-                    <label class="block font-bold mb-1 mt-2">Ảnh Khóa 1 (Tải lên Drive):</label>
-                    <input type="file" id="edit_course1Img" accept="image/*" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Mô tả Khóa 1:</label>
-                    <textarea id="edit_course1Desc" rows="4" class="w-full border p-2 rounded"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold mb-1">Tên Khóa 2:</label>
-                    <input type="text" id="edit_course2Title" class="w-full border p-2 rounded">
-                    <label class="block font-bold mb-1 mt-2">Ảnh Khóa 2 (Tải lên Drive):</label>
-                    <input type="file" id="edit_course2Img" accept="image/*" class="w-full border p-2 rounded">
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Mô tả Khóa 2:</label>
-                    <textarea id="edit_course2Desc" rows="4" class="w-full border p-2 rounded"></textarea>
-                </div>
-
-                <div>
-                    <label class="block font-bold mb-1">Tiêu đề Form Đăng ký:</label>
-                    <textarea id="edit_formTitle" rows="2" class="w-full border p-2 rounded"></textarea>
-                </div>
-                <div>
-                    <label class="block font-bold mb-1">Mô tả Form Đăng ký:</label>
-                    <textarea id="edit_formSubtitle" rows="2" class="w-full border p-2 rounded"></textarea>
-                </div>
+    <!-- Topbar -->
+    <div class="bg-brand text-white py-2 text-sm">
+        <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex gap-6 items-center">
+                <span><b>Hotline:</b> <i class="fa fa-phone ml-1"></i> <a href="tel:0362938989" id="dom_link_phone" data-link-key="link_phone" class="admin-link font-bold hover:underline">0362938989</a></span>
+                <span class="text-yellow-400"><i class="fa fa-envelope-o mr-1"></i> <a href="mailto:eeceducationeec@gmail.com" id="dom_link_email" data-link-key="link_email" class="admin-link font-bold hover:underline">eeceducationeec@gmail.com</a></span>
             </div>
-
-            <div class="mt-6 flex justify-end">
-                <button id="saveConfigBtn" class="bg-green-600 text-white font-bold px-8 py-3 rounded hover:bg-green-700 transition">
-                    <i class="fa fa-save"></i> Lưu tất cả thay đổi
-                </button>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex bg-white rounded overflow-hidden">
+                    <input type="text" placeholder="Tìm kiếm..." class="px-3 py-1 text-black text-xs outline-none w-40">
+                    <button class="bg-blue-500 text-white px-3 py-1 text-xs"><i class="fa fa-search"></i></button>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="https://www.facebook.com/EECeducation.vn" target="_blank" data-link-key="link_fb" class="admin-link w-6 h-6 rounded-full bg-white text-brand flex items-center justify-center hover:scale-110 transition"><i class="fa-brands fa-facebook-f text-xs"></i></a>
+                    <a href="https://www.youtube.com/@eecenglish" target="_blank" data-link-key="link_yt" class="admin-link w-6 h-6 rounded-full bg-white text-red-600 flex items-center justify-center hover:scale-110 transition"><i class="fa-brands fa-youtube text-xs"></i></a>
+                    <a href="https://www.tiktok.com/@eeceducation.vn" target="_blank" data-link-key="link_tt" class="admin-link w-6 h-6 rounded-full bg-white flex items-center justify-center hover:scale-110 transition"><img src="https://www.svgrepo.com/show/327400/logo-tiktok.svg" class="w-3.5 h-3.5"></a>
+                    <a href="https://zalo.me/0362938989" target="_blank" data-link-key="link_zalo" class="admin-link w-6 h-6 rounded-full bg-white text-[#0068ff] font-black text-[9px] flex items-center justify-center hover:scale-110 transition">Zalo</a>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Login -->
-    <div id="loginModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-        <div class="bg-white p-8 rounded-xl w-96 relative shadow-2xl">
+    <!-- Header Navigation -->
+    <header class="bg-white shadow-sm sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
+            <!-- Cụm Logo duy nhất -->
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="#" onclick="showHomePage(); return false;" class="flex items-center">
+                    <img id="dom_logo" src="" class="h-12 w-auto object-contain hidden" alt="Logo">
+                    <div id="dom_logo_fallback" class="flex items-center gap-2 text-2xl md:text-3xl font-black text-brand tracking-tighter">
+                        <i class="fa-solid fa-graduation-cap text-yellow-400"></i>
+                        <span data-key="brandName" class="editable">STUDYBEE</span>
+                    </div>
+                </a>
+                <button type="button" onclick="openCropperModal('config', 'logo', 3/1, 300, 100, 'Logo Website (Chuẩn: 300x100px - Tỷ lệ 3:1)', false)" class="admin-only hidden bg-yellow-400 text-black text-xs font-bold px-2 py-1 rounded shadow hover:bg-yellow-500">
+                    <i class="fa fa-camera"></i> Đổi Logo
+                </button>
+            </div>
+
+            <!-- Menu Động -->
+            <nav class="hidden lg:flex items-center space-x-6 font-bold text-sm text-gray-800">
+                <a href="#" onclick="showHomePage(); return false;" class="hover:text-brand text-lg"><i class="fa fa-home"></i></a>
+                <div id="dynamicNavContainer" class="flex items-center space-x-6"></div>
+                <button type="button" onclick="openMenuManagerModal()" class="admin-only hidden bg-purple-100 text-purple-700 px-2.5 py-1 rounded text-xs font-bold hover:bg-purple-200">
+                    <i class="fa fa-pen"></i> Sửa Menu
+                </button>
+            </nav>
+
+            <!-- Khu vực Tài khoản / Avatar -->
+            <div class="flex items-center gap-3 shrink-0">
+                <button id="loginBtn" class="text-brand font-bold px-4 py-1.5 border border-brand rounded-full hover:bg-gray-100 text-sm">
+                    <i class="fa fa-user mr-1"></i> Đăng nhập
+                </button>
+
+                <div id="userProfileBar" class="hidden flex items-center gap-2">
+                    <button type="button" onclick="openProfileModal()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition" title="Bấm để tùy chỉnh tài khoản">
+                        <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-8 h-8 rounded-full object-cover border border-brand">
+                        <span id="headerUserDisplayName" class="font-bold text-sm text-brand max-w-[120px] truncate">Admin</span>
+                        <i class="fa fa-gear text-xs text-gray-500"></i>
+                    </button>
+                    <button id="logoutBtn" class="text-red-600 font-bold px-2.5 py-1 border border-red-600 rounded-full hover:bg-red-50 text-xs" title="Đăng xuất">
+                        <i class="fa fa-right-from-bracket"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- KHUNG HIỂN THỊ TRANG CON -->
+    <main id="subPageView" class="hidden min-h-[65vh] bg-white py-12">
+        <div class="max-w-5xl mx-auto px-4">
+            <button type="button" onclick="showHomePage()" class="mb-6 inline-flex items-center gap-2 text-brand font-bold hover:underline">
+                <i class="fa fa-arrow-left"></i> Quay lại Trang chủ
+            </button>
+            <div id="subPageContentArea" class="prose max-w-none bg-gray-50 p-8 rounded-2xl shadow-sm border border-gray-200 rich-content min-h-[300px]"></div>
+        </div>
+    </main>
+
+    <!-- TRANG CHỦ CHÍNH -->
+    <div id="homePageView">
+
+        <!-- 1. BANNER CHÍNH TRÀN KHUNG 100% (SLIDESHOW NHIỀU BANNER TỰ TRƯỢT 5S) -->
+        <section class="w-full relative bg-gray-900 overflow-hidden">
+            <div class="admin-only hidden bg-gray-900 text-white py-2 px-4 text-xs flex flex-wrap justify-between items-center gap-2 border-b border-gray-700">
+                <span><i class="fa fa-images text-yellow-400 mr-1"></i> <b>Slideshow Banner Tràn Khung</b> (Tự động trượt mỗi 5 giây)</span>
+                <button type="button" onclick="addNewBannerSlide()" class="bg-yellow-400 text-black font-bold px-3 py-1.5 rounded hover:bg-yellow-500">
+                    <i class="fa fa-plus-circle mr-1"></i> + Thêm Banner Mới (Chuẩn: 1920x680px - 16:6)
+                </button>
+            </div>
+
+            <div class="swiper bannerSwiper w-full">
+                <div class="swiper-wrapper" id="bannerSliderContainer"></div>
+                <div class="swiper-button-next !text-white after:!text-2xl drop-shadow"></div>
+                <div class="swiper-button-prev !text-white after:!text-2xl drop-shadow"></div>
+                <div class="swiper-pagination banner-pagination"></div>
+            </div>
+        </section>
+
+        <!-- 2. SỰ KIỆN NỔI BẬT (NẰM NGAY BÊN DƯỚI BANNER - TRÀN KHUNG & TỰ TRƯỢT 5S) -->
+        <section class="w-full bg-white border-b-4 border-yellow-400 py-10 px-4 md:px-10">
+            <div class="w-full max-w-[1600px] mx-auto">
+                <div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+                    <h3 data-key="eventTitle" class="editable text-brand font-black text-2xl md:text-3xl uppercase tracking-wide">
+                        SỰ KIỆN NỔI BẬT
+                    </h3>
+                    <button type="button" onclick="addEventSlide()" class="admin-only hidden bg-purple-600 text-white text-xs font-bold px-4 py-2 rounded-lg shadow hover:bg-purple-700 transition flex items-center gap-1.5">
+                        <i class="fa fa-plus-circle"></i> + Thêm Sự Kiện (Chuẩn ảnh: 600x600px - 1:1)
+                    </button>
+                </div>
+
+                <div class="swiper eventSwiper w-full">
+                    <div class="swiper-wrapper" id="eventSliderContainer"></div>
+                    <div class="swiper-pagination event-pagination mt-6 relative"></div>
+                </div>
+
+                <div class="mt-8 pt-5 border-t border-gray-200 text-center">
+                    <h2 data-key="heroBottomSlogan" class="editable text-lg md:text-2xl font-black text-brand uppercase tracking-wide">
+                        NỀN TẢNG HỌC TIẾNG ANH ĐƯỢC NHIỀU NGƯỜI THEO HỌC TẠI VIỆT NAM
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. TẠI SAO CHỌN ANH NGỮ STUDYBEEENGLISH -->
+        <section id="tai-sao" class="py-16 max-w-7xl mx-auto px-4 bg-white my-8 rounded-2xl shadow-sm">
+            <div class="text-center mb-12">
+                <h2 data-key="reasonSectionTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase">
+                    TẠI SAO CHỌN ANH NGỮ STUDYBEEENGLISH
+                </h2>
+                <div class="w-28 h-1 bg-yellow-400 mx-auto mt-3"></div>
+                <p class="admin-only hidden text-xs text-purple-600 font-bold mt-2">
+                    <i class="fa fa-hand-pointer"></i> Mẹo Admin: Bấm trực tiếp vào bất kỳ biểu tượng (Icon) nào bên dưới để mở Bộ chọn Icon.
+                </p>
+            </div>
+            <div id="reasonsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center"></div>
+        </section>
+
+        <!-- 4. KHÓA HỌC TIẾNG ANH ONLINE VIP -->
+        <section id="khoa-hoc-vip" class="bg-[#f4f5f7] py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-8 relative">
+                    <h2 data-key="courseSectionTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase inline-block">
+                        KHÓA HỌC TIẾNG ANH ONLINE VIP
+                    </h2>
+                    <div class="w-36 h-1 bg-yellow-400 mt-2.5 mx-auto"></div>
+
+                    <div class="admin-only hidden mt-4">
+                        <button type="button" onclick="addNewCourse()" class="bg-purple-600 text-white font-bold px-5 py-2.5 rounded-xl shadow-lg hover:bg-purple-700 transition inline-flex items-center gap-2 text-sm">
+                            <i class="fa fa-plus-circle"></i> + Thêm Khóa Học VIP Mới
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3.5 mb-12 text-gray-800 text-base md:text-lg max-w-5xl mx-auto">
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-regular fa-circle-check text-brand text-xl mt-1 shrink-0 font-bold"></i>
+                        <div data-key="courseIntro1" class="editable flex-1">Học trực tiếp với giáo viên qua Zoom, Livestream.</div>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-regular fa-circle-check text-brand text-xl mt-1 shrink-0 font-bold"></i>
+                        <div data-key="courseIntro2" class="editable flex-1">Là hình thức học kết hợp giữa khóa online, với các buổi học trực tiếp với giáo viên qua zoom, Livestream.</div>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <i class="fa-regular fa-circle-check text-brand text-xl mt-1 shrink-0 font-bold"></i>
+                        <div data-key="courseIntro3" class="editable flex-1">Khóa học theo sát quá trình học tập của học viên, đảm bảo kết quả đầu ra.</div>
+                    </div>
+                </div>
+                
+                <div id="coursesContainer" class="space-y-16"></div>
+            </div>
+        </section>
+
+        <!-- 5. GIẢNG VIÊN TÀI NĂNG – TÂM HUYẾT -->
+        <section id="giang-vien" class="bg-[#edf1f7] py-16">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 data-key="teacherSectionTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase">
+                        GIẢNG VIÊN TÀI NĂNG – TÂM HUYẾT
+                    </h2>
+                    <div class="w-32 h-1 bg-yellow-400 mx-auto mt-3"></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    <div class="lg:col-span-6 space-y-8">
+                        <div data-key="teacherDesc" class="editable text-gray-800 text-base md:text-lg leading-relaxed text-justify">
+                            Tại EEC, giáo viên đạt trình độ thạc sĩ, tiến sĩ là các giảng viên ngôn ngữ đang công tác tại các trường đại học hàng đầu tại Việt Nam và Mỹ có nhiều năm kinh nghiệm, hướng đến việc cung cấp chất lượng giảng dạy tốt nhất.
+                        </div>
+
+                        <div class="pt-4">
+                            <div class="motto-badge px-7 py-3 rounded">
+                                <span class="motto-pin left-4"></span>
+                                <span class="motto-pin right-4"></span>
+                                <span data-key="teacherMottoLabel" class="editable font-black text-base md:text-lg uppercase tracking-wide">
+                                    PHƯƠNG CHÂM GIẢNG DẠY
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="relative py-2 px-2">
+                            <i class="fa-solid fa-quote-left text-3xl md:text-4xl text-gray-800 mr-3 align-top"></i>
+                            <span data-key="teacherQuote" class="editable text-2xl md:text-3xl text-gray-800 font-light leading-snug">
+                                Tôn trọng học viên như một khách hàng và không đầu hàng trước những học viên cá biệt
+                            </span>
+                            <div class="text-right mt-2">
+                                <i class="fa-solid fa-quote-right text-3xl md:text-4xl text-gray-800"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-6">
+                        <div class="admin-only hidden mb-4 text-right">
+                            <button type="button" onclick="addTeacherCard()" class="bg-purple-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow hover:bg-purple-700">
+                                <i class="fa fa-plus-circle"></i> + Thêm Giảng Viên
+                            </button>
+                        </div>
+                        <div id="teachersContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-8 items-center"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. NHỮNG THÀNH TỰU ĐÁNG TỰ HÀO -->
+        <section id="thanh-tuu" class="bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 data-key="achieveSectionTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase">
+                        NHỮNG THÀNH TỰU ĐÁNG TỰ HÀO
+                    </h2>
+                    <div class="w-32 h-1 bg-yellow-400 mx-auto mt-3"></div>
+                </div>
+
+                <div id="achievementsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+            </div>
+        </section>
+
+        <!-- 7. NHẬT KÝ HỌC VIÊN & VIDEO YOUTUBE -->
+        <section id="nhat-ky-hoc-vien" class="bg-[#edf1f7] py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <h2 data-key="diarySectionTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase">
+                        NHẬT KÝ HỌC VIÊN EEC
+                    </h2>
+                    <div class="w-32 h-1 bg-yellow-400 mx-auto mt-2.5 mb-4"></div>
+                    <p data-key="diarySectionSubtitle" class="editable text-gray-800 text-base md:text-lg">
+                        Cùng lắng nghe những chia sẻ từ học viên của chúng tôi
+                    </p>
+                </div>
+
+                <div class="admin-only hidden mb-6 text-right">
+                    <button type="button" onclick="addTestimonialCard()" class="bg-purple-600 text-white text-xs font-bold px-4 py-2 rounded-lg shadow hover:bg-purple-700">
+                        <i class="fa fa-plus-circle"></i> + Thêm Chia Sẻ Học Viên
+                    </button>
+                </div>
+
+                <div id="testimonialsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-14"></div>
+
+                <div class="admin-only hidden mb-4 flex justify-between items-center bg-gray-900 text-white px-4 py-2.5 rounded-xl text-xs">
+                    <span><i class="fa-brands fa-youtube text-red-500 text-base mr-1"></i> <b>Danh sách Video Học Viên</b> (Hỗ trợ chèn mọi link YouTube & phát trực tiếp tại trang web)</span>
+                    <button type="button" onclick="addStudentVideo()" class="bg-yellow-400 text-black font-bold px-3 py-1.5 rounded hover:bg-yellow-500">
+                        <i class="fa fa-plus-circle"></i> + Thêm Video YouTube
+                    </button>
+                </div>
+
+                <div id="studentVideosContainer" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+
+        <!-- 8. FORM ĐĂNG KÝ TƯ VẤN (CÓ GỬI EMAIL TỰ ĐỘNG CHO HỌC VIÊN & CC) -->
+        <section id="tu-van" class="py-16 max-w-7xl mx-auto px-4">
+            <div class="prep-form-bg rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row gap-12 shadow-2xl relative overflow-hidden">
+                <div class="lg:w-5/12 flex flex-col justify-center z-10">
+                    <h2 data-key="formTitle" class="editable text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Bạn còn<br>câu hỏi khác?</h2>
+                    <p data-key="formSubtitle" class="editable text-white text-lg font-medium opacity-90 mb-12">Hãy để lại thông tin, chúng tôi sẽ liên hệ và hỗ trợ xử lý mọi vướng mắc của bạn</p>
+                    <div class="mt-auto hidden lg:block text-center"><i class="fa-solid fa-robot text-9xl text-[#f1c40f] opacity-80 animate-bounce"></i></div>
+                </div>
+
+                <div class="lg:w-7/12 z-10">
+                    <form id="consultForm" class="space-y-4">
+                        <div><label class="prep-label">Họ và tên (*)</label><input type="text" id="f_name" placeholder="Nhập họ và tên của bạn" required class="prep-input"></div>
+                        <div>
+                            <label class="prep-label">Số điện thoại (*)</label>
+                            <div class="flex bg-white rounded-lg overflow-hidden">
+                                <select class="bg-gray-100 px-3 border-r outline-none font-medium text-sm text-gray-700"><option>+84</option></select>
+                                <input type="tel" id="f_phone" placeholder="Nhập số điện thoại của bạn" required class="prep-input rounded-none border-none">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><label class="prep-label">Năm sinh (*)</label><input type="number" id="f_year" placeholder="Nhập năm sinh" required class="prep-input"></div>
+                            <div><label class="prep-label">Email nhận phản hồi (*)</label><input type="email" id="f_email" placeholder="Nhập địa chỉ email của bạn" required class="prep-input"></div>
+                        </div>
+                        <div>
+                            <label class="prep-label">Bạn là</label>
+                            <select id="f_type" class="prep-input appearance-none bg-white text-gray-700">
+                                <option value="Học sinh/Sinh viên">Học sinh/Sinh viên</option>
+                                <option value="Người đi làm">Người đi làm</option>
+                                <option value="Phụ huynh">Phụ huynh</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="prep-label">Khóa học bạn quan tâm (*)</label>
+                            <select id="f_course" required class="prep-input appearance-none bg-white text-gray-700"></select>
+                        </div>
+                        <div><label class="prep-label">Nội dung</label><textarea id="f_msg" rows="3" placeholder="Bạn có câu hỏi gì? Hãy cho biết trình độ hiện tại và mục tiêu mong muốn..." class="prep-input resize-none"></textarea></div>
+                        <div class="flex justify-end mt-6">
+                            <button type="submit" id="submitConsultBtn" class="bg-white text-blue-600 font-bold px-8 py-3 rounded-full hover:bg-gray-100 transition shadow-md flex items-center gap-2">Gửi câu hỏi <i class="fa fa-arrow-right"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. TIN TỨC NỔI BẬT (NẰM SAU PHẦN ĐĂNG KÝ - CHUẨN THEO ẢNH MẪU) -->
+        <section id="tin-tuc" class="bg-[#f4f5f7] py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-10 relative">
+                    <h2 data-key="newsSectionTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase inline-block">
+                        TIN TỨC NỔI BẬT
+                    </h2>
+                    <div class="w-32 h-1 bg-yellow-400 mx-auto mt-2.5"></div>
+                    <div class="admin-only hidden mt-4">
+                        <button type="button" onclick="addNewsCard()" class="bg-purple-600 text-white text-xs font-bold px-4 py-2 rounded-lg shadow hover:bg-purple-700">
+                            <i class="fa fa-plus-circle"></i> + Thêm Bài Viết Tin Tức
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Lưới 3 cột Tin tức -->
+                <div id="newsContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Render bằng JS -->
+                </div>
+
+                <!-- Link Xem thêm bên dưới -->
+                <div class="text-center mt-10">
+                    <a href="#tin-tuc" id="dom_newsMoreLink" data-link-key="newsMoreLink" class="admin-link inline-flex items-center gap-2 text-brand font-medium hover:underline text-sm md:text-base">
+                        <i class="fa-solid fa-arrow-right-long"></i>
+                        <span data-key="newsMoreText" class="editable">Xem thêm các Tiếng Anh cho trẻ em khác</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. XÓA BỎ RÀO CẢN NGÔN NGỮ - TẠO NÊN CỘNG ĐỒNG HỌC TIẾNG ANH CHẤT LƯỢNG -->
+        <section id="cong-dong" class="bg-white py-16">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-12">
+                    <div data-key="commTopTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase mb-2">
+                        XÓA BỎ RÀO CẢN NGÔN NGỮ
+                    </div>
+                    <h2 data-key="commMainTitle" class="editable text-2xl md:text-3xl font-black text-brand uppercase inline-block">
+                        TẠO NÊN CỘNG ĐỒNG HỌC TIẾNG ANH CHẤT LƯỢNG
+                    </h2>
+                    <div class="w-36 h-1 bg-yellow-400 mx-auto mt-3"></div>
+                </div>
+
+                <!-- Lưới 3 cột Cộng đồng (Facebook, TikTok, YouTube) -->
+                <div id="communityContainer" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Render bằng JS -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 11. FOOTER CHÂN TRANG (CHUẨN THEO ẢNH MẪU image_6119f8.png) -->
+    <footer class="bg-[#eaeef5] text-gray-900 py-14 border-t border-gray-300">
+        <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Cột 1: Logo (2 cột) -->
+            <div class="lg:col-span-2 flex flex-col items-start">
+                <a href="#" onclick="showHomePage(); return false;" class="flex items-center">
+                    <img id="dom_footer_logo" src="" class="h-14 w-auto object-contain hidden" alt="Logo Footer">
+                    <div id="dom_footer_logo_fallback" class="flex items-center gap-2 text-2xl font-black text-brand tracking-tighter">
+                        <i class="fa-solid fa-graduation-cap text-yellow-400 text-3xl"></i>
+                        <div>
+                            <div data-key="brandName" class="editable leading-none">EEC</div>
+                            <div class="text-[11px] font-normal text-gray-600 tracking-normal">Education</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Cột 2: VỀ EEC EDUCATION (3 cột) -->
+            <div class="lg:col-span-3">
+                <h3 data-key="footerCol1Title" class="editable text-lg font-black text-brand uppercase">
+                    VỀ EEC EDUCATION
+                </h3>
+                <div class="w-20 h-1 bg-yellow-400 mt-1.5 mb-5"></div>
+                <ul class="space-y-2.5 text-sm md:text-[15px] text-gray-800">
+                    <li><a href="#tai-sao" data-key="footerLink1" class="editable hover:text-brand">Giới thiệu</a></li>
+                    <li><a href="#khoa-hoc-vip" data-key="footerLink2" class="editable hover:text-brand">Khóa học</a></li>
+                    <li><a href="#tu-van" data-key="footerLink3" class="editable hover:text-brand">Nội quy học viên</a></li>
+                    <li><a href="#tu-van" data-key="footerLink4" class="editable hover:text-brand">Quy định & hình thức thanh toán</a></li>
+                </ul>
+            </div>
+
+            <!-- Cột 3: THÔNG TIN CÔNG TY (4 cột) -->
+            <div class="lg:col-span-4">
+                <h3 data-key="footerCol2Title" class="editable text-lg font-black text-brand uppercase">
+                    THÔNG TIN CÔNG TY
+                </h3>
+                <div class="w-20 h-1 bg-yellow-400 mt-1.5 mb-5"></div>
+                <div data-key="footerCompanyName" class="editable font-black text-sm md:text-[15px] text-gray-900 uppercase mb-3">
+                    CÔNG TY TNHH DỊCH VỤ VÀ ĐÀO TẠO EEC
+                </div>
+                <ul class="space-y-2.5 text-sm md:text-[15px] text-gray-800">
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-file-lines text-gray-900 mt-1 w-4 text-center"></i>
+                        <span data-key="footerMsdn" class="editable flex-1">M.S.D.N: 0111514674</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-location-dot text-gray-900 mt-1 w-4 text-center"></i>
+                        <span data-key="footerAddress" class="editable flex-1">Địa chỉ: Số 108, Đường Trần Vỹ, Phường Phú Diễn, TP. Hà Nội</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-phone text-gray-900 mt-1 w-4 text-center"></i>
+                        <span data-key="footerPhone" class="editable flex-1">Điện thoại: 0362938989</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-envelope text-gray-900 mt-1 w-4 text-center"></i>
+                        <span data-key="footerEmail" class="editable flex-1">Email: eeceducationeec@gmail.com</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i class="fa-solid fa-earth-americas text-gray-900 mt-1 w-4 text-center"></i>
+                        <span data-key="footerWebsite" class="editable flex-1">Website: http://eecenglish.edu.vn</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Cột 4: LIÊN HỆ (3 cột) -->
+            <div class="lg:col-span-3">
+                <h3 data-key="footerCol3Title" class="editable text-lg font-black text-brand uppercase">
+                    LIÊN HỆ
+                </h3>
+                <div class="w-20 h-1 bg-yellow-400 mt-1.5 mb-5"></div>
+                <div class="space-y-2.5 text-sm md:text-[15px] font-bold text-gray-900 mb-4">
+                    <div>
+                        <i class="fa-regular fa-envelope mr-1.5"></i>
+                        <a href="mailto:eeceducationeec@gmail.com" id="dom_footer_email_link" data-link-key="link_email" class="admin-link break-all hover:text-brand">eeceducationeec@gmail.com</a>
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-phone mr-1.5"></i>
+                        <a href="tel:0362938989" id="dom_footer_phone_link" data-link-key="link_phone" class="admin-link hover:text-brand">0362938989</a>
+                    </div>
+                </div>
+
+                <!-- 4 Icon Mạng xã hội tròn màu trắng -->
+                <div class="flex items-center gap-3">
+                    <a href="https://www.facebook.com/EECeducation.vn" target="_blank" data-link-key="link_fb" class="admin-link w-9 h-9 rounded-full bg-white shadow flex items-center justify-center text-gray-900 hover:scale-110 transition">
+                        <i class="fa-brands fa-facebook-f text-base"></i>
+                    </a>
+                    <a href="https://www.youtube.com/@eecenglish" target="_blank" data-link-key="link_yt" class="admin-link w-9 h-9 rounded-full bg-white shadow flex items-center justify-center text-gray-900 hover:scale-110 transition">
+                        <i class="fa-brands fa-youtube text-base"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@eeceducation.vn" target="_blank" data-link-key="link_tt" class="admin-link w-9 h-9 rounded-full bg-white shadow flex items-center justify-center hover:scale-110 transition">
+                        <img src="https://www.svgrepo.com/show/327400/logo-tiktok.svg" class="w-4 h-4">
+                    </a>
+                    <a href="https://zalo.me/0362938989" target="_blank" data-link-key="link_zalo" class="admin-link w-9 h-9 rounded-full bg-[#0068ff] text-white shadow flex items-center justify-center font-black text-[10px] hover:scale-110 transition">
+                        Zalo
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Thanh Liên Hệ Nổi Bên Tay Phải -->
+    <div class="floating-contact">
+        <a href="https://m.me/EECeducation.vn" target="_blank" data-link-key="link_mes" class="admin-link bg-[#0084ff]" title="Messenger">
+            <i class="fa-brands fa-facebook-messenger text-white text-2xl"></i>
+        </a>
+        <a href="https://zalo.me/0362938989" target="_blank" data-link-key="link_zalo" class="admin-link bg-[#0068ff] border-2 border-white" title="Zalo">
+            <span class="font-black text-xs tracking-tighter text-white">Zalo</span>
+        </a>
+        <a href="tel:0362938989" data-link-key="link_phone" class="admin-link bg-[#f1c40f] text-black" title="Gọi ngay">
+            <i class="fa fa-phone text-black text-xl"></i>
+        </a>
+    </div>
+
+    <!-- MODAL 1: ĐĂNG NHẬP -->
+    <div id="loginModal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl w-96 relative shadow-2xl">
             <button onclick="document.getElementById('loginModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black"><i class="fa fa-times"></i></button>
-            <h2 class="text-2xl font-bold text-center text-brand mb-6">Đăng nhập</h2>
+            <h2 class="text-2xl font-bold text-center text-brand mb-6">Đăng nhập hệ thống</h2>
             <form id="loginForm" class="space-y-4">
-                <input type="text" id="l_user" placeholder="Tên đăng nhập" required class="w-full px-4 py-2 border rounded">
-                <input type="password" id="l_pass" placeholder="Mật khẩu" required class="w-full px-4 py-2 border rounded">
-                <button type="submit" id="submitLoginBtn" class="w-full bg-brand text-white py-2 rounded font-bold hover:opacity-90">Đăng nhập</button>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Tên đăng nhập</label>
+                    <input type="text" id="l_user" placeholder="Nhập tên đăng nhập" required class="w-full px-4 py-2.5 border rounded-lg focus:outline-brand">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Mật khẩu</label>
+                    <input type="password" id="l_pass" placeholder="Nhập mật khẩu" required class="w-full px-4 py-2.5 border rounded-lg focus:outline-brand">
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <label class="flex items-center gap-2 cursor-pointer text-gray-700 font-medium">
+                        <input type="checkbox" id="l_remember" class="w-4 h-4 rounded text-brand">
+                        Lưu mật khẩu
+                    </label>
+                </div>
+                <button type="submit" id="submitLoginBtn" class="w-full bg-brand text-white py-2.5 rounded-lg font-bold hover:opacity-95">Đăng nhập</button>
                 <p id="loginErr" class="text-red-500 text-sm text-center hidden"></p>
             </form>
         </div>
     </div>
 
-    <!-- Hero Banner -->
-    <section class="bg-black py-20 text-center text-white relative">
-        <img id="dom_bannerImage" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" class="absolute inset-0 w-full h-full object-cover opacity-50 z-0">
-        <div class="absolute inset-0 bg-brand opacity-60 z-0 mix-blend-multiply"></div>
-        <div class="max-w-5xl mx-auto px-4 relative z-10">
-            <h1 id="dom_heroTitle" class="text-3xl md:text-5xl font-bold mb-4 uppercase">Đang tải dữ liệu...</h1>
-            <p id="dom_heroSubtitle" class="text-lg md:text-xl font-light mb-8">Vui lòng chờ trong giây lát</p>
-            <a href="#tu-van" class="bg-brand-orange text-brand font-bold py-3 px-8 rounded-full text-lg hover:bg-yellow-500 transition">Nhận tư vấn ngay</a>
-        </div>
-    </section>
-
-    <!-- Khóa Học VIP -->
-    <section class="bg-gray-200 py-16">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-12"><h2 class="text-3xl font-bold text-brand uppercase">Khóa học tiếng Anh Online VIP</h2></div>
-            <div class="space-y-12">
-                <div class="flex flex-col md:flex-row bg-white rounded-2xl overflow-hidden shadow-md">
-                    <div class="md:w-1/2 bg-gray-100 flex items-center justify-center">
-                        <img id="dom_course1Img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" class="w-full h-full object-cover min-h-[300px]">
+    <!-- MODAL 2: TÙY CHỈNH THÔNG TIN TÀI KHOẢN -->
+    <div id="profileModal" class="hidden fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-md relative shadow-2xl">
+            <button type="button" onclick="document.getElementById('profileModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-xl"><i class="fa fa-times"></i></button>
+            <h2 class="text-2xl font-black text-brand mb-6 border-b pb-3"><i class="fa fa-user-gear mr-2"></i> Tùy chỉnh tài khoản</h2>
+            
+            <form id="profileForm" class="space-y-4 text-sm">
+                <div class="flex flex-col items-center gap-2 mb-4">
+                    <div class="relative group">
+                        <img id="prof_avatar_preview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-24 h-24 rounded-full object-cover border-4 border-brand shadow-md">
+                        <button type="button" onclick="openCropperModal('avatar', 'userAvatar', 1, 300, 300, 'Ảnh Đại Diện (Cắt hình tròn 300x300px)', true)" class="absolute bottom-0 right-0 bg-yellow-400 text-black w-8 h-8 rounded-full flex items-center justify-center shadow hover:bg-yellow-500" title="Tải lên & Cắt ảnh tròn">
+                            <i class="fa fa-camera"></i>
+                        </button>
                     </div>
-                    <div class="md:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-                        <h3 id="dom_course1Title" class="text-2xl font-bold text-brand mb-4 uppercase">Đang tải...</h3>
-                        <p id="dom_course1Desc" class="text-gray-600 mb-6 text-justify"></p>
-                        <a href="#tu-van" class="inline-block border-2 border-brand text-brand font-bold py-2 px-6 rounded hover:bg-brand hover:text-white transition w-max">Đăng ký học</a>
-                    </div>
+                    <span class="text-xs text-gray-500">Bấm vào biểu tượng máy ảnh để tải lên & cắt ảnh tròn</span>
                 </div>
 
-                <div class="flex flex-col md:flex-row-reverse bg-white rounded-2xl overflow-hidden shadow-md">
-                    <div class="md:w-1/2 bg-gray-100 flex items-center justify-center">
-                        <img id="dom_course2Img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" class="w-full h-full object-cover min-h-[300px]">
-                    </div>
-                    <div class="md:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
-                        <h3 id="dom_course2Title" class="text-2xl font-bold text-brand mb-4 uppercase">Đang tải...</h3>
-                        <p id="dom_course2Desc" class="text-gray-600 mb-6 text-justify"></p>
-                        <a href="#tu-van" class="inline-block border-2 border-brand text-brand font-bold py-2 px-6 rounded hover:bg-brand hover:text-white transition w-max">Đăng ký học</a>
-                    </div>
+                <div>
+                    <label class="block font-bold mb-1">Tên hiển thị:</label>
+                    <input type="text" id="prof_displayName" required class="w-full border p-2.5 rounded-lg">
                 </div>
+                <div>
+                    <label class="block font-bold mb-1">Tên đăng nhập mới:</label>
+                    <input type="text" id="prof_username" required class="w-full border p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">Mật khẩu hiện tại (* bắt buộc để xác nhận):</label>
+                    <input type="password" id="prof_currentPass" required placeholder="Nhập mật khẩu hiện tại" class="w-full border p-2.5 rounded-lg">
+                </div>
+                <div>
+                    <label class="block font-bold mb-1">Mật khẩu mới (Để trống nếu giữ nguyên):</label>
+                    <input type="password" id="prof_newPass" placeholder="Nhập mật khẩu mới" class="w-full border p-2.5 rounded-lg">
+                </div>
+
+                <p id="profMsg" class="text-center font-bold hidden"></p>
+
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="document.getElementById('profileModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg font-bold text-gray-600">Đóng</button>
+                    <button type="submit" id="saveProfileBtn" class="bg-brand text-white font-bold px-6 py-2 rounded-lg hover:opacity-95 shadow">Lưu thông tin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 3: QUẢN LÝ MỤC LỤC (MENU) & TRANG CON -->
+    <div id="menuManagerModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative">
+            <button type="button" onclick="document.getElementById('menuManagerModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"><i class="fa fa-times"></i></button>
+            <div class="flex flex-wrap justify-between items-center border-b pb-3 mb-4 gap-2">
+                <h2 class="text-2xl font-black text-brand"><i class="fa fa-sitemap mr-2"></i> Quản lý Mục lục & Trang con</h2>
+                <button type="button" onclick="addMainMenu()" class="bg-purple-600 text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-purple-700">
+                    <i class="fa fa-plus"></i> + Thêm Mục Lục Chính
+                </button>
+            </div>
+            
+            <div id="menuManagerList" class="space-y-4 text-sm"></div>
+
+            <div class="mt-6 pt-4 border-t flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('menuManagerModal').classList.add('hidden')" class="px-5 py-2.5 border rounded-lg font-bold text-gray-600">Đóng</button>
+                <button type="button" onclick="saveMenuAndClose()" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-green-700 shadow-lg">
+                    <i class="fa fa-check mr-1"></i> Áp dụng & Lưu Menu
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Form Đăng ký -->
-    <section id="tu-van" class="py-16 max-w-7xl mx-auto px-4">
-        <div class="prep-form-bg rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row gap-12 shadow-2xl relative overflow-hidden">
-            <div class="lg:w-5/12 flex flex-col justify-center z-10">
-                <h2 id="dom_formTitle" class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight whitespace-pre-line">Đang tải...</h2>
-                <p id="dom_formSubtitle" class="text-white text-lg font-medium opacity-90 mb-12"></p>
-                <div class="mt-auto hidden lg:block text-center"><i class="fa-solid fa-robot text-9xl text-yellow-400 opacity-80 animate-bounce"></i></div>
+    <!-- MODAL 4: BỘ CHỌN ICON -->
+    <div id="iconPickerModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col overflow-hidden">
+            <div class="p-4 bg-gray-900 text-white flex justify-between items-center">
+                <h3 class="font-bold text-lg text-yellow-400"><i class="fa fa-icons mr-2"></i> Chọn Biểu Tượng (Icon) & Màu Sắc</h3>
+                <button type="button" onclick="document.getElementById('iconPickerModal').classList.add('hidden')" class="text-gray-400 hover:text-white text-xl"><i class="fa fa-times"></i></button>
             </div>
+            <div class="p-4 bg-gray-100 border-b flex flex-wrap gap-3 items-center justify-between">
+                <input type="text" id="iconSearchInput" oninput="filterIcons(this.value)" placeholder="Tìm icon (vd: book, user, star, award, globe...)" class="border px-3 py-2 rounded-lg text-sm flex-1">
+                <div class="flex items-center gap-2 text-sm font-bold">
+                    <span>Màu Icon:</span>
+                    <input type="color" id="iconColorPicker" value="#0c389b" class="w-10 h-9 rounded cursor-pointer border">
+                </div>
+            </div>
+            <div id="iconGridContainer" class="p-4 overflow-y-auto grid grid-cols-6 sm:grid-cols-8 gap-3 text-2xl text-center max-h-[50vh]"></div>
+        </div>
+    </div>
 
-            <div class="lg:w-7/12 z-10">
-                <form id="consultForm" class="space-y-4">
-                    <div><label class="prep-label">Họ và tên (*)</label><input type="text" id="f_name" required class="prep-input"></div>
-                    <div>
-                        <label class="prep-label">Số điện thoại (*)</label>
-                        <div class="flex bg-white rounded-lg overflow-hidden">
-                            <select class="bg-gray-100 px-3 border-r outline-none font-medium text-sm text-gray-700"><option>+84</option></select>
-                            <input type="tel" id="f_phone" required class="prep-input rounded-none border-none">
+    <!-- MODAL 5: CÀI ĐẶT WEB & CẤU HÌNH EMAIL PHẢN HỒI + CC -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+            <button type="button" onclick="document.getElementById('settingsModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"><i class="fa fa-times"></i></button>
+            <h2 class="text-2xl font-black text-brand mb-6 border-b pb-3"><i class="fa fa-cogs mr-2"></i> Cài Đặt Website, Liên Kết & Email CC</h2>
+            
+            <div class="space-y-6 text-sm">
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                    <h3 class="font-bold text-base text-brand uppercase">1. Thương hiệu & Màu sắc</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold mb-1">Tên Website (Hiển thị trên Tab):</label>
+                            <input type="text" id="set_siteTitle" class="w-full border p-2.5 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">Màu chủ đạo Website:</label>
+                            <div class="flex items-center gap-2">
+                                <input type="color" id="set_primaryColor" class="h-10 w-16 rounded cursor-pointer border">
+                                <input type="text" id="set_primaryColorHex" class="border p-2.5 rounded-lg flex-1 uppercase font-mono">
+                            </div>
                         </div>
                     </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="bg-white p-3 rounded-lg border flex items-center justify-between">
+                            <div>
+                                <div class="font-bold">Favicon (fav.ico)</div>
+                                <div class="text-xs text-gray-500">Chuẩn: <b>64x64px (1:1)</b></div>
+                            </div>
+                            <button type="button" onclick="openCropperModal('config', 'favicon', 1, 64, 64, 'Favicon Website (Chuẩn: 64x64px - Tỷ lệ 1:1)', false)" class="bg-yellow-400 text-black font-bold px-3 py-2 rounded-lg text-xs hover:bg-yellow-500">
+                                <i class="fa fa-upload"></i> Cắt & Tải ảnh
+                            </button>
+                        </div>
+
+                        <div class="bg-white p-3 rounded-lg border flex flex-col gap-2">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-bold">Logo Đầu Trang & Chân Trang</div>
+                                    <div class="text-xs text-gray-500">Chuẩn: <b>300x100px (3:1)</b></div>
+                                </div>
+                                <button type="button" onclick="openCropperModal('config', 'logo', 3/1, 300, 100, 'Logo Website (Chuẩn: 300x100px - Tỷ lệ 3:1)', false)" class="bg-yellow-400 text-black font-bold px-3 py-2 rounded-lg text-xs hover:bg-yellow-500">
+                                    <i class="fa fa-upload"></i> Tải Logo
+                                </button>
+                            </div>
+                            <button type="button" onclick="currentConfig.logo=''; applyConfigToDOM();" class="text-xs text-red-600 hover:underline text-left">Xóa ảnh Logo (Dùng chữ mặc định)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mục 2: Liên kết MXH -->
+                <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
+                    <h3 class="font-bold text-base text-brand uppercase">2. Liên kết Mạng xã hội & Liên hệ</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><label class="prep-label">Năm sinh (*)</label><input type="number" id="f_year" required class="prep-input"></div>
-                        <div><label class="prep-label">Email (*)</label><input type="email" id="f_email" required class="prep-input"></div>
+                        <div>
+                            <label class="block font-bold mb-1"><i class="fa fa-phone text-green-600 mr-1"></i> Số điện thoại (Hotline):</label>
+                            <input type="text" id="set_link_phone" class="w-full border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1"><i class="fa fa-envelope text-yellow-600 mr-1"></i> Email liên hệ:</label>
+                            <input type="text" id="set_link_email" class="w-full border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1"><i class="fa-brands fa-facebook text-blue-600 mr-1"></i> Link Facebook:</label>
+                            <input type="url" id="set_link_fb" class="w-full border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1"><i class="fa-brands fa-youtube text-red-600 mr-1"></i> Link YouTube:</label>
+                            <input type="url" id="set_link_yt" class="w-full border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1"><i class="fa-brands fa-tiktok mr-1"></i> Link TikTok:</label>
+                            <input type="url" id="set_link_tt" class="w-full border p-2 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1"><span class="text-blue-500 font-black mr-1">Zalo</span> Link Zalo:</label>
+                            <input type="url" id="set_link_zalo" class="w-full border p-2 rounded-lg">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-bold mb-1"><i class="fa-brands fa-facebook-messenger text-blue-500 mr-1"></i> Link Messenger:</label>
+                            <input type="url" id="set_link_mes" class="w-full border p-2 rounded-lg">
+                        </div>
                     </div>
-                    <div>
-                        <label class="prep-label">Bạn là</label>
-                        <select id="f_type" class="prep-input appearance-none bg-white text-gray-700"><option value="Học sinh">Học sinh/Sinh viên</option><option value="Người đi làm">Người đi làm</option></select>
+                </div>
+
+                <!-- Mục 3: Cấu hình Email phản hồi tự động cho học viên & CC -->
+                <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-4">
+                    <h3 class="font-bold text-base text-brand uppercase"><i class="fa fa-paper-plane mr-1"></i> 3. Cấu hình gửi Email phản hồi học viên & CC</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block font-bold mb-1">Danh sách Email nhận CC (Cách nhau bằng dấu phẩy nếu có nhiều email):</label>
+                            <input type="text" id="set_email_cc" placeholder="eeceducationeec@gmail.com, quanly@gmail.com" class="w-full border p-2.5 rounded-lg bg-white">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block font-bold mb-1">Tên thương hiệu gửi mail:</label>
+                                <input type="text" id="set_email_sender_name" placeholder="EEC Education" class="w-full border p-2.5 rounded-lg bg-white">
+                            </div>
+                            <div>
+                                <label class="block font-bold mb-1">Tiêu đề Email phản hồi:</label>
+                                <input type="text" id="set_email_subject" placeholder="Xác nhận đăng ký tư vấn khóa học" class="w-full border p-2.5 rounded-lg bg-white">
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <label class="prep-label">Khóa học bạn quan tâm (*)</label>
-                        <select id="f_course" required class="prep-input appearance-none bg-white text-gray-700"><option value="Giao tiếp">Tiếng Anh Giao Tiếp</option><option value="TOEIC">Luyện thi TOEIC</option></select>
-                    </div>
-                    <div><label class="prep-label">Nội dung</label><textarea id="f_msg" rows="3" class="prep-input resize-none"></textarea></div>
-                    <div class="flex justify-end mt-6">
-                        <button type="submit" id="submitConsultBtn" class="bg-white text-blue-600 font-bold px-8 py-3 rounded-full hover:bg-gray-100 transition shadow-md flex items-center gap-2">Gửi câu hỏi <i class="fa fa-arrow-right"></i></button>
-                    </div>
-                </form>
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" onclick="document.getElementById('settingsModal').classList.add('hidden')" class="px-5 py-2.5 border rounded-lg font-bold text-gray-600">Đóng</button>
+                <button type="button" onclick="applyAndSaveSettings()" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-green-700 shadow-lg">
+                    <i class="fa fa-check mr-1"></i> Áp dụng & Lưu ngay
+                </button>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- JS Logic -->
+    <!-- MODAL 6: CÔNG CỤ CẮT ẢNH -->
+    <div id="cropperModal" class="hidden fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
+            <div class="p-4 bg-gray-900 text-white flex justify-between items-center">
+                <div>
+                    <h3 id="cropModalTitle" class="font-bold text-lg text-yellow-400">Cắt & Tải Ảnh Chuẩn Tỷ Lệ Web</h3>
+                    <p id="cropModalSpec" class="text-xs text-gray-300 mt-0.5">Kích thước chuẩn: 800 x 500 px</p>
+                </div>
+                <button type="button" onclick="closeCropperModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fa fa-times"></i></button>
+            </div>
+
+            <div class="p-4 bg-gray-100 border-b flex flex-wrap items-center justify-between gap-3">
+                <input type="file" id="cropFileInput" accept="image/*" class="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                <div class="flex gap-2">
+                    <button type="button" onclick="if(cropper) cropper.zoom(0.1)" class="bg-white border px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-magnifying-glass-plus"></i></button>
+                    <button type="button" onclick="if(cropper) cropper.zoom(-0.1)" class="bg-white border px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-magnifying-glass-minus"></i></button>
+                    <button type="button" onclick="if(cropper) cropper.rotate(90)" class="bg-white border px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-rotate-right"></i></button>
+                </div>
+            </div>
+
+            <div id="cropBoxWrapper" class="p-4 flex-1 overflow-hidden bg-gray-800 flex items-center justify-center min-h-[320px] max-h-[55vh]">
+                <img id="cropImagePreview" src="" class="max-w-full max-h-[50vh] hidden">
+                <div id="cropEmptyNotice" class="text-gray-400 text-sm text-center">
+                    <i class="fa fa-cloud-arrow-up text-4xl mb-2 block text-yellow-400"></i>
+                    Vui lòng bấm <b>"Chọn tệp"</b> ở góc trên để tải ảnh từ máy tính và căn chỉnh khung cắt.
+                </div>
+            </div>
+
+            <div class="p-4 bg-white border-t flex justify-end gap-3">
+                <button type="button" onclick="closeCropperModal()" class="px-5 py-2.5 border rounded-lg font-bold text-gray-600">Hủy</button>
+                <button type="button" id="confirmCropUploadBtn" onclick="executeCropAndUpload()" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-green-700 shadow-lg flex items-center gap-2">
+                    <i class="fa fa-crop"></i> Cắt ảnh & Tải lên Google Drive
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thư viện Swiper & Cropper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+    <!-- LOGIC XỬ LÝ CHÍNH -->
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9cysuEl0HwZO9IEKnk4iKkA6A27-8gEse51CI-5zCHENrSMWnBFm__fUAL3tcuYu6Cg/exec"; 
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyKAtRQxOfqLcNTjlgBJNbwTLlpOsxxz_sjQkjXysrgUz7HcAhHcCdp4CLMjAV_0_uPcA/exec";
+        
         let currentConfig = {};
+        let menuArray = [];
+        let bannersArray = [];
+        let eventsArray = [];
+        let reasonsArray = [];
+        let coursesArray = [];
+        let teachersArray = [];
+        let achievementsArray = [];
+        let testimonialsArray = [];
+        let studentVideosArray = [];
+        let newsArray = [];
+        let communityArray = [];
 
+        let bannerSwiperInstance = null;
+        let eventSwiperInstance = null;
+
+        let cropper = null;
+        let cropJob = { type: null, key: null, aspectRatio: 1, width: 600, height: 600, isCircle: false };
+        let activeReasonIconIndex = null;
+
+        const FONT_AWESOME_ICONS = [
+            "fa-solid fa-flag", "fa-solid fa-file-lines", "fa-solid fa-users", "fa-solid fa-award",
+            "fa-solid fa-graduation-cap", "fa-solid fa-book-open", "fa-solid fa-chalkboard-user", "fa-solid fa-headset",
+            "fa-solid fa-lightbulb", "fa-solid fa-medal", "fa-solid fa-trophy", "fa-solid fa-star",
+            "fa-solid fa-earth-americas", "fa-solid fa-comments", "fa-solid fa-microphone", "fa-solid fa-video",
+            "fa-solid fa-laptop-code", "fa-solid fa-rocket", "fa-solid fa-shield-halved", "fa-solid fa-heart",
+            "fa-solid fa-thumbs-up", "fa-solid fa-circle-check", "fa-solid fa-clock", "fa-solid fa-calendar-check",
+            "fa-solid fa-user-graduate", "fa-solid fa-user-tie", "fa-solid fa-child-reaching", "fa-solid fa-people-group",
+            "fa-solid fa-brain", "fa-solid fa-spell-check", "fa-solid fa-language", "fa-solid fa-pen-fancy",
+            "fa-solid fa-compass", "fa-solid fa-gem", "fa-solid fa-crown", "fa-solid fa-bolt",
+            "fa-solid fa-chart-line", "fa-solid fa-briefcase", "fa-solid fa-building-columns", "fa-solid fa-certificate"
+        ];
+
+        function formatDoc(cmd, value = null) {
+            document.execCommand(cmd, false, value);
+        }
+
+        function extractYouTubeId(url) {
+            if (!url) return "";
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?|shorts)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+            const match = url.match(regExp);
+            return (match && match[1]) ? match[1] : "";
+        }
+
+        // 1. Tải cấu hình từ Google Sheets
         async function loadConfig() {
             try {
                 let res = await fetch(APPS_SCRIPT_URL);
-                if (!res.ok) throw new Error("API Fetch Error");
+                if (!res.ok) throw new Error("Network error");
                 currentConfig = await res.json();
-                applyConfig(currentConfig);
+                
+                try { menuArray = JSON.parse(currentConfig.menuData || "[]"); } catch(e) { menuArray = []; }
+                try { bannersArray = JSON.parse(currentConfig.bannersData || "[]"); } catch(e) { bannersArray = []; }
+                try { eventsArray = JSON.parse(currentConfig.eventsData || "[]"); } catch(e) { eventsArray = []; }
+                try { reasonsArray = JSON.parse(currentConfig.reasonsData || "[]"); } catch(e) { reasonsArray = []; }
+                try { coursesArray = JSON.parse(currentConfig.coursesData || "[]"); } catch(e) { coursesArray = []; }
+                try { teachersArray = JSON.parse(currentConfig.teachersData || "[]"); } catch(e) { teachersArray = []; }
+                try { achievementsArray = JSON.parse(currentConfig.achievementsData || "[]"); } catch(e) { achievementsArray = []; }
+                try { testimonialsArray = JSON.parse(currentConfig.testimonialsData || "[]"); } catch(e) { testimonialsArray = []; }
+                try { studentVideosArray = JSON.parse(currentConfig.studentVideosData || "[]"); } catch(e) { studentVideosArray = []; }
+                try { newsArray = JSON.parse(currentConfig.newsData || "[]"); } catch(e) { newsArray = []; }
+                try { communityArray = JSON.parse(currentConfig.communityData || "[]"); } catch(e) { communityArray = []; }
+
+                // Fallback dữ liệu mặc định
+                if (bannersArray.length === 0) {
+                    bannersArray = [{
+                        img: currentConfig.bannerImage || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80",
+                        link: "#tu-van",
+                        title: "ĐẠT IELTS SPEAKING 6.5 TRONG 6 THÁNG TỪ CON SỐ 0",
+                        subtitle: "ƯU ĐÃI HỌC PHÍ LÊN ĐẾN 40% - LỘ TRÌNH TINH GỌN 1 KÈM 1"
+                    }];
+                }
+                if (menuArray.length === 0) {
+                    menuArray = [
+                        { id: "m1", title: "Về EEC", type: "link", link: "#tai-sao", content: "", children: [] },
+                        { id: "m2", title: "Khóa học VIP", type: "link", link: "#khoa-hoc-vip", content: "", children: [] },
+                        { id: "m3", title: "Đội ngũ giáo viên", type: "link", link: "#giang-vien", content: "", children: [] },
+                        { id: "m4", title: "Thư viện", type: "link", link: "#tin-tuc", content: "", children: [] }
+                    ];
+                }
+                if (reasonsArray.length === 0) {
+                    reasonsArray = [
+                        { icon: "fa-solid fa-flag", color: "#0c389b", title: "Phương pháp dạy ĐỘC QUYỀN", desc: "Phương pháp học hiệu quả bao gồm Text-based, Task-based, Communicative Language Teaching." },
+                        { icon: "fa-solid fa-file-lines", color: "#eab308", title: "Tài liệu học ĐỘC QUYỀN", desc: "Hệ thống bài học và giáo trình độc quyền theo chuẩn lộ trình Cambridge." },
+                        { icon: "fa-solid fa-users", color: "#0c389b", title: "Giảng viên CHUYÊN NGHIỆP", desc: "Đội ngũ giảng viên giàu kinh nghiệm đồng hành cùng học viên." },
+                        { icon: "fa-solid fa-award", color: "#0c389b", title: "Chất lượng dịch vụ TẬN TÂM", desc: "Dịch vụ chăm sóc và hỗ trợ học viên 24/7." }
+                    ];
+                }
+                if (coursesArray.length === 0) {
+                    coursesArray = [
+                        {
+                            title: "TIẾNG ANH GIAO TIẾP CHO NGƯỜI ĐI LÀM",
+                            desc: "♦ <b>4 khoá</b> học trực tuyến, 1 giáo viên kèm 1 học viên với mục tiêu giúp học viên nắm vững các kiến thức cơ bản về từ vựng, ngữ pháp và 44 âm (theo bảng phiên âm quốc tế IPA). Sau khoá học, học viên có thể giao tiếp các chủ đề từ cơ bản đến nâng cao, từ cuộc sống hàng ngày (mua sắm, hỏi đường, nhà hàng, khách sạn,...) đến môi trường làm việc chuyên nghiệp (viết email, báo cáo, thuyết trình, đàm phán...).<br>♦ Đầu ra các khóa học tương đương các trình độ từ A1 đến B2 (theo khung tham chiếu CEFR)",
+                            detailDesc: "<ul><li><b>Lộ trình cá nhân hóa:</b> Thiết kế riêng theo ngành nghề.</li><li><b>Thực hành thực tế:</b> Giao tiếp, viết email, thuyết trình, đàm phán.</li></ul>",
+                            img: "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80"
+                        },
+                        {
+                            title: "TIẾNG ANH TRẺ EM ONLINE",
+                            desc: "♦ <b>4 khoá học trực tuyến, với hình thức lớp 1-1 hoặc 1-4.</b> Mỗi khoá học kéo dài trong 50 buổi, với các chủ điểm ngữ pháp, từ vựng quen thuộc, giúp bé có thể ứng dụng ngay trong cuộc sống hàng ngày.<br>♦ Bé sẽ được phát triển toàn diện 4 kĩ năng: nghe, nói, đọc, viết; đặc biệt là kĩ năng giao tiếp. Phương pháp dạy học đa dạng, khơi gợi sự tò mò, hứng thú tìm hiểu ngôn ngữ của bé và giúp bé không còn ngại ngùng khi nói trước người khác.",
+                            detailDesc: "<ul><li><b>Phương pháp phản xạ tự nhiên:</b> Học qua trò chơi, hình ảnh trực quan.</li></ul>",
+                            img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80"
+                        }
+                    ];
+                }
+                if (teachersArray.length === 0) {
+                    teachersArray = [
+                        { name: "CÔ LAN PHƯƠNG", role: "Giảng viên EEC", exp: "Hơn 10 năm kinh nghiệm giảng dạy", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&q=80" },
+                        { name: "CÔ MINH THUÝ", role: "Giảng viên EEC", exp: "Hơn 5 năm kinh nghiệm giảng dạy", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80" }
+                    ];
+                }
+                if (achievementsArray.length === 0) {
+                    achievementsArray = [
+                        { number: "99%", label: "Học viên hài lòng<br>với khóa học" },
+                        { number: "55000", label: "Học viên khắp Đông Nam Á" },
+                        { number: "35000", label: "Học viên đạt chứng chỉ IELTS" },
+                        { number: "#10", label: "Dành cho người học<br>tiếng Anh" }
+                    ];
+                }
+                if (testimonialsArray.length === 0) {
+                    testimonialsArray = [
+                        {
+                            prefix: "Học viên",
+                            name: "Ngọc Linh",
+                            img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80",
+                            content: "Mình đang theo học lớp cô Thảo, học siêu thích luôn, mình cực ấn tượng với giọng của cô, đỉnh lắm luôn ý. Cô dạy dễ hiểu lại nhiệt tình. Đợt dịch mình học onl ở trên trường, tuy nhiên không được tương tác như học ở đây, lần đầu mình học onl mà tương tác nhiều như này luôn í. Trước mình hay bị ngại ấy, nhưng ở đây em cảm thấy thoải mái với tự tin nói chuyện với giao tiếp bằng tiếng anh hơn nhiều luôn."
+                        },
+                        {
+                            prefix: "Học viên",
+                            name: "Quang Trung",
+                            img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80",
+                            content: "Em cảm ơn cô Từ Liêm rất nhiều. 20 buổi trôi qua nhanh thật. Nhờ cô truyền cảm hứng mà em từ người rụt rè chẳng bao giờ dám giao tiếp với ai bằng tiếng anh mà giờ em có thể tự tin nói chuyện với sếp người Sing như người bản địa rồi haha. Trước giờ em nói toàn bặp bẹ từng từ một, từ sau khi hoàn thành khóa học, em học được cách nhấn nhá từng từ, từng câu, ending sound rồi nối âm, luyến láy các kiểu."
+                        }
+                    ];
+                }
+                if (studentVideosArray.length === 0) {
+                    studentVideosArray = [
+                        { youtubeUrl: "https://youtu.be/XGm8vrJ7Kaw", thumb: "" },
+                        { youtubeUrl: "https://youtu.be/fmv92iJ9nYg", thumb: "" },
+                        { youtubeUrl: "https://youtu.be/zLWUOsj8PXc", thumb: "" }
+                    ];
+                }
+                if (newsArray.length === 0) {
+                    newsArray = [
+                        {
+                            category: "Blog",
+                            title: "CÁC MẪU CÂU HỎI PHỎNG VẤN TIẾNG ANH KINH ĐIỂN",
+                            desc: "Bạn đang có lịch hẹn phỏng vấn tiếng Anh ở các doanh nghiệp nước ngoài hoặc các công ty yêu cầu phỏng vấn bằng tiếng Anh...",
+                            img: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&q=80",
+                            link: "#tu-van"
+                        },
+                        {
+                            category: "Tiếng Anh cho trẻ em",
+                            title: "PHƯƠNG PHÁP HỌC TIẾNG ANH HIỆU QUẢ CHO TRẺ",
+                            desc: "Học tiếng Anh cho trẻ em hiện nay được các bậc phụ huynh chú trọng và quan tâm hàng đầu tuy nhiên không phải ai cũng...",
+                            img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=600&q=80",
+                            link: "#tu-van"
+                        },
+                        {
+                            category: "Tiếng Anh cho trẻ em",
+                            title: "BÍ QUYẾT ĐỂ TRẺ HỨNG THÚ HỌC TIẾNG ANH",
+                            desc: "Với xu hướng thời đại 4.0 ngày nay, tiếng Anh là ngôn ngữ được sử dụng như một phương tiện giao tiếp không thể thiếu...",
+                            img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80",
+                            link: "#tu-van"
+                        }
+                    ];
+                }
+                if (communityArray.length === 0) {
+                    communityArray = [
+                        {
+                            platform: "facebook",
+                            handle: "fb.com/EECeducation.vn",
+                            img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
+                            bullets: "<ul><li>Cách dùng của danh từ đếm được và danh từ không đếm được trong tiếng Anh</li><li>Tại sao ngữ điệu và nhịp điệu trong tiếng Anh lại quan trọng?</li></ul>",
+                            btnText: "Đăng ký theo dõi",
+                            link: "https://www.facebook.com/EECeducation.vn"
+                        },
+                        {
+                            platform: "tiktok",
+                            handle: "@giaotieptienganh.eec",
+                            img: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=600&q=80",
+                            bullets: "<ul><li>Những mẫu câu dùng để động viên, an ủi</li><li>Idioms chủ đề \"Âm nhạc\"</li><li>Các cặp từ dễ phát âm nhầm trong tiếng Anh</li></ul>",
+                            btnText: "Đăng ký theo dõi",
+                            link: "https://www.tiktok.com/@eeceducation.vn"
+                        },
+                        {
+                            platform: "youtube",
+                            handle: "youtube.com/@eecenglish",
+                            img: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600&q=80",
+                            bullets: "<ul><li>Luyện shadowing tiếng Anh</li><li>Học tiếng Anh qua phim và bài hát</li><li>Học từ vựng tiếng Anh qua các bài phát biểu nổi tiếng</li></ul>",
+                            btnText: "Đăng ký theo dõi",
+                            link: "https://www.youtube.com/@eecenglish"
+                        }
+                    ];
+                }
+
+                applyConfigToDOM();
+                renderNavigationMenu();
+                renderBannersSlider();
+                renderEventsSlider();
+                renderReasonsSection();
+                renderCoursesList();
+                renderTeachersSection();
+                renderAchievementsSection();
+                renderTestimonialsSection();
+                renderStudentVideosSection();
+                renderNewsSection();
+                renderCommunitySection();
+                checkAuth();
             } catch (e) { 
-                console.error("Lỗi khi tải cấu hình:", e); 
-                document.getElementById('dom_heroTitle').textContent = "Lỗi kết nối";
-                document.getElementById('dom_heroSubtitle').textContent = "Vui lòng kiểm tra lại URL Apps Script.";
+                console.error("Lỗi tải cấu hình:", e); 
             }
         }
 
-        function applyConfig(config) {
-            document.documentElement.style.setProperty('--primary-color', config.primaryColor);
+        // 2. Áp dụng cấu hình chung lên DOM
+        function applyConfigToDOM() {
+            const color = currentConfig.primaryColor || "#0c389b";
+            document.documentElement.style.setProperty('--primary-color', color);
+            document.getElementById('set_primaryColor').value = color;
+            document.getElementById('set_primaryColorHex').value = color;
             
-            document.getElementById('dom_siteTitle').textContent = config.siteTitle || "EEC Education";
-            if(config.favicon) document.getElementById('dynamic-favicon').href = config.favicon;
+            document.getElementById('dom_siteTitle').textContent = currentConfig.siteTitle || "STUDYBEEENGLISH";
+            document.getElementById('set_siteTitle').value = currentConfig.siteTitle || "STUDYBEEENGLISH";
+            
+            if (currentConfig.favicon) document.getElementById('dynamic-favicon').href = currentConfig.favicon;
 
-            if(config.bannerImage) document.getElementById('dom_bannerImage').src = config.bannerImage;
-            document.getElementById('dom_heroTitle').textContent = config.heroTitle;
-            document.getElementById('dom_heroSubtitle').textContent = config.heroSubtitle;
-            
-            if(config.course1Img) document.getElementById('dom_course1Img').src = config.course1Img;
-            document.getElementById('dom_course1Title').textContent = config.course1Title;
-            document.getElementById('dom_course1Desc').textContent = config.course1Desc;
-            
-            if(config.course2Img) document.getElementById('dom_course2Img').src = config.course2Img;
-            document.getElementById('dom_course2Title').textContent = config.course2Title;
-            document.getElementById('dom_course2Desc').textContent = config.course2Desc;
-            
-            document.getElementById('dom_formTitle').textContent = config.formTitle;
-            document.getElementById('dom_formSubtitle').textContent = config.formSubtitle;
+            // Hiển thị Logo ở Header & Footer
+            const logoImg = document.getElementById('dom_logo');
+            const logoFallback = document.getElementById('dom_logo_fallback');
+            const footerLogoImg = document.getElementById('dom_footer_logo');
+            const footerLogoFallback = document.getElementById('dom_footer_logo_fallback');
 
-            document.getElementById('edit_primaryColor').value = config.primaryColor;
-            document.getElementById('edit_siteTitle').value = config.siteTitle || "";
-            document.getElementById('edit_heroTitle').value = config.heroTitle;
-            document.getElementById('edit_heroSubtitle').value = config.heroSubtitle;
-            document.getElementById('edit_course1Title').value = config.course1Title;
-            document.getElementById('edit_course1Desc').value = config.course1Desc;
-            document.getElementById('edit_course2Title').value = config.course2Title;
-            document.getElementById('edit_course2Desc').value = config.course2Desc;
-            document.getElementById('edit_formTitle').value = config.formTitle;
-            document.getElementById('edit_formSubtitle').value = config.formSubtitle;
+            if (currentConfig.logo && currentConfig.logo.trim() !== "") {
+                logoImg.src = currentConfig.logo;
+                logoImg.classList.remove('hidden');
+                logoFallback.classList.add('hidden');
+                if (footerLogoImg) {
+                    footerLogoImg.src = currentConfig.logo;
+                    footerLogoImg.classList.remove('hidden');
+                    footerLogoFallback.classList.add('hidden');
+                }
+            } else {
+                logoImg.classList.add('hidden');
+                logoFallback.classList.remove('hidden');
+                if (footerLogoImg) {
+                    footerLogoImg.classList.add('hidden');
+                    footerLogoFallback.classList.remove('hidden');
+                }
+            }
+
+            // Đổ chữ cho các thẻ [data-key]
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (currentConfig[key]) el.innerHTML = currentConfig[key];
+                el.oninput = () => { currentConfig[key] = el.innerHTML; };
+            });
+
+            // Liên kết MXH & Cấu hình Email CC
+            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject'];
+            settingKeys.forEach(k => {
+                const inputEl = document.getElementById('set_' + k);
+                if (inputEl && currentConfig[k] !== undefined) inputEl.value = currentConfig[k];
+            });
+
+            if (currentConfig.link_phone) {
+                document.getElementById('dom_link_phone').textContent = currentConfig.link_phone;
+                const fPhone = document.getElementById('dom_footer_phone_link');
+                if (fPhone) fPhone.textContent = currentConfig.link_phone;
+            }
+            if (currentConfig.link_email) {
+                document.getElementById('dom_link_email').textContent = currentConfig.link_email;
+                const fEmail = document.getElementById('dom_footer_email_link');
+                if (fEmail) fEmail.textContent = currentConfig.link_email;
+            }
+
+            document.querySelectorAll('.admin-link').forEach(el => {
+                const key = el.getAttribute('data-link-key');
+                if (key && currentConfig[key]) {
+                    if (key === 'link_phone') el.href = "tel:" + currentConfig[key].replace(/\s+/g, '');
+                    else if (key === 'link_email') el.href = "mailto:" + currentConfig[key].trim();
+                    else el.href = currentConfig[key];
+                }
+            });
         }
 
+        // 3. Render Menu Động & Trang Con
+        function renderNavigationMenu() {
+            const container = document.getElementById('dynamicNavContainer');
+            container.innerHTML = '';
+
+            menuArray.forEach((item, idx) => {
+                const hasChildren = item.children && item.children.length > 0;
+                let childrenHtml = '';
+                if (hasChildren) {
+                    childrenHtml = `
+                        <div class="absolute left-0 top-full pt-2 hidden group-hover:block z-50 min-w-[220px]">
+                            <div class="bg-white rounded-xl shadow-xl border border-gray-100 py-2">
+                                ${item.children.map((child, cIdx) => `
+                                    <a href="${child.type === 'link' ? (child.link || '#') : '#'}" 
+                                       onclick="handleMenuClick(event, ${idx}, ${cIdx})"
+                                       class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-brand font-medium">
+                                        ${child.title}
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="relative group py-2">
+                        <a href="${item.type === 'link' ? (item.link || '#') : '#'}" 
+                           onclick="handleMenuClick(event, ${idx}, null)"
+                           class="hover:text-brand flex items-center gap-1">
+                            <span>${item.title}</span>
+                            ${hasChildren ? '<i class="fa fa-chevron-down text-[10px]"></i>' : ''}
+                        </a>
+                        ${childrenHtml}
+                    </div>
+                `);
+            });
+        }
+
+        function handleMenuClick(e, parentIdx, childIdx) {
+            const target = childIdx !== null ? menuArray[parentIdx].children[childIdx] : menuArray[parentIdx];
+            if (target.type === 'page') {
+                e.preventDefault();
+                openSubPageView(parentIdx, childIdx);
+            } else {
+                showHomePage();
+            }
+        }
+
+        function openSubPageView(parentIdx, childIdx) {
+            const target = childIdx !== null ? menuArray[parentIdx].children[childIdx] : menuArray[parentIdx];
+            document.getElementById('homePageView').classList.add('hidden');
+            const subView = document.getElementById('subPageView');
+            const contentArea = document.getElementById('subPageContentArea');
+            subView.classList.remove('hidden');
+            contentArea.innerHTML = target.content || `<h2>${target.title}</h2><p>Nhập nội dung cho trang này...</p>`;
+            
+            if (localStorage.getItem('role') === 'admin') {
+                contentArea.contentEditable = "true";
+                contentArea.classList.add('editable', 'is-admin');
+                contentArea.oninput = () => {
+                    target.content = contentArea.innerHTML;
+                };
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function showHomePage() {
+            document.getElementById('subPageView').classList.add('hidden');
+            document.getElementById('homePageView').classList.remove('hidden');
+        }
+
+        function openMenuManagerModal() {
+            renderMenuManagerList();
+            document.getElementById('menuManagerModal').classList.remove('hidden');
+        }
+
+        function renderMenuManagerList() {
+            const list = document.getElementById('menuManagerList');
+            list.innerHTML = '';
+
+            menuArray.forEach((item, idx) => {
+                const childrenHtml = (item.children || []).map((child, cIdx) => `
+                    <div class="flex flex-wrap items-center gap-2 pl-6 pt-2 border-t border-dashed border-gray-200">
+                        <span class="text-xs font-bold text-purple-600">↳ Trang con:</span>
+                        <input type="text" value="${child.title}" oninput="menuArray[${idx}].children[${cIdx}].title = this.value" placeholder="Tên trang con" class="border p-1.5 rounded flex-1">
+                        <select onchange="menuArray[${idx}].children[${cIdx}].type = this.value; renderMenuManagerList();" class="border p-1.5 rounded text-xs">
+                            <option value="page" ${child.type === 'page' ? 'selected' : ''}>Trang con tự soạn</option>
+                            <option value="link" ${child.type === 'link' ? 'selected' : ''}>Link chuyển hướng</option>
+                        </select>
+                        ${child.type === 'link' ? `
+                            <input type="text" value="${child.link || ''}" oninput="menuArray[${idx}].children[${cIdx}].link = this.value" placeholder="URL hoặc #id" class="border p-1.5 rounded w-40 text-xs">
+                        ` : `
+                            <button type="button" onclick="document.getElementById('menuManagerModal').classList.add('hidden'); openSubPageView(${idx}, ${cIdx});" class="bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded text-xs font-bold hover:bg-blue-200">Soạn nội dung</button>
+                        `}
+                        <button type="button" onclick="menuArray[${idx}].children.splice(${cIdx}, 1); renderMenuManagerList();" class="text-red-600 px-2 py-1 hover:bg-red-50 rounded"><i class="fa fa-trash"></i></button>
+                    </div>
+                `).join('');
+
+                list.insertAdjacentHTML('beforeend', `
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="font-bold text-brand">#${idx + 1}</span>
+                            <input type="text" value="${item.title}" oninput="menuArray[${idx}].title = this.value" placeholder="Tên mục lục" class="border p-2 rounded-lg font-bold flex-1">
+                            <select onchange="menuArray[${idx}].type = this.value; renderMenuManagerList();" class="border p-2 rounded-lg text-xs font-bold">
+                                <option value="link" ${item.type === 'link' ? 'selected' : ''}>Link / Mục trên trang</option>
+                                <option value="page" ${item.type === 'page' ? 'selected' : ''}>Mở Trang riêng</option>
+                            </select>
+                            ${item.type === 'link' ? `
+                                <input type="text" value="${item.link || ''}" oninput="menuArray[${idx}].link = this.value" placeholder="#khoa-hoc-vip hoặc https://..." class="border p-2 rounded-lg w-48 text-xs">
+                            ` : `
+                                <button type="button" onclick="document.getElementById('menuManagerModal').classList.add('hidden'); openSubPageView(${idx}, null);" class="bg-blue-600 text-white px-3 py-2 rounded-lg text-xs font-bold">Soạn trang</button>
+                            `}
+                            <button type="button" onclick="addSubMenu(${idx})" class="bg-purple-100 text-purple-700 font-bold px-3 py-2 rounded-lg text-xs hover:bg-purple-200">+ Thêm trang con</button>
+                            <button type="button" onclick="menuArray.splice(${idx}, 1); renderMenuManagerList();" class="bg-red-100 text-red-600 px-3 py-2 rounded-lg text-xs font-bold hover:bg-red-200"><i class="fa fa-trash"></i></button>
+                        </div>
+                        ${childrenHtml}
+                    </div>
+                `);
+            });
+        }
+
+        function addMainMenu() {
+            menuArray.push({ id: 'm_' + Date.now(), title: "Mục mới", type: "link", link: "#tu-van", content: "", children: [] });
+            renderMenuManagerList();
+        }
+
+        function addSubMenu(parentIdx) {
+            if (!menuArray[parentIdx].children) menuArray[parentIdx].children = [];
+            menuArray[parentIdx].children.push({
+                id: 'c_' + Date.now(),
+                title: "Trang con mới",
+                type: "page",
+                link: "",
+                content: "<h2>Tiêu đề trang con mới</h2><p>Bấm vào đây để chỉnh sửa trực tiếp nội dung của trang con...</p>"
+            });
+            renderMenuManagerList();
+        }
+
+        async function saveMenuAndClose() {
+            renderNavigationMenu();
+            document.getElementById('menuManagerModal').classList.add('hidden');
+            await saveAllToGoogleSheet();
+        }
+
+        // 4. Render Slideshow Banner Tràn Khung 100%
+        function renderBannersSlider() {
+            if (bannerSwiperInstance) {
+                bannerSwiperInstance.destroy(true, true);
+                bannerSwiperInstance = null;
+            }
+
+            const container = document.getElementById('bannerSliderContainer');
+            container.innerHTML = '';
+
+            bannersArray.forEach((bn, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="swiper-slide w-full relative">
+                        <div class="w-full relative aspect-[16/7] md:aspect-[16/6] max-h-[680px] overflow-hidden bg-gray-900">
+                            <img src="${bn.img}" class="w-full h-full object-cover" alt="Banner">
+                            <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent flex items-center">
+                                <div class="max-w-7xl mx-auto px-6 md:px-12 w-full text-white">
+                                    <h2 oninput="bannersArray[${idx}].title = this.innerHTML" class="editable text-2xl sm:text-4xl md:text-5xl font-black uppercase max-w-3xl leading-tight mb-3 drop-shadow-lg">${bn.title || ''}</h2>
+                                    <p oninput="bannersArray[${idx}].subtitle = this.innerHTML" class="editable text-sm sm:text-lg md:text-xl text-yellow-300 font-bold max-w-2xl mb-6 drop-shadow">${bn.subtitle || ''}</p>
+                                    <a href="${bn.link || '#tu-van'}" class="inline-block bg-yellow-400 text-brand font-black px-7 py-3 rounded-full text-sm md:text-base shadow-xl hover:bg-yellow-500 transition">
+                                        KHÁM PHÁ NGAY <i class="fa fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="admin-only hidden absolute bottom-4 right-4 bg-gray-900/90 text-white p-2.5 rounded-xl flex flex-wrap gap-2 items-center z-20 text-xs shadow-2xl border border-gray-700">
+                                <span class="text-yellow-400 font-bold">Banner #${idx + 1} (1920x680px):</span>
+                                <button type="button" onclick="openCropperModal('banner', ${idx}, 16/6, 1600, 600, 'Ảnh Banner #${idx+1} (Chuẩn: 1600x600px - Tỷ lệ 16:6)', false)" class="bg-yellow-400 text-black font-bold px-2.5 py-1 rounded hover:bg-yellow-500">
+                                    <i class="fa fa-crop"></i> Đổi ảnh
+                                </button>
+                                <button type="button" onclick="editBannerLink(${idx})" class="bg-blue-600 text-white font-bold px-2.5 py-1 rounded hover:bg-blue-700">
+                                    <i class="fa fa-link"></i> Đổi Link
+                                </button>
+                                ${bannersArray.length > 1 ? `
+                                    <button type="button" onclick="deleteBannerSlide(${idx})" class="bg-red-600 text-white font-bold px-2.5 py-1 rounded hover:bg-red-700">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            bannerSwiperInstance = new Swiper('.bannerSwiper', {
+                slidesPerView: 1,
+                loop: bannersArray.length > 1,
+                autoplay: { delay: 5000, disableOnInteraction: false },
+                navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+                pagination: { el: '.banner-pagination', clickable: true }
+            });
+        }
+
+        function addNewBannerSlide() {
+            bannersArray.push({
+                img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80",
+                link: "#tu-van",
+                title: "TIÊU ĐỀ BANNER MỚI",
+                subtitle: "Bấm trực tiếp vào chữ để sửa nội dung hoặc bấm Đổi ảnh ở góc phải"
+            });
+            renderBannersSlider();
+            checkAuth();
+        }
+
+        function editBannerLink(idx) {
+            const url = prompt("Nhập đường dẫn khi bấm nút trên Banner này:", bannersArray[idx].link || "#tu-van");
+            if (url !== null) {
+                bannersArray[idx].link = url.trim();
+                renderBannersSlider();
+                checkAuth();
+            }
+        }
+
+        function deleteBannerSlide(idx) {
+            if (confirm("Xóa Banner này?")) {
+                bannersArray.splice(idx, 1);
+                renderBannersSlider();
+                checkAuth();
+            }
+        }
+
+        // 5. Render Slide Sự kiện nổi bật
+        function renderEventsSlider() {
+            if (eventSwiperInstance) {
+                eventSwiperInstance.destroy(true, true);
+                eventSwiperInstance = null;
+            }
+
+            const container = document.getElementById('eventSliderContainer');
+            container.innerHTML = '';
+
+            eventsArray.forEach((ev, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="swiper-slide">
+                        <div class="bg-gray-50 rounded-xl overflow-hidden shadow border border-gray-200 relative group">
+                            <a href="${ev.link || '#'}" target="_blank" onclick="return handleEventClick(event, ${idx})" class="block w-full aspect-square overflow-hidden relative">
+                                <img src="${ev.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="Event">
+                            </a>
+                            <div class="admin-only hidden bg-gray-900/90 p-2 flex flex-col gap-1.5 text-xs text-white">
+                                <div class="text-[10px] text-yellow-300 text-center">Chuẩn ảnh: 600x600px (1:1)</div>
+                                <div class="flex gap-1 justify-between">
+                                    <button type="button" onclick="openCropperModal('event', ${idx}, 1, 600, 600, 'Ảnh Sự Kiện #${idx+1} (Chuẩn: 600x600px - Tỷ lệ 1:1)', false)" class="bg-yellow-400 text-black font-bold px-2 py-1 rounded flex-1 hover:bg-yellow-500">
+                                        <i class="fa fa-crop"></i> Đổi ảnh
+                                    </button>
+                                    <button type="button" onclick="editEventLink(${idx})" class="bg-blue-600 text-white font-bold px-2 py-1 rounded flex-1 hover:bg-blue-700">
+                                        <i class="fa fa-link"></i> Link
+                                    </button>
+                                    <button type="button" onclick="deleteEventSlide(${idx})" class="bg-red-600 text-white font-bold px-2 py-1 rounded hover:bg-red-700">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            eventSwiperInstance = new Swiper('.eventSwiper', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                loop: eventsArray.length > 3,
+                autoplay: { delay: 5000, disableOnInteraction: false },
+                pagination: { el: '.event-pagination', clickable: true },
+                breakpoints: { 640: { slidesPerView: 2 }, 1024: { slidesPerView: 4 } }
+            });
+        }
+
+        function handleEventClick(e, idx) {
+            if (localStorage.getItem('role') === 'admin') {
+                e.preventDefault();
+                editEventLink(idx);
+                return false;
+            }
+            return true;
+        }
+
+        function editEventLink(idx) {
+            const newUrl = prompt("Nhập đường dẫn (URL) khi bấm vào sự kiện này:", eventsArray[idx].link || "https://");
+            if (newUrl !== null && newUrl.trim() !== "") {
+                eventsArray[idx].link = newUrl.trim();
+                renderEventsSlider();
+                checkAuth();
+            }
+        }
+
+        function addEventSlide() {
+            eventsArray.push({
+                img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
+                link: "#tu-van",
+                title: "Sự kiện mới"
+            });
+            renderEventsSlider();
+            checkAuth();
+        }
+
+        function deleteEventSlide(idx) {
+            if (confirm("Xóa sự kiện này?")) {
+                eventsArray.splice(idx, 1);
+                renderEventsSlider();
+                checkAuth();
+            }
+        }
+
+        // 6. Render TẠI SAO CHỌN ANH NGỮ STUDYBEEENGLISH
+        function renderReasonsSection() {
+            const container = document.getElementById('reasonsContainer');
+            container.innerHTML = '';
+
+            reasonsArray.forEach((item, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="p-5 rounded-xl hover:bg-gray-50 transition relative group">
+                        <div onclick="handleIconClick(${idx})" class="text-5xl mb-4 inline-block cursor-pointer relative" style="color: ${item.color || '#0c389b'}" title="Bấm để đổi Icon (Dành cho Admin)">
+                            <i class="${item.icon}"></i>
+                            <span class="admin-only hidden absolute -top-2 -right-6 bg-yellow-400 text-black text-[10px] font-bold px-1.5 py-0.5 rounded shadow">Đổi Icon</span>
+                        </div>
+                        <h3 oninput="reasonsArray[${idx}].title = this.innerHTML" class="editable text-lg font-bold mb-3 text-brand">${item.title}</h3>
+                        <div oninput="reasonsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm leading-relaxed">${item.desc}</div>
+                    </div>
+                `);
+            });
+        }
+
+        function handleIconClick(idx) {
+            if (localStorage.getItem('role') !== 'admin') return;
+            activeReasonIconIndex = idx;
+            document.getElementById('iconColorPicker').value = reasonsArray[idx].color || "#0c389b";
+            filterIcons('');
+            document.getElementById('iconPickerModal').classList.remove('hidden');
+        }
+
+        function filterIcons(keyword) {
+            const grid = document.getElementById('iconGridContainer');
+            grid.innerHTML = '';
+            const kw = keyword.toLowerCase().trim();
+            FONT_AWESOME_ICONS.filter(ic => ic.toLowerCase().includes(kw)).forEach(ic => {
+                grid.insertAdjacentHTML('beforeend', `
+                    <button type="button" onclick="selectReasonIcon('${ic}')" class="p-3 border rounded-xl hover:bg-blue-50 hover:border-brand flex flex-col items-center justify-center gap-1 transition">
+                        <i class="${ic} text-brand"></i>
+                    </button>
+                `);
+            });
+        }
+
+        function selectReasonIcon(iconClass) {
+            if (activeReasonIconIndex === null) return;
+            reasonsArray[activeReasonIconIndex].icon = iconClass;
+            reasonsArray[activeReasonIconIndex].color = document.getElementById('iconColorPicker').value;
+            document.getElementById('iconPickerModal').classList.add('hidden');
+            renderReasonsSection();
+            checkAuth();
+        }
+
+        // 7. Render KHÓA HỌC TIẾNG ANH ONLINE VIP
+        function renderCoursesList() {
+            const container = document.getElementById('coursesContainer');
+            container.innerHTML = '';
+
+            coursesArray.forEach((course, idx) => {
+                const reverseClass = idx % 2 !== 0 ? 'md:flex-row-reverse' : 'md:flex-row';
+                const detailText = course.detailDesc || "<p>Nhập nội dung chi tiết khóa học tại đây...</p>";
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex flex-col ${reverseClass} gap-8 lg:gap-12 items-center relative" data-course-index="${idx}">
+                        <button type="button" onclick="deleteCourse(${idx})" class="admin-only hidden absolute -top-4 right-0 bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg z-20 hover:bg-red-700">
+                            <i class="fa fa-trash mr-1"></i> Xóa khóa học
+                        </button>
+
+                        <div class="w-full md:w-1/2 relative">
+                            <div class="relative rounded-2xl overflow-hidden border-2 border-gray-800 shadow-lg bg-white aspect-[16/10]">
+                                <img src="${course.img}" class="w-full h-full object-cover" alt="Course">
+                                
+                                <div class="absolute -bottom-2 -left-2 pointer-events-none flex flex-col gap-1.5 z-10">
+                                    <div class="w-14 h-5 bg-brand border-b-4 border-r-4 border-yellow-400 rounded-r-full transform rotate-45 -translate-x-3"></div>
+                                    <div class="w-16 h-5 bg-brand border-b-4 border-r-4 border-yellow-400 rounded-r-full transform rotate-45 -translate-x-1"></div>
+                                </div>
+
+                                <div class="admin-only hidden absolute top-3 left-3 bg-gray-900/90 text-white p-2 rounded-lg text-center z-20">
+                                    <div class="text-[10px] text-yellow-300 mb-1">Chuẩn: 800x500px (16:10)</div>
+                                    <button type="button" onclick="openCropperModal('course', ${idx}, 16/10, 800, 500, 'Ảnh Khóa Học #${idx+1} (Chuẩn: 800x500px - Tỷ lệ 16:10)', false)" class="bg-yellow-400 text-black font-bold px-3 py-1 rounded text-xs hover:bg-yellow-500">
+                                        <i class="fa fa-crop mr-1"></i> Cắt & Đổi ảnh
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-full md:w-1/2 flex flex-col justify-center">
+                            <div class="mb-6 pt-2">
+                                <div class="motto-badge px-6 py-3 rounded">
+                                    <span class="motto-pin left-3"></span>
+                                    <span class="motto-pin right-3"></span>
+                                    <h3 oninput="coursesArray[${idx}].title = this.innerHTML; syncCourseDropdown();" class="editable font-black text-base md:text-lg uppercase tracking-wide text-yellow-400">${course.title}</h3>
+                                </div>
+                            </div>
+
+                            <div oninput="coursesArray[${idx}].desc = this.innerHTML" class="editable rich-content text-gray-800 mb-6 text-justify leading-relaxed text-[15px] md:text-base">${course.desc}</div>
+                            
+                            <div class="flex flex-wrap items-center gap-4">
+                                <button type="button" onclick="toggleCourseDetail(${idx})" id="btnToggleDetail_${idx}" class="border border-brand text-brand bg-white font-bold py-2.5 px-8 rounded-full hover:bg-brand hover:text-white transition text-sm shadow-sm">
+                                    Xem chi tiết
+                                </button>
+                            </div>
+
+                            <div id="courseDetailBox_${idx}" class="hidden mt-5 pt-4 border-t border-dashed border-gray-300">
+                                <div class="admin-only hidden text-xs text-purple-700 font-bold mb-1">
+                                    <i class="fa fa-pen"></i> Nội dung chi tiết (Học viên bấm "Xem chi tiết" sẽ hiển thị phần này):
+                                </div>
+                                <div oninput="coursesArray[${idx}].detailDesc = this.innerHTML" class="editable rich-content bg-white p-5 rounded-xl border border-blue-200 text-gray-700 text-sm leading-relaxed shadow-sm">${detailText}</div>
+                                <div class="mt-3">
+                                    <a href="#tu-van" onclick="selectCourseInForm(${idx})" class="inline-block bg-yellow-400 text-brand font-extrabold py-2 px-6 rounded-full hover:bg-yellow-500 transition text-xs shadow">
+                                        Đăng ký tư vấn lộ trình này <i class="fa fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            syncCourseDropdown();
+        }
+
+        function syncCourseDropdown() {
+            const selectEl = document.getElementById('f_course');
+            if (!selectEl) return;
+            selectEl.innerHTML = '';
+            coursesArray.forEach((c) => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = c.title;
+                const cleanTitle = (tempDiv.textContent || tempDiv.innerText || "").trim();
+                if (cleanTitle) {
+                    const opt = document.createElement('option');
+                    opt.value = cleanTitle;
+                    opt.textContent = cleanTitle;
+                    selectEl.appendChild(opt);
+                }
+            });
+        }
+
+        function selectCourseInForm(idx) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = coursesArray[idx].title;
+            const cleanTitle = (tempDiv.textContent || tempDiv.innerText || "").trim();
+            const selectEl = document.getElementById('f_course');
+            if (selectEl && cleanTitle) selectEl.value = cleanTitle;
+        }
+
+        function toggleCourseDetail(idx) {
+            const box = document.getElementById(`courseDetailBox_${idx}`);
+            const btn = document.getElementById(`btnToggleDetail_${idx}`);
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btn.textContent = "Thu gọn chi tiết";
+            } else {
+                box.classList.add('hidden');
+                btn.textContent = "Xem chi tiết";
+            }
+        }
+
+        function addNewCourse() {
+            coursesArray.push({
+                title: "KHÓA HỌC TIẾNG ANH VIP MỚI",
+                desc: "♦ <b>Mô tả khóa học:</b> Nhập thông tin giới thiệu khóa học tại đây.<br>♦ Đầu ra cam kết theo chuẩn quốc tế.",
+                detailDesc: "<ul><li><b>Lộ trình đào tạo:</b> Chi tiết các buổi học.</li></ul>",
+                img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80"
+            });
+            renderCoursesList();
+            checkAuth();
+        }
+
+        function deleteCourse(idx) {
+            if (confirm("Xóa khóa học này?")) {
+                coursesArray.splice(idx, 1);
+                renderCoursesList();
+                checkAuth();
+            }
+        }
+
+        // 8. Render GIẢNG VIÊN TÀI NĂNG – TÂM HUYẾT
+        function renderTeachersSection() {
+            const container = document.getElementById('teachersContainer');
+            container.innerHTML = '';
+
+            teachersArray.forEach((t, idx) => {
+                const tiltClass = idx % 2 === 0 ? '-rotate-3' : 'rotate-3 sm:-mt-8';
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="relative group ${tiltClass} transition hover:rotate-0 duration-300">
+                        <button type="button" onclick="deleteTeacherCard(${idx})" class="admin-only hidden absolute -top-2 right-0 bg-red-600 text-white text-xs px-2 py-1 rounded z-30 shadow"><i class="fa fa-trash"></i></button>
+                        
+                        <div class="flex items-center gap-2 mb-2 pl-2">
+                            <div class="text-brand text-2xl relative">
+                                <i class="fa-solid fa-star text-brand"></i>
+                            </div>
+                            <div>
+                                <div oninput="teachersArray[${idx}].name = this.innerHTML" class="editable font-black text-brand text-sm uppercase leading-tight">${t.name}</div>
+                                <div oninput="teachersArray[${idx}].role = this.innerHTML" class="editable text-xs text-gray-600">${t.role}</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#fff9e6] border-2 border-gray-900 rounded-xl overflow-hidden shadow-[-4px_6px_0px_#eab308] relative aspect-[4/4]">
+                            <img src="${t.img}" class="w-full h-full object-cover">
+                            <div class="admin-only hidden absolute top-2 left-2 z-20">
+                                <button type="button" onclick="openCropperModal('teacher', ${idx}, 1, 500, 500, 'Ảnh Giảng Viên (Chuẩn: 500x500px - 1:1)', false)" class="bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded shadow">
+                                    <i class="fa fa-camera"></i> Đổi ảnh
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="-mt-4 relative z-10 mx-3">
+                            <div oninput="teachersArray[${idx}].exp = this.innerHTML" class="editable bg-brand text-white text-xs font-bold py-2.5 px-4 rounded-lg text-center shadow-[0_3px_0_#eab308]">
+                                ${t.exp}
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function addTeacherCard() {
+            teachersArray.push({
+                name: "TÊN GIẢNG VIÊN",
+                role: "Giảng viên EEC",
+                exp: "Hơn 8 năm kinh nghiệm giảng dạy",
+                img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=500&q=80"
+            });
+            renderTeachersSection();
+            checkAuth();
+        }
+
+        function deleteTeacherCard(idx) {
+            if (confirm("Xóa thẻ giảng viên này?")) {
+                teachersArray.splice(idx, 1);
+                renderTeachersSection();
+                checkAuth();
+            }
+        }
+
+        // 9. Render NHỮNG THÀNH TỰU ĐÁNG TỰ HÀO
+        function renderAchievementsSection() {
+            const container = document.getElementById('achievementsContainer');
+            container.innerHTML = '';
+
+            achievementsArray.forEach((ach, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="text-center">
+                        <div class="achieve-card py-8 px-4 mb-4 flex items-center justify-center">
+                            <span oninput="achievementsArray[${idx}].number = this.innerHTML" class="editable text-4xl md:text-5xl font-black text-brand tracking-tight">${ach.number}</span>
+                        </div>
+                        <div oninput="achievementsArray[${idx}].label = this.innerHTML" class="editable font-bold text-gray-900 text-base md:text-lg leading-snug">
+                            ${ach.label}
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        // 10. Render NHẬT KÝ HỌC VIÊN & VIDEO YOUTUBE
+        function renderTestimonialsSection() {
+            const container = document.getElementById('testimonialsContainer');
+            container.innerHTML = '';
+
+            testimonialsArray.forEach((item, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex flex-col items-center relative pt-2">
+                        <button type="button" onclick="deleteTestimonialCard(${idx})" class="admin-only hidden absolute top-0 right-2 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded shadow z-30 hover:bg-red-700">
+                            <i class="fa fa-trash"></i> Xóa
+                        </button>
+
+                        <div class="student-photo-slant relative group z-10">
+                            <img src="${item.img}" class="w-full h-full object-cover" alt="${item.name}">
+                            <div class="admin-only hidden absolute top-2 left-2 z-20">
+                                <button type="button" onclick="openCropperModal('testimonial', ${idx}, 4/3, 520, 390, 'Ảnh Học Viên #${idx+1} (Chuẩn: 520x390px - Tỷ lệ 4:3)', false)" class="bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded shadow">
+                                    <i class="fa fa-camera"></i> Đổi ảnh
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="student-review-box w-full pt-10 pb-7 px-6 md:px-8 mt-1 relative z-20">
+                            <div class="absolute -top-6 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap">
+                                <div class="student-name-badge text-base md:text-lg font-extrabold">
+                                    <span oninput="testimonialsArray[${idx}].prefix = this.innerHTML" class="editable text-white">${item.prefix || 'Học viên'}</span>
+                                    <span oninput="testimonialsArray[${idx}].name = this.innerHTML" class="editable text-yellow-400 ml-1">${item.name}</span>
+                                </div>
+                            </div>
+
+                            <div oninput="testimonialsArray[${idx}].content = this.innerHTML" class="editable text-gray-900 text-sm md:text-[15px] leading-relaxed text-justify mt-2">
+                                ${item.content}
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function addTestimonialCard() {
+            testimonialsArray.push({
+                prefix: "Học viên",
+                name: "Tên Học Viên",
+                img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80",
+                content: "Nhập cảm nhận và chia sẻ của học viên tại đây..."
+            });
+            renderTestimonialsSection();
+            checkAuth();
+        }
+
+        function deleteTestimonialCard(idx) {
+            if (confirm("Xóa chia sẻ của học viên này?")) {
+                testimonialsArray.splice(idx, 1);
+                renderTestimonialsSection();
+                checkAuth();
+            }
+        }
+
+        function renderStudentVideosSection() {
+            const container = document.getElementById('studentVideosContainer');
+            container.innerHTML = '';
+
+            studentVideosArray.forEach((vid, idx) => {
+                const ytId = extractYouTubeId(vid.youtubeUrl);
+                const thumbSrc = (vid.thumb && vid.thumb.trim() !== "")
+                    ? vid.thumb
+                    : (ytId ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg` : "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&q=80");
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="video-outer-card relative group">
+                        <span class="video-dots-left"></span>
+                        <span class="video-dots-right"></span>
+
+                        <div class="admin-only hidden relative z-30 mb-2 bg-gray-900/95 text-white p-2 rounded-lg flex flex-wrap gap-1 justify-between items-center text-[11px]">
+                            <button type="button" onclick="editStudentVideoUrl(${idx})" class="bg-red-600 text-white font-bold px-2 py-1 rounded hover:bg-red-700 flex-1">
+                                <i class="fa-brands fa-youtube mr-1"></i> Dán Link YouTube
+                            </button>
+                            <button type="button" onclick="openCropperModal('studentVideo', ${idx}, 16/10, 640, 400, 'Ảnh Bìa Video #${idx+1} (Chuẩn: 640x400px)', false)" class="bg-yellow-400 text-black font-bold px-2 py-1 rounded hover:bg-yellow-500">
+                                <i class="fa fa-image"></i> Ảnh bìa
+                            </button>
+                            <button type="button" onclick="deleteStudentVideo(${idx})" class="bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </div>
+
+                        <div class="relative z-10 bg-[#2b2b2b] rounded-md p-1.5 shadow-lg border border-gray-700">
+                            <div id="videoScreen_${idx}" class="relative aspect-[16/10] bg-black overflow-hidden rounded-sm">
+                                <img src="${thumbSrc}" class="w-full h-full object-cover" alt="Student Video">
+                                <button type="button" onclick="playStudentVideoInline(${idx})" class="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition group">
+                                    <div class="w-16 h-16 rounded-full bg-white/85 group-hover:bg-white group-hover:scale-110 transition flex items-center justify-center shadow-xl">
+                                        <i class="fa-solid fa-play text-[#2b2b2b] text-2xl ml-1"></i>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <div class="pt-2 pb-1 px-2 flex flex-col gap-1.5 bg-[#2b2b2b] text-white">
+                                <div class="w-full h-1 bg-gray-500 rounded-full relative">
+                                    <div class="w-1/3 h-full bg-red-600 rounded-full relative">
+                                        <span class="w-2.5 h-2.5 bg-red-600 rounded-full absolute -right-1 -top-[3px]"></span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center text-[10px] text-gray-200 px-0.5">
+                                    <div class="flex items-center gap-3">
+                                        <i class="fa-solid fa-backward-step"></i>
+                                        <i class="fa-solid fa-play"></i>
+                                        <i class="fa-solid fa-forward-step"></i>
+                                    </div>
+                                    <div class="flex items-center gap-2.5">
+                                        <i class="fa-solid fa-gear"></i>
+                                        <i class="fa-regular fa-square"></i>
+                                        <i class="fa-solid fa-expand"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function playStudentVideoInline(idx) {
+            const vid = studentVideosArray[idx];
+            const ytId = extractYouTubeId(vid.youtubeUrl);
+            if (!ytId) {
+                alert("Link YouTube chưa hợp lệ! Nếu bạn là Admin, hãy bấm 'Dán Link YouTube' để cập nhật.");
+                return;
+            }
+            const screenEl = document.getElementById(`videoScreen_${idx}`);
+            screenEl.innerHTML = `
+                <iframe class="w-full h-full" 
+                        src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allowfullscreen>
+                </iframe>
+            `;
+        }
+
+        function editStudentVideoUrl(idx) {
+            const currentUrl = studentVideosArray[idx].youtubeUrl || "https://youtu.be/";
+            const newUrl = prompt("Dán đường dẫn Video YouTube (Watch, Share youtu.be hoặc Shorts):", currentUrl);
+            if (newUrl !== null && newUrl.trim() !== "") {
+                const ytId = extractYouTubeId(newUrl.trim());
+                if (!ytId) {
+                    alert("Không nhận diện được mã Video YouTube từ đường dẫn này. Vui lòng kiểm tra lại!");
+                    return;
+                }
+                studentVideosArray[idx].youtubeUrl = newUrl.trim();
+                renderStudentVideosSection();
+                checkAuth();
+            }
+        }
+
+        function addStudentVideo() {
+            const url = prompt("Dán đường dẫn Video YouTube mới:", "https://youtu.be/XGm8vrJ7Kaw");
+            if (!url) return;
+            studentVideosArray.push({ youtubeUrl: url.trim(), thumb: "" });
+            renderStudentVideosSection();
+            checkAuth();
+        }
+
+        function deleteStudentVideo(idx) {
+            if (confirm("Xóa video này?")) {
+                studentVideosArray.splice(idx, 1);
+                renderStudentVideosSection();
+                checkAuth();
+            }
+        }
+
+        // 11. Render TIN TỨC NỔI BẬT (Chuẩn theo ảnh mẫu image_6119f5.jpg)
+        function renderNewsSection() {
+            const container = document.getElementById('newsContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            newsArray.forEach((item, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex flex-col relative group">
+                        <button type="button" onclick="deleteNewsCard(${idx})" class="admin-only hidden absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2.5 py-1 rounded shadow z-20 hover:bg-red-700">
+                            <i class="fa fa-trash"></i> Xóa
+                        </button>
+
+                        <!-- Hình ảnh bài viết -->
+                        <div class="relative aspect-[16/10] w-full overflow-hidden bg-gray-200 mb-4 shadow-sm">
+                            <a href="${item.link || '#tu-van'}" onclick="return handleNewsClick(event, ${idx})">
+                                <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="News">
+                            </a>
+                            <div class="admin-only hidden absolute bottom-2 left-2 right-2 bg-gray-900/90 text-white p-1.5 rounded flex justify-between items-center text-[11px] z-20">
+                                <span class="text-yellow-300">600x375px (16:10)</span>
+                                <div class="flex gap-1">
+                                    <button type="button" onclick="openCropperModal('news', ${idx}, 16/10, 600, 375, 'Ảnh Tin Tức #${idx+1} (Chuẩn: 600x375px - 16:10)', false)" class="bg-yellow-400 text-black font-bold px-2 py-0.5 rounded">
+                                        <i class="fa fa-crop"></i> Đổi ảnh
+                                    </button>
+                                    <button type="button" onclick="editNewsLink(${idx})" class="bg-blue-600 text-white font-bold px-2 py-0.5 rounded">
+                                        <i class="fa fa-link"></i> Link
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nhãn Danh mục (Pill xám xanh) -->
+                        <div class="mb-3">
+                            <span class="inline-flex items-center gap-2 bg-[#dfe5f2] text-gray-900 font-bold text-xs md:text-sm px-4 py-1.5 rounded-md">
+                                <span oninput="newsArray[${idx}].category = this.innerHTML" class="editable">${item.category}</span>
+                                <i class="fa-solid fa-chevron-right text-brand text-[10px]"></i>
+                            </span>
+                        </div>
+
+                        <!-- Tiêu đề bài viết -->
+                        <h3 oninput="newsArray[${idx}].title = this.innerHTML" class="editable font-black text-gray-900 text-base md:text-lg uppercase leading-snug mb-2.5">
+                            ${item.title}
+                        </h3>
+
+                        <!-- Mô tả ngắn -->
+                        <div oninput="newsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm md:text-[15px] leading-relaxed text-justify">
+                            ${item.desc}
+                        </div>
+                    </div>
+                `);
+            });
+        }
+
+        function handleNewsClick(e, idx) {
+            if (localStorage.getItem('role') === 'admin') {
+                e.preventDefault();
+                editNewsLink(idx);
+                return false;
+            }
+            return true;
+        }
+
+        function editNewsLink(idx) {
+            const url = prompt("Nhập đường dẫn (URL) cho bài viết này:", newsArray[idx].link || "#tu-van");
+            if (url !== null && url.trim() !== "") {
+                newsArray[idx].link = url.trim();
+                renderNewsSection();
+                checkAuth();
+            }
+        }
+
+        function addNewsCard() {
+            newsArray.push({
+                category: "Blog",
+                title: "TIÊU ĐỀ BÀI VIẾT MỚI",
+                desc: "Nhập đoạn mô tả tóm tắt cho bài viết tin tức tại đây...",
+                img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
+                link: "#tu-van"
+            });
+            renderNewsSection();
+            checkAuth();
+        }
+
+        function deleteNewsCard(idx) {
+            if (confirm("Xóa bài viết tin tức này?")) {
+                newsArray.splice(idx, 1);
+                renderNewsSection();
+                checkAuth();
+            }
+        }
+
+        // 12. Render CỘNG ĐỒNG HỌC TIẾNG ANH CHẤT LƯỢNG (Chuẩn theo ảnh mẫu image_6119f5.jpg)
+        function renderCommunitySection() {
+            const container = document.getElementById('communityContainer');
+            if (!container) return;
+            container.innerHTML = '';
+
+            communityArray.forEach((item, idx) => {
+                let iconHtml = `<i class="fa-brands fa-facebook-f text-white text-base"></i>`;
+                let iconBg = `bg-[#1877f2]`;
+                if (item.platform === 'tiktok') {
+                    iconHtml = `<i class="fa-brands fa-tiktok text-white text-base"></i>`;
+                    iconBg = `bg-black`;
+                } else if (item.platform === 'youtube') {
+                    iconHtml = `<i class="fa-brands fa-youtube text-white text-base"></i>`;
+                    iconBg = `bg-[#ff0000]`;
+                }
+
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex flex-col justify-between">
+                        <div>
+                            <!-- Nhãn tên kênh nghiêng phía trên -->
+                            <div class="flex items-center gap-2 mb-3 pl-2 transform -rotate-6 origin-bottom-left">
+                                <div class="w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shadow">
+                                    ${iconHtml}
+                                </div>
+                                <span oninput="communityArray[${idx}].handle = this.innerHTML" class="editable font-bold text-gray-800 text-sm">${item.handle}</span>
+                            </div>
+
+                            <!-- Khung ảnh viền vàng đổ bóng xanh -->
+                            <div class="community-frame aspect-[16/10] mb-5 relative group">
+                                <img src="${item.img}" class="w-full h-full object-cover" alt="${item.handle}">
+                                <div class="admin-only hidden absolute top-2 left-2 right-2 bg-gray-900/90 text-white p-1.5 rounded flex justify-between items-center text-[11px] z-20">
+                                    <span class="text-yellow-300">600x375px</span>
+                                    <div class="flex gap-1">
+                                        <button type="button" onclick="openCropperModal('community', ${idx}, 16/10, 600, 375, 'Ảnh Cộng Đồng #${idx+1} (Chuẩn: 600x375px - 16:10)', false)" class="bg-yellow-400 text-black font-bold px-2 py-0.5 rounded">
+                                            <i class="fa fa-crop"></i> Đổi ảnh
+                                        </button>
+                                        <button type="button" onclick="editCommunityLink(${idx})" class="bg-blue-600 text-white font-bold px-2 py-0.5 rounded">
+                                            <i class="fa fa-link"></i> Link
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Danh sách chủ đề (Rich Text) -->
+                            <div oninput="communityArray[${idx}].bullets = this.innerHTML" class="editable rich-content text-gray-800 text-sm md:text-[15px] leading-relaxed mb-6 px-1">
+                                ${item.bullets}
+                            </div>
+                        </div>
+
+                        <!-- Nút Đăng ký theo dõi bên dưới -->
+                        <a href="${item.link || '#'}" target="_blank" onclick="return handleCommunityClick(event, ${idx})" class="block w-full border border-brand text-brand font-medium py-2.5 px-4 rounded-md text-center hover:bg-brand hover:text-white transition text-sm md:text-base">
+                            <span oninput="communityArray[${idx}].btnText = this.innerHTML" class="editable">${item.btnText || 'Đăng ký theo dõi'}</span>
+                            <i class="fa-solid fa-arrow-right-long ml-1.5 text-xs"></i>
+                        </a>
+                    </div>
+                `);
+            });
+        }
+
+        function handleCommunityClick(e, idx) {
+            if (localStorage.getItem('role') === 'admin') {
+                e.preventDefault();
+                editCommunityLink(idx);
+                return false;
+            }
+            return true;
+        }
+
+        function editCommunityLink(idx) {
+            const url = prompt("Nhập đường dẫn (URL) kênh mạng xã hội:", communityArray[idx].link || "https://");
+            if (url !== null && url.trim() !== "") {
+                communityArray[idx].link = url.trim();
+                renderCommunitySection();
+                checkAuth();
+            }
+        }
+
+        // 13. Công cụ Cắt Ảnh (Cropper.js)
+        function openCropperModal(type, key, aspectRatio, width, height, titleText, isCircle = false) {
+            cropJob = { type, key, aspectRatio, width, height, isCircle };
+            document.getElementById('cropModalTitle').textContent = titleText;
+            document.getElementById('cropModalSpec').innerHTML = `Kích thước xuất chuẩn: <b>${width} x ${height} px</b> ${isCircle ? '(Khung cắt hình tròn)' : ''}`;
+            document.getElementById('cropFileInput').value = '';
+            document.getElementById('cropImagePreview').classList.add('hidden');
+            document.getElementById('cropEmptyNotice').classList.remove('hidden');
+            
+            const wrapper = document.getElementById('cropBoxWrapper');
+            if (isCircle) wrapper.classList.add('crop-circle');
+            else wrapper.classList.remove('crop-circle');
+
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('cropperModal').classList.remove('hidden');
+        }
+
+        function closeCropperModal() {
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            document.getElementById('cropperModal').classList.add('hidden');
+        }
+
+        document.getElementById('cropFileInput').addEventListener('change', function() {
+            if (!this.files || this.files.length === 0) return;
+            const file = this.files[0];
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = document.getElementById('cropImagePreview');
+                img.src = evt.target.result;
+                img.classList.remove('hidden');
+                document.getElementById('cropEmptyNotice').classList.add('hidden');
+
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(img, {
+                    aspectRatio: cropJob.aspectRatio,
+                    viewMode: 1,
+                    autoCropArea: 1
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function getRoundedCanvas(sourceCanvas) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            const width = sourceCanvas.width;
+            const height = sourceCanvas.height;
+
+            canvas.width = width;
+            canvas.height = height;
+            context.imageSmoothingEnabled = true;
+            context.drawImage(sourceCanvas, 0, 0, width, height);
+            context.globalCompositeOperation = 'destination-in';
+            context.beginPath();
+            context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI, true);
+            context.fill();
+            return canvas;
+        }
+
+        async function executeCropAndUpload() {
+            if (!cropper) {
+                alert("Vui lòng chọn một file ảnh trước!");
+                return;
+            }
+            const btn = document.getElementById('confirmCropUploadBtn');
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang cắt & tải lên Drive...';
+            btn.disabled = true;
+
+            try {
+                let canvas = cropper.getCroppedCanvas({
+                    width: cropJob.width,
+                    height: cropJob.height
+                });
+
+                if (cropJob.isCircle) {
+                    canvas = getRoundedCanvas(canvas);
+                }
+
+                const usePng = (cropJob.isCircle || cropJob.key === 'logo' || cropJob.key === 'favicon');
+                const mimeType = usePng ? 'image/png' : 'image/jpeg';
+                const base64Data = canvas.toDataURL(mimeType, 0.9);
+
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: 'upload_image',
+                        filename: `studybee_${cropJob.type}_${Date.now()}.${usePng ? 'png' : 'jpg'}`,
+                        mimeType: mimeType,
+                        base64: base64Data
+                    })
+                }).then(r => r.json());
+
+                if (res.success) {
+                    if (cropJob.type === 'avatar') {
+                        document.getElementById('prof_avatar_preview').src = res.url;
+                        document.getElementById('prof_avatar_preview').setAttribute('data-uploaded-url', res.url);
+                    } else if (cropJob.type === 'config') {
+                        currentConfig[cropJob.key] = res.url;
+                        applyConfigToDOM();
+                    } else if (cropJob.type === 'banner') {
+                        bannersArray[cropJob.key].img = res.url;
+                        renderBannersSlider();
+                        checkAuth();
+                    } else if (cropJob.type === 'event') {
+                        eventsArray[cropJob.key].img = res.url;
+                        renderEventsSlider();
+                        checkAuth();
+                    } else if (cropJob.type === 'course') {
+                        coursesArray[cropJob.key].img = res.url;
+                        renderCoursesList();
+                        checkAuth();
+                    } else if (cropJob.type === 'teacher') {
+                        teachersArray[cropJob.key].img = res.url;
+                        renderTeachersSection();
+                        checkAuth();
+                    } else if (cropJob.type === 'testimonial') {
+                        testimonialsArray[cropJob.key].img = res.url;
+                        renderTestimonialsSection();
+                        checkAuth();
+                    } else if (cropJob.type === 'studentVideo') {
+                        studentVideosArray[cropJob.key].thumb = res.url;
+                        renderStudentVideosSection();
+                        checkAuth();
+                    } else if (cropJob.type === 'news') {
+                        newsArray[cropJob.key].img = res.url;
+                        renderNewsSection();
+                        checkAuth();
+                    } else if (cropJob.type === 'community') {
+                        communityArray[cropJob.key].img = res.url;
+                        renderCommunitySection();
+                        checkAuth();
+                    }
+                    closeCropperModal();
+                } else {
+                    alert("Lỗi từ Google Drive: " + res.message);
+                }
+            } catch (err) {
+                alert("Có lỗi khi tải ảnh lên!");
+                console.error(err);
+            } finally {
+                btn.innerHTML = oldHtml;
+                btn.disabled = false;
+            }
+        }
+
+        // 14. Cài đặt Web & Email CC Modal
+        document.getElementById('openSettingsModalBtn').onclick = () => {
+            document.getElementById('settingsModal').classList.remove('hidden');
+        };
+
+        document.getElementById('set_primaryColor').oninput = function() {
+            document.getElementById('set_primaryColorHex').value = this.value;
+        };
+        document.getElementById('set_primaryColorHex').oninput = function() {
+            if (/^#[0-9A-F]{6}$/i.test(this.value)) {
+                document.getElementById('set_primaryColor').value = this.value;
+            }
+        };
+
+        async function applyAndSaveSettings() {
+            currentConfig.siteTitle = document.getElementById('set_siteTitle').value;
+            currentConfig.primaryColor = document.getElementById('set_primaryColorHex').value || document.getElementById('set_primaryColor').value;
+            
+            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject'];
+            settingKeys.forEach(k => {
+                const el = document.getElementById('set_' + k);
+                if (el) currentConfig[k] = el.value.trim();
+            });
+
+            applyConfigToDOM();
+            document.getElementById('settingsModal').classList.add('hidden');
+            await saveAllToGoogleSheet();
+        }
+
+        // 15. Phân quyền Admin & Tài khoản
         function checkAuth() {
             const role = localStorage.getItem('role');
             const user = localStorage.getItem('user');
+            const displayName = localStorage.getItem('displayName') || user;
+            const avatar = localStorage.getItem('avatar') || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            const isAdmin = (role === 'admin');
+
             if (role) {
                 document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('welcomeMsg').classList.remove('hidden');
-                document.getElementById('welcomeMsg').textContent = `Xin chào, ${user}`;
-                if (role === 'admin') document.getElementById('adminToggleBtn').classList.remove('hidden');
+                document.getElementById('userProfileBar').classList.remove('hidden');
+                document.getElementById('headerUserDisplayName').textContent = displayName;
+                document.getElementById('headerUserAvatar').src = avatar;
             } else {
                 document.getElementById('loginBtn').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.add('hidden');
-                document.getElementById('welcomeMsg').classList.add('hidden');
-                document.getElementById('adminToggleBtn').classList.add('hidden');
-                document.getElementById('adminPanel').classList.add('hidden');
+                document.getElementById('userProfileBar').classList.add('hidden');
+            }
+
+            if (isAdmin) {
+                document.getElementById('adminToolbar').classList.remove('hidden');
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                document.querySelectorAll('.editable').forEach(el => {
+                    el.contentEditable = "true";
+                    el.classList.add('is-admin');
+                });
+                
+                document.querySelectorAll('.admin-link').forEach(el => {
+                    el.classList.add('is-admin');
+                    el.onclick = (e) => {
+                        e.preventDefault();
+                        const key = el.getAttribute('data-link-key');
+                        const currentVal = currentConfig[key] || "";
+                        const newVal = prompt(`Chỉnh sửa thông tin / đường dẫn (${key}):`, currentVal);
+                        if (newVal !== null && newVal.trim() !== "") {
+                            currentConfig[key] = newVal.trim();
+                            applyConfigToDOM();
+                        }
+                    };
+                });
+            } else {
+                document.getElementById('adminToolbar').classList.add('hidden');
+                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.editable').forEach(el => {
+                    el.contentEditable = "false";
+                    el.classList.remove('is-admin');
+                });
+                document.querySelectorAll('.admin-link').forEach(el => {
+                    el.classList.remove('is-admin');
+                    el.onclick = null;
+                });
             }
         }
 
-        document.getElementById('loginBtn').onclick = () => document.getElementById('loginModal').classList.remove('hidden');
-        document.getElementById('adminToggleBtn').onclick = () => document.getElementById('adminPanel').classList.remove('hidden');
-        document.getElementById('logoutBtn').onclick = () => { localStorage.clear(); checkAuth(); alert('Đã đăng xuất!'); };
+        // Lưu toàn bộ cấu hình lên Google Sheets
+        async function saveAllToGoogleSheet() {
+            const btn = document.getElementById('saveChangesBtn');
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang lưu...';
+            btn.disabled = true;
 
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitLoginBtn');
-            btn.textContent = "Đang xử lý...";
+            document.querySelectorAll('[data-key]').forEach(el => {
+                currentConfig[el.getAttribute('data-key')] = el.innerHTML;
+            });
+
+            currentConfig.menuData = JSON.stringify(menuArray);
+            currentConfig.bannersData = JSON.stringify(bannersArray);
+            currentConfig.eventsData = JSON.stringify(eventsArray);
+            currentConfig.reasonsData = JSON.stringify(reasonsArray);
+            currentConfig.coursesData = JSON.stringify(coursesArray);
+            currentConfig.teachersData = JSON.stringify(teachersArray);
+            currentConfig.achievementsData = JSON.stringify(achievementsArray);
+            currentConfig.testimonialsData = JSON.stringify(testimonialsArray);
+            currentConfig.studentVideosData = JSON.stringify(studentVideosArray);
+            currentConfig.newsData = JSON.stringify(newsArray);
+            currentConfig.communityData = JSON.stringify(communityArray);
+
             try {
                 let res = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: 'login', username: document.getElementById('l_user').value, password: document.getElementById('l_pass').value })
+                    body: JSON.stringify({ action: 'update_config', data: currentConfig })
                 }).then(r => r.json());
 
-                if(res.success) {
+                if (res.success) {
+                    alert("Đã lưu toàn bộ giao diện và dữ liệu thành công!");
+                } else {
+                    alert("Lỗi khi lưu: " + res.message);
+                }
+            } catch (err) {
+                alert("Lỗi kết nối khi lưu cấu hình!");
+            } finally {
+                btn.innerHTML = oldHtml;
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('saveChangesBtn').onclick = saveAllToGoogleSheet;
+
+        // 16. Đăng nhập & Tùy chỉnh Hồ sơ Tài khoản
+        document.getElementById('loginBtn').onclick = () => {
+            const savedUser = localStorage.getItem('saved_login_user') || '';
+            const savedPass = localStorage.getItem('saved_login_pass') || '';
+            if (savedUser) {
+                document.getElementById('l_user').value = savedUser;
+                document.getElementById('l_pass').value = savedPass;
+                document.getElementById('l_remember').checked = true;
+            }
+            document.getElementById('loginModal').classList.remove('hidden');
+        };
+
+        document.getElementById('logoutBtn').onclick = () => {
+            localStorage.removeItem('role');
+            localStorage.removeItem('user');
+            localStorage.removeItem('displayName');
+            localStorage.removeItem('avatar');
+            location.reload();
+        };
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitLoginBtn');
+            const u = document.getElementById('l_user').value.trim();
+            const p = document.getElementById('l_pass').value.trim();
+            const remember = document.getElementById('l_remember').checked;
+
+            btn.textContent = "Đang kiểm tra...";
+            try {
+                let res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: 'login', username: u, password: p })
+                }).then(r => r.json());
+
+                if (res.success) {
                     localStorage.setItem('role', res.role);
-                    localStorage.setItem('user', document.getElementById('l_user').value);
+                    localStorage.setItem('user', res.username);
+                    localStorage.setItem('displayName', res.displayName || res.username);
+                    localStorage.setItem('avatar', res.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png");
+
+                    if (remember) {
+                        localStorage.setItem('saved_login_user', u);
+                        localStorage.setItem('saved_login_pass', p);
+                    } else {
+                        localStorage.removeItem('saved_login_user');
+                        localStorage.removeItem('saved_login_pass');
+                    }
+
                     document.getElementById('loginModal').classList.add('hidden');
                     checkAuth();
                 } else {
                     document.getElementById('loginErr').textContent = res.message;
                     document.getElementById('loginErr').classList.remove('hidden');
                 }
-            } catch(e) {
-                 document.getElementById('loginErr').textContent = "Lỗi kết nối CORS / URL không hợp lệ.";
-                 document.getElementById('loginErr').classList.remove('hidden');
-                 console.error(e);
+            } catch (err) {
+                document.getElementById('loginErr').textContent = "Lỗi kết nối máy chủ.";
+                document.getElementById('loginErr').classList.remove('hidden');
             }
             btn.textContent = "Đăng nhập";
         });
 
-        async function uploadImageToDrive(fileInput) {
-            if (!fileInput.files || fileInput.files.length === 0) return null;
-            const file = fileInput.files[0];
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async function() {
-                    try {
-                        const res = await fetch(APPS_SCRIPT_URL, {
-                            method: 'POST',
-                            headers: { "Content-Type": "text/plain;charset=utf-8" },
-                            body: JSON.stringify({ action: 'upload_image', filename: file.name, mimeType: file.type, base64: reader.result })
-                        }).then(r => r.json());
-                        if (res.success) resolve(res.url); else reject("Lỗi upload từ server");
-                    } catch(err) {
-                        reject(err);
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
+        function openProfileModal() {
+            document.getElementById('prof_displayName').value = localStorage.getItem('displayName') || localStorage.getItem('user') || '';
+            document.getElementById('prof_username').value = localStorage.getItem('user') || '';
+            document.getElementById('prof_currentPass').value = '';
+            document.getElementById('prof_newPass').value = '';
+            const avt = localStorage.getItem('avatar') || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            document.getElementById('prof_avatar_preview').src = avt;
+            document.getElementById('prof_avatar_preview').setAttribute('data-uploaded-url', avt);
+            document.getElementById('profMsg').classList.add('hidden');
+            document.getElementById('profileModal').classList.remove('hidden');
         }
 
-        document.getElementById('saveConfigBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('saveConfigBtn');
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang tải ảnh và lưu...';
+        document.getElementById('profileForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('saveProfileBtn');
+            const msg = document.getElementById('profMsg');
+            btn.textContent = "Đang lưu...";
             btn.disabled = true;
 
-            let newConfig = { ...currentConfig };
-            newConfig.primaryColor = document.getElementById('edit_primaryColor').value;
-            newConfig.siteTitle = document.getElementById('edit_siteTitle').value;
-            newConfig.heroTitle = document.getElementById('edit_heroTitle').value;
-            newConfig.heroSubtitle = document.getElementById('edit_heroSubtitle').value;
-            newConfig.course1Title = document.getElementById('edit_course1Title').value;
-            newConfig.course1Desc = document.getElementById('edit_course1Desc').value;
-            newConfig.course2Title = document.getElementById('edit_course2Title').value;
-            newConfig.course2Desc = document.getElementById('edit_course2Desc').value;
-            newConfig.formTitle = document.getElementById('edit_formTitle').value;
-            newConfig.formSubtitle = document.getElementById('edit_formSubtitle').value;
+            const payload = {
+                action: 'update_profile',
+                oldUsername: localStorage.getItem('user'),
+                currentPassword: document.getElementById('prof_currentPass').value,
+                newUsername: document.getElementById('prof_username').value.trim(),
+                newPassword: document.getElementById('prof_newPass').value.trim(),
+                displayName: document.getElementById('prof_displayName').value.trim(),
+                avatar: document.getElementById('prof_avatar_preview').getAttribute('data-uploaded-url')
+            };
 
             try {
-                const favUrl = await uploadImageToDrive(document.getElementById('edit_favicon'));
-                if (favUrl) newConfig.favicon = favUrl;
-
-                const bannerUrl = await uploadImageToDrive(document.getElementById('edit_bannerImage'));
-                if (bannerUrl) newConfig.bannerImage = bannerUrl;
-
-                const c1Url = await uploadImageToDrive(document.getElementById('edit_course1Img'));
-                if (c1Url) newConfig.course1Img = c1Url;
-
-                const c2Url = await uploadImageToDrive(document.getElementById('edit_course2Img'));
-                if (c2Url) newConfig.course2Img = c2Url;
-
-                await fetch(APPS_SCRIPT_URL, { 
-                    method: 'POST', 
+                let res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify({ action: 'update_config', data: newConfig }) 
-                });
+                    body: JSON.stringify(payload)
+                }).then(r => r.json());
 
-                alert('Cập nhật Web thành công!');
-                document.getElementById('adminPanel').classList.add('hidden');
-                applyConfig(newConfig);
-                currentConfig = newConfig;
+                if (res.success) {
+                    localStorage.setItem('user', res.username);
+                    localStorage.setItem('displayName', res.displayName);
+                    localStorage.setItem('avatar', res.avatar);
+                    if (localStorage.getItem('saved_login_user')) {
+                        localStorage.setItem('saved_login_user', res.username);
+                        if (payload.newPassword) localStorage.setItem('saved_login_pass', payload.newPassword);
+                    }
+                    checkAuth();
+                    alert("Cập nhật thông tin tài khoản thành công!");
+                    document.getElementById('profileModal').classList.add('hidden');
+                } else {
+                    msg.textContent = res.message;
+                    msg.className = "text-center font-bold text-red-600 block";
+                }
             } catch (err) {
-                alert("Có lỗi khi lưu cấu hình. Vui lòng bật F12 để kiểm tra log.");
-                console.error(err);
+                msg.textContent = "Lỗi kết nối máy chủ!";
+                msg.className = "text-center font-bold text-red-600 block";
+            } finally {
+                btn.textContent = "Lưu thông tin";
+                btn.disabled = false;
             }
-            btn.innerHTML = '<i class="fa fa-save"></i> Lưu tất cả thay đổi';
-            btn.disabled = false;
         });
 
+        // 17. Gửi Form Tư Vấn (Kèm gửi Email phản hồi cho học viên & CC)
         document.getElementById('consultForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitConsultBtn');
             btn.innerHTML = 'Đang gửi... <i class="fa fa-spinner fa-spin"></i>';
+            btn.disabled = true;
+
             const payload = {
                 action: 'submit_form',
-                name: document.getElementById('f_name').value,
-                phone: document.getElementById('f_phone').value,
-                year: document.getElementById('f_year').value,
-                email: document.getElementById('f_email').value,
+                name: document.getElementById('f_name').value.trim(),
+                phone: document.getElementById('f_phone').value.trim(),
+                year: document.getElementById('f_year').value.trim(),
+                email: document.getElementById('f_email').value.trim(),
                 type: document.getElementById('f_type').value,
                 course: document.getElementById('f_course').value,
-                message: document.getElementById('f_msg').value
+                message: document.getElementById('f_msg').value.trim()
             };
             try {
-                let res = await fetch(APPS_SCRIPT_URL, { 
-                    method: 'POST', 
+                let res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
-                    body: JSON.stringify(payload) 
+                    body: JSON.stringify(payload)
                 }).then(r => r.json());
-                
-                if(res.success) {
-                    alert("Gửi thành công! Chúng tôi sẽ liên hệ sớm.");
+                if (res.success) {
+                    alert("Đăng ký thành công! Hệ thống đã gửi email xác nhận vào hộp thư của bạn.");
                     document.getElementById('consultForm').reset();
+                } else {
+                    alert("Lỗi: " + res.message);
                 }
-            } catch (err) { 
-                alert("Lỗi khi gửi form.");
-                console.error(err);
+            } catch (err) {
+                alert("Có lỗi khi gửi form.");
+            } finally {
+                btn.innerHTML = 'Gửi câu hỏi <i class="fa fa-arrow-right"></i>';
+                btn.disabled = false;
             }
-            btn.innerHTML = 'Gửi câu hỏi <i class="fa fa-arrow-right"></i>';
         });
 
+        // Khởi chạy
         loadConfig();
-        checkAuth();
     </script>
 </body>
 </html>
