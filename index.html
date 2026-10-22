@@ -4,14 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="dom_siteTitle">STUDY BEE ENGLISH - Nền tảng học tiếng Anh trực tuyến</title>
+
+    <!-- Preview khi gửi link -->
+    <meta property="og:title" id="meta_og_title" content="STUDY BEE ENGLISH - Nền tảng học tiếng Anh trực tuyến">
+    <meta property="og:description" id="meta_og_description" content="Nền tảng học tiếng Anh giao tiếp trực tuyến 1 kèm 1 và 1 kèm 4 uy tín, cam kết đầu ra cùng đội ngũ giảng viên giàu kinh nghiệm tại STUDY BEE ENGLISH.">
+    <meta property="og:image" id="meta_og_image" content="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80">
+    <meta property="og:url" id="meta_og_url" content="https://studybeeenglish.edu.vn">
+    <meta property="og:type" id="meta_og_type" content="website">
+
     <!-- Thiết lập mặc định Favicon mới của STUDY BEE ENGLISH ngay khi vừa tải trang -->
     <link id="dynamic-favicon" rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230c389b'/><circle cx='50' cy='50' r='30' fill='%23facc15'/><path d='M30 42h40M28 52h44M34 62h32' stroke='%230c389b' stroke-width='6' stroke-linecap='round'/><text x='50' y='88' font-family='Arial' font-weight='900' font-size='14' fill='%23ffffff' text-anchor='middle'>STUDY BEE</text></svg>" type="image/svg+xml">
     
-    <!-- Script nạp tức thì Favicon & Màu sắc từ bộ nhớ đệm để không bao giờ nháy icon cũ -->
+    <!-- Script nạp tức thì Favicon, Màu sắc & Meta Preview từ bộ nhớ đệm để không bao giờ nháy icon cũ -->
     <script>
         (function() {
             try {
-                var cached = localStorage.getItem("studybee_config_cache_v4");
+                var cached = localStorage.getItem("studybee_config_cache_v6");
                 if (cached) {
                     var cfg = JSON.parse(cached);
                     if (cfg.favicon && !cfg.favicon.includes("3135715.png")) {
@@ -19,6 +27,11 @@
                     }
                     if (cfg.siteTitle) document.title = cfg.siteTitle;
                     if (cfg.primaryColor) document.documentElement.style.setProperty('--primary-color', cfg.primaryColor);
+                    if (cfg.og_title) document.getElementById("meta_og_title").setAttribute("content", cfg.og_title);
+                    if (cfg.og_description) document.getElementById("meta_og_description").setAttribute("content", cfg.og_description);
+                    if (cfg.og_image) document.getElementById("meta_og_image").setAttribute("content", cfg.og_image);
+                    if (cfg.og_url) document.getElementById("meta_og_url").setAttribute("content", cfg.og_url);
+                    if (cfg.og_type) document.getElementById("meta_og_type").setAttribute("content", cfg.og_type);
                 }
             } catch (e) {}
         })();
@@ -237,17 +250,21 @@
             <button type="button" onmousedown="event.preventDefault(); formatDoc('insertUnorderedList')" class="w-8 h-8 rounded hover:bg-gray-700" title="Danh sách chấm tròn"><i class="fa fa-list-ul"></i></button>
             <button type="button" onmousedown="event.preventDefault(); formatDoc('removeFormat')" class="w-8 h-8 rounded hover:bg-gray-700 text-red-400" title="Xóa nền trắng / Xóa định dạng lỗi"><i class="fa fa-eraser"></i></button>
             <input type="color" onchange="formatDoc('foreColor', this.value)" class="w-7 h-7 rounded cursor-pointer bg-transparent border-0" title="Đổi màu chữ đang bôi đen">
+            <span id="syncStatusIndicator" class="text-[11px] text-emerald-400 font-bold ml-2 hidden"><i class="fa fa-check-circle"></i> Đã đồng bộ</span>
         </div>
 
         <div class="flex flex-wrap gap-2">
             <button type="button" onclick="openMenuManagerModal()" class="bg-purple-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-purple-700 transition flex items-center gap-1.5 text-sm">
                 <i class="fa fa-bars-staggered"></i> Sửa Menu & Trang con
             </button>
+            <button type="button" onclick="openLeadsManagerModal()" class="bg-teal-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-teal-700 transition flex items-center gap-1.5 text-sm">
+                <i class="fa fa-clipboard-list"></i> Khách đăng ký Tư vấn
+            </button>
             <button type="button" onclick="openUserManagerModal()" class="bg-amber-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-amber-700 transition flex items-center gap-1.5 text-sm">
                 <i class="fa fa-users-gear"></i> Quản lý Tài khoản
             </button>
             <button type="button" id="openSettingsModalBtn" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-blue-700 transition flex items-center gap-1.5 text-sm">
-                <i class="fa fa-cogs"></i> Cài đặt Web & AI
+                <i class="fa fa-cogs"></i> Cài đặt Web, OG & AI
             </button>
             <button type="button" id="saveChangesBtn" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-full shadow-2xl hover:bg-green-700 transition flex items-center gap-2 text-sm">
                 <i class="fa fa-save"></i> LƯU GIAO DIỆN
@@ -293,7 +310,7 @@
                 <script>
                     (function() {
                         try {
-                            var cached = localStorage.getItem("studybee_config_cache_v4");
+                            var cached = localStorage.getItem("studybee_config_cache_v6");
                             if (cached) {
                                 var cfg = JSON.parse(cached);
                                 if (cfg.logo && !cfg.logo.includes("3135715.png")) {
@@ -687,7 +704,7 @@
             </div>
         </section>
 
-        <!-- 8. FORM ĐĂNG KÝ TƯ VẤN (THAY ICON ROBOT BẰNG HÌNH ẢNH TÁCH NỀN CHUYỂN ĐỘNG) -->
+        <!-- 8. FORM ĐĂNG KÝ TƯ VẤN (ĐẦU SỐ QUỐC TẾ A-Z MẶC ĐỊNH +84 & TÙY CHỈNH "BẠN LÀ") -->
         <section id="tu-van" class="py-16 max-w-7xl mx-auto px-4">
             <div class="prep-form-bg rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row gap-12 shadow-2xl relative overflow-hidden">
                 <div class="lg:w-5/12 flex flex-col justify-center z-10">
@@ -705,33 +722,52 @@
 
                 <div class="lg:w-7/12 z-10">
                     <form id="consultForm" class="space-y-4">
-                        <div><label class="prep-label">Họ và tên (*)</label><input type="text" id="f_name" placeholder="Nhập họ và tên của bạn" required class="prep-input"></div>
+                        <div>
+                            <label class="prep-label">Họ và tên (*)</label>
+                            <input type="text" id="f_name" placeholder="Nhập họ và tên của bạn" required class="prep-input">
+                        </div>
                         <div>
                             <label class="prep-label">Số điện thoại (*)</label>
                             <div class="flex bg-white rounded-lg overflow-hidden">
-                                <select class="bg-gray-100 px-3 border-r outline-none font-medium text-sm text-gray-700"><option>+84</option></select>
-                                <input type="tel" id="f_phone" placeholder="Nhập số điện thoại của bạn" required class="prep-input rounded-none border-none">
+                                <!-- Danh sách đầy đủ đầu số các quốc gia trên thế giới xếp theo ABC, mặc định +84 -->
+                                <select id="f_country_code" class="bg-gray-100 px-2.5 border-r outline-none font-bold text-xs sm:text-sm text-gray-800 max-w-[155px] sm:max-w-[190px] truncate cursor-pointer"></select>
+                                <input type="tel" id="f_phone" placeholder="Nhập số điện thoại của bạn (không mất số 0)" required class="prep-input rounded-none border-none flex-1">
                             </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><label class="prep-label">Năm sinh (*)</label><input type="number" id="f_year" placeholder="Nhập năm sinh" required class="prep-input"></div>
-                            <div><label class="prep-label">Email nhận phản hồi (*)</label><input type="email" id="f_email" placeholder="Nhập địa chỉ email của bạn" required class="prep-input"></div>
+                            <div>
+                                <label class="prep-label">Năm sinh (*)</label>
+                                <input type="number" id="f_year" placeholder="Nhập năm sinh" required class="prep-input">
+                            </div>
+                            <div>
+                                <label class="prep-label">Email nhận phản hồi (*)</label>
+                                <input type="email" id="f_email" placeholder="Nhập địa chỉ email của bạn" required class="prep-input">
+                            </div>
                         </div>
                         <div>
-                            <label class="prep-label">Bạn là</label>
-                            <select id="f_type" class="prep-input appearance-none bg-white text-gray-700">
-                                <option value="Học sinh/Sinh viên">Học sinh/Sinh viên</option>
-                                <option value="Người đi làm">Người đi làm</option>
-                                <option value="Phụ huynh">Phụ huynh</option>
-                            </select>
+                            <div class="flex justify-between items-center mb-1.5">
+                                <label class="prep-label !mb-0">Bạn là</label>
+                                <button type="button" onclick="openStudentTypesManager()" class="admin-only hidden bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded-full shadow hover:bg-yellow-500">
+                                    <i class="fa fa-plus-circle mr-1"></i> + Thêm / Sửa lựa chọn "Bạn là"
+                                </button>
+                            </div>
+                            <select id="f_type" class="prep-input appearance-none bg-white text-gray-700"></select>
                         </div>
                         <div>
                             <label class="prep-label">Khóa học bạn quan tâm (*)</label>
                             <select id="f_course" required class="prep-input appearance-none bg-white text-gray-700"></select>
                         </div>
-                        <div><label class="prep-label">Nội dung</label><textarea id="f_msg" rows="3" placeholder="Bạn có câu hỏi gì? Hãy cho biết trình độ hiện tại và mục tiêu mong muốn..." class="prep-input resize-none"></textarea></div>
-                        <div class="flex justify-end mt-6">
-                            <button type="submit" id="submitConsultBtn" class="bg-white text-blue-600 font-bold px-8 py-3 rounded-full hover:bg-gray-100 transition shadow-md flex items-center gap-2">Gửi câu hỏi <i class="fa fa-arrow-right"></i></button>
+                        <div>
+                            <label class="prep-label">Nội dung</label>
+                            <textarea id="f_msg" rows="3" placeholder="Bạn có câu hỏi gì? Hãy cho biết trình độ hiện tại và mục tiêu mong muốn..." class="prep-input resize-none"></textarea>
+                        </div>
+                        <div class="flex flex-wrap justify-between items-center gap-3 mt-6">
+                            <button type="button" onclick="openLeadsManagerModal()" class="admin-only hidden bg-teal-500 text-white text-xs font-bold px-4 py-2.5 rounded-full hover:bg-teal-600 shadow">
+                                <i class="fa fa-clipboard-list mr-1"></i> Xem danh sách người đã đăng ký
+                            </button>
+                            <button type="submit" id="submitConsultBtn" class="bg-white text-blue-600 font-bold px-8 py-3 rounded-full hover:bg-gray-100 transition shadow-md flex items-center gap-2 ml-auto">
+                                Gửi câu hỏi <i class="fa fa-arrow-right"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -1051,11 +1087,11 @@
         </div>
     </div>
 
-    <!-- MODAL 5: CÀI ĐẶT WEB, AI GEMINI & EMAIL CC -->
+    <!-- MODAL 5: CÀI ĐẶT WEB, META OPEN GRAPH (PREVIEW LINK), AI GEMINI & EMAIL CC -->
     <div id="settingsModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 relative">
             <button type="button" onclick="document.getElementById('settingsModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"><i class="fa fa-times"></i></button>
-            <h2 class="text-2xl font-black text-brand mb-6 border-b pb-3"><i class="fa fa-cogs mr-2"></i> Cài Đặt Website, AI Gemini & Email CC</h2>
+            <h2 class="text-2xl font-black text-brand mb-6 border-b pb-3"><i class="fa fa-cogs mr-2"></i> Cài Đặt Website, Preview Link (OG), AI & Email CC</h2>
             
             <div class="space-y-6 text-sm">
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
@@ -1117,9 +1153,42 @@
                     </div>
                 </div>
 
-                <!-- Mục 2: Cấu hình AI Gemini Chatbox -->
+                <!-- Mục 2: Thiết lập Preview khi gửi link (Meta Open Graph) -->
+                <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200 space-y-3">
+                    <h3 class="font-bold text-base text-emerald-900 uppercase"><i class="fa fa-share-nodes mr-1"></i> 2. Thiết lập Preview khi gửi link (Meta Open Graph)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="md:col-span-2">
+                            <label class="block font-bold mb-1">Tiêu đề khi chia sẻ link (og:title):</label>
+                            <input type="text" id="set_og_title" placeholder="STUDY BEE ENGLISH - Nền tảng học tiếng Anh trực tuyến" class="w-full border p-2 rounded-lg bg-white">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-bold mb-1">Mô tả ngắn khi chia sẻ link (og:description):</label>
+                            <textarea id="set_og_description" rows="2" placeholder="Mô tả hiển thị dưới tiêu đề khi gửi link qua Zalo, Facebook..." class="w-full border p-2 rounded-lg bg-white"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">Đường dẫn Website chuẩn (og:url):</label>
+                            <input type="url" id="set_og_url" placeholder="https://studybeeenglish.edu.vn" class="w-full border p-2 rounded-lg bg-white">
+                        </div>
+                        <div>
+                            <label class="block font-bold mb-1">Loại nội dung (og:type):</label>
+                            <input type="text" id="set_og_type" placeholder="website" class="w-full border p-2 rounded-lg bg-white">
+                        </div>
+                        <div class="md:col-span-2 flex flex-wrap items-center gap-3 bg-white p-3 rounded-lg border">
+                            <img id="set_og_image_preview" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80" class="w-28 h-16 object-cover rounded border">
+                            <div class="flex-1 min-w-[200px]">
+                                <label class="block font-bold text-xs mb-1">Ảnh thu nhỏ khi gửi link (og:image - Chuẩn 1200x630px):</label>
+                                <input type="text" id="set_og_image" placeholder="URL hình ảnh đại diện khi chia sẻ link..." class="w-full border p-1.5 rounded text-xs">
+                            </div>
+                            <button type="button" onclick="openCropperModal('config', 'og_image', 1200/630, 1200, 630, 'Ảnh Preview Khi Gửi Link (og:image - 1200x630px)', false)" class="bg-yellow-400 text-black font-bold px-3 py-2 rounded-lg text-xs hover:bg-yellow-500">
+                                <i class="fa fa-crop mr-1"></i> Cắt & Tải ảnh OG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mục 3: Cấu hình AI Gemini Chatbox -->
                 <div class="bg-purple-50/70 p-4 rounded-xl border border-purple-200 space-y-3">
-                    <h3 class="font-bold text-base text-purple-900 uppercase"><i class="fa fa-robot mr-1"></i> 2. Cấu hình Trợ lý AI Gemini</h3>
+                    <h3 class="font-bold text-base text-purple-900 uppercase"><i class="fa fa-robot mr-1"></i> 3. Cấu hình Trợ lý AI Gemini</h3>
                     <div>
                         <label class="block font-bold mb-1">Gemini API Key (Tùy chọn - Dùng để mở rộng trả lời mọi câu hỏi nâng cao):</label>
                         <input type="password" id="set_gemini_api_key" placeholder="Dán mã Gemini API Key (AIzaSy...) nếu có" class="w-full border p-2.5 rounded-lg bg-white">
@@ -1127,9 +1196,9 @@
                     </div>
                 </div>
 
-                <!-- Mục 3: Liên kết MXH -->
+                <!-- Mục 4: Liên kết MXH -->
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-                    <h3 class="font-bold text-base text-brand uppercase">3. Liên kết Mạng xã hội & Liên hệ</h3>
+                    <h3 class="font-bold text-base text-brand uppercase">4. Liên kết Mạng xã hội & Liên hệ</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block font-bold mb-1"><i class="fa fa-phone text-green-600 mr-1"></i> Số điện thoại (Hotline):</label>
@@ -1162,9 +1231,9 @@
                     </div>
                 </div>
 
-                <!-- Mục 4: Cấu hình Email phản hồi tự động cho học viên & CC -->
+                <!-- Mục 5: Cấu hình Email phản hồi tự động cho học viên & CC -->
                 <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-4">
-                    <h3 class="font-bold text-base text-brand uppercase"><i class="fa fa-paper-plane mr-1"></i> 4. Cấu hình gửi Email phản hồi học viên & CC</h3>
+                    <h3 class="font-bold text-base text-brand uppercase"><i class="fa fa-paper-plane mr-1"></i> 5. Cấu hình gửi Email phản hồi học viên & CC</h3>
                     <div class="space-y-3">
                         <div>
                             <label class="block font-bold mb-1">Danh sách Email nhận CC (Cách nhau bằng dấu phẩy nếu có nhiều email):</label>
@@ -1236,7 +1305,7 @@
             <div class="p-4 bg-white border-t flex justify-end gap-3">
                 <button type="button" onclick="closeCropperModal()" class="px-5 py-2.5 border rounded-lg font-bold text-gray-600">Hủy</button>
                 <button type="button" id="confirmCropUploadBtn" onclick="executeCropAndUpload()" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-lg hover:bg-green-700 shadow-lg flex items-center gap-2">
-                    <i class="fa fa-crop"></i> Cắt ảnh & Tải lên Google Drive
+                    <i class="fa fa-crop"></i> Cắt ảnh & Đồng bộ lên Web
                 </button>
             </div>
         </div>
@@ -1250,7 +1319,6 @@
                 <i class="fa fa-users-gear mr-2"></i> Quản lý Tài khoản, Phân quyền & Reset Mật khẩu
             </h2>
 
-            <!-- Form Tạo tài khoản mới hoặc Cập nhật / Reset mật khẩu -->
             <form id="adminUserForm" class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 mb-6 space-y-4 text-sm">
                 <div class="flex justify-between items-center">
                     <h3 id="adminUserFormTitle" class="font-bold text-brand uppercase">
@@ -1291,7 +1359,6 @@
                 </div>
             </form>
 
-            <!-- Danh sách Tài khoản hiện có -->
             <div>
                 <div class="flex justify-between items-center mb-3">
                     <h4 class="font-bold text-gray-800 text-sm uppercase">Danh sách tài khoản trên hệ thống:</h4>
@@ -1317,17 +1384,167 @@
             </div>
         </div>
     </div>
+
+    <!-- MODAL 8: QUẢN LÝ KHÁCH ĐĂNG KÝ FORM TƯ VẤN (LEADS) & TÙY CHỈNH TÌNH TRẠNG -->
+    <div id="leadsManagerModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden relative">
+            <div class="p-4 bg-brand text-white flex justify-between items-center">
+                <div class="flex items-center gap-2.5">
+                    <i class="fa fa-clipboard-list text-yellow-400 text-xl"></i>
+                    <div>
+                        <h2 class="text-lg md:text-xl font-black uppercase">Theo dõi Học viên Đăng ký Tư vấn (Leads)</h2>
+                        <p class="text-xs text-yellow-300">Quản lý danh sách đăng ký và cập nhật tình trạng chăm sóc học viên trực tiếp lên Google Sheets</p>
+                    </div>
+                </div>
+                <button type="button" onclick="document.getElementById('leadsManagerModal').classList.add('hidden')" class="text-white/80 hover:text-white text-2xl px-2"><i class="fa fa-times"></i></button>
+            </div>
+
+            <!-- Thanh công cụ quản lý các lựa chọn Tình trạng & Lọc dữ liệu -->
+            <div class="p-4 bg-gray-50 border-b space-y-3 text-xs sm:text-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="font-bold text-gray-700"><i class="fa fa-tags text-brand mr-1"></i>Các lựa chọn Tình trạng:</span>
+                        <div id="leadStatusBadgesContainer" class="flex flex-wrap items-center gap-1.5"></div>
+                        <button type="button" onclick="addLeadStatusOption()" class="bg-purple-600 text-white font-bold px-2.5 py-1 rounded-full text-xs hover:bg-purple-700 shadow-sm">
+                            <i class="fa fa-plus mr-1"></i> + Thêm tình trạng mới
+                        </button>
+                    </div>
+                    <button type="button" onclick="fetchLeadsForAdmin()" class="bg-blue-600 text-white font-bold px-3.5 py-1.5 rounded-lg hover:bg-blue-700 text-xs shadow">
+                        <i class="fa fa-rotate mr-1"></i> Làm mới dữ liệu
+                    </button>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-200">
+                    <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+                        <input type="text" id="leadSearchInput" oninput="renderLeadsTable()" placeholder="Tìm theo họ tên, SĐT, email hoặc khóa học..." class="border px-3 py-1.5 rounded-lg flex-1 bg-white">
+                        <select id="leadFilterStatus" onchange="renderLeadsTable()" class="border px-3 py-1.5 rounded-lg bg-white font-bold text-gray-700">
+                            <option value="ALL">-- Tất cả tình trạng --</option>
+                        </select>
+                    </div>
+                    <div id="leadsSummaryCount" class="font-bold text-brand text-xs sm:text-sm">Tổng số: 0 đăng ký</div>
+                </div>
+            </div>
+
+            <!-- Bảng danh sách người đăng ký tư vấn -->
+            <div class="flex-1 overflow-auto p-4">
+                <div class="border rounded-xl overflow-hidden">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700 border-b font-bold">
+                                <th class="p-3 whitespace-nowrap">Thời gian</th>
+                                <th class="p-3">Họ và tên</th>
+                                <th class="p-3 whitespace-nowrap">Số điện thoại</th>
+                                <th class="p-3">Email / Năm sinh</th>
+                                <th class="p-3">Bạn là</th>
+                                <th class="p-3">Khóa học & Câu hỏi</th>
+                                <th class="p-3 whitespace-nowrap">Tình trạng xử lý</th>
+                                <th class="p-3 text-right">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminLeadsTableBody" class="divide-y">
+                            <tr><td colspan="8" class="p-6 text-center text-gray-500">Đang tải dữ liệu đăng ký tư vấn...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 9: QUẢN LÝ CÁC LỰA CHỌN "BẠN LÀ" TRONG FORM TƯ VẤN -->
+    <div id="studentTypesModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 relative">
+            <button type="button" onclick="document.getElementById('studentTypesModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-xl"><i class="fa fa-times"></i></button>
+            <h3 class="text-xl font-black text-brand mb-4 border-b pb-2"><i class="fa fa-list-check mr-2"></i> Tùy chỉnh lựa chọn "Bạn là"</h3>
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="newStudentTypeInput" placeholder="Nhập đối tượng mới (vd: Doanh nghiệp...)" class="border p-2 rounded-lg flex-1 text-sm">
+                <button type="button" onclick="addStudentTypeOption()" class="bg-purple-600 text-white font-bold px-4 py-2 rounded-lg text-sm hover:bg-purple-700">+ Thêm</button>
+            </div>
+            <div id="studentTypesListContainer" class="space-y-2 max-h-60 overflow-y-auto text-sm mb-5"></div>
+            <div class="flex justify-end gap-2 border-t pt-3">
+                <button type="button" onclick="document.getElementById('studentTypesModal').classList.add('hidden')" class="px-4 py-2 border rounded-lg font-bold text-gray-600 text-sm">Đóng</button>
+                <button type="button" onclick="saveStudentTypesAndClose()" class="bg-green-600 text-white font-bold px-5 py-2 rounded-lg hover:bg-green-700 text-sm shadow">Lưu & Áp dụng</button>
+            </div>
+        </div>
+    </div>
 <!-- Thư viện Swiper & Cropper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
-    <!-- LOGIC XỬ LÝ CHÍNH -->
+    <!-- LOGIC XỬ LÝ CHÍNH & ĐỒNG BỘ ĐA TRÌNH DUYỆT -->
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxIPkavZ25hWKDzB3DD00xjO-Lu-0l1QYjohLk8gYkqcwwGQKwWOd2Ep_Bn0U5MWsc0Jg/exec";
-        const CONFIG_CACHE_KEY = "studybee_config_cache_v4";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzy58U2WyTgO8Pia0JxVPLeAzEKV1yTsqAv2JDZQ8JSxA-OxNFqAfo_fGFhA5b-L7_x6w/exec";
+        const CONFIG_CACHE_KEY = "studybee_config_cache_v6";
 
         const DEFAULT_BEE_FAVICON = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230c389b'/><circle cx='50' cy='50' r='30' fill='%23facc15'/><path d='M30 42h40M28 52h44M34 62h32' stroke='%230c389b' stroke-width='6' stroke-linecap='round'/><text x='50' y='88' font-family='Arial' font-weight='900' font-size='14' fill='%23ffffff' text-anchor='middle'>STUDY BEE</text></svg>";
         const DEFAULT_BEE_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 100'><rect width='84' height='84' x='8' y='8' rx='20' fill='%230c389b'/><circle cx='50' cy='50' r='26' fill='%23facc15'/><path d='M32 42h36M30 50h40M35 58h30' stroke='%230c389b' stroke-width='5' stroke-linecap='round'/><text x='108' y='48' font-family='Montserrat,Arial,sans-serif' font-weight='900' font-size='30' fill='%230c389b'>STUDY BEE</text><text x='108' y='78' font-family='Montserrat,Arial,sans-serif' font-weight='700' font-size='20' fill='%23eab308' letter-spacing='3'>ENGLISH</text></svg>";
+
+        // Danh sách đầu số điện thoại tất cả các quốc gia trên thế giới xếp theo thứ tự ABC
+        const WORLD_COUNTRY_CODES = [
+            { name: "Afghanistan", code: "+93" }, { name: "Ai Cập (Egypt)", code: "+20" }, { name: "Albania", code: "+355" },
+            { name: "Algeria", code: "+213" }, { name: "Andorra", code: "+376" }, { name: "Angola", code: "+244" },
+            { name: "Anh (United Kingdom)", code: "+44" }, { name: "Argentina", code: "+54" }, { name: "Armenia", code: "+374" },
+            { name: "Áo (Austria)", code: "+43" }, { name: "Ả Rập Xê Út (Saudi Arabia)", code: "+966" }, { name: "Ấn Độ (India)", code: "+91" },
+            { name: "Azerbaijan", code: "+994" }, { name: "Ba Lan (Poland)", code: "+48" }, { name: "Bahamas", code: "+1-242" },
+            { name: "Bahrain", code: "+973" }, { name: "Bangladesh", code: "+880" }, { name: "Barbados", code: "+1-246" },
+            { name: "Bắc Macedonia", code: "+389" }, { name: "Belarus", code: "+375" }, { name: "Belize", code: "+501" },
+            { name: "Benin", code: "+229" }, { name: "Bhutan", code: "+975" }, { name: "Bỉ (Belgium)", code: "+32" },
+            { name: "Bolivia", code: "+591" }, { name: "Bosnia & Herzegovina", code: "+387" }, { name: "Botswana", code: "+267" },
+            { name: "Bồ Đào Nha (Portugal)", code: "+351" }, { name: "Bờ Biển Ngà (Ivory Coast)", code: "+225" }, { name: "Brazil", code: "+55" },
+            { name: "Brunei", code: "+673" }, { name: "Bulgaria", code: "+359" }, { name: "Burkina Faso", code: "+226" },
+            { name: "Burundi", code: "+257" }, { name: "Các Tiểu Vương quốc Ả Rập (UAE)", code: "+971" }, { name: "Cameroon", code: "+237" },
+            { name: "Campuchia (Cambodia)", code: "+855" }, { name: "Canada", code: "+1" }, { name: "Cape Verde", code: "+238" },
+            { name: "Chad", code: "+235" }, { name: "Chile", code: "+56" }, { name: "Colombia", code: "+57" },
+            { name: "Comoros", code: "+269" }, { name: "Congo", code: "+242" }, { name: "Costa Rica", code: "+506" },
+            { name: "Croatia", code: "+385" }, { name: "Cuba", code: "+53" }, { name: "Cộng hòa Séc (Czechia)", code: "+420" },
+            { name: "Cộng hòa Dominica", code: "+1-809" }, { name: "Cộng hòa Trung Phi", code: "+236" }, { name: "Djibouti", code: "+253" },
+            { name: "Dominica", code: "+1-767" }, { name: "Đài Loan (Taiwan)", code: "+886" }, { name: "Đan Mạch (Denmark)", code: "+45" },
+            { name: "Đông Timor (Timor-Leste)", code: "+670" }, { name: "Đức (Germany)", code: "+49" }, { name: "Ecuador", code: "+593" },
+            { name: "El Salvador", code: "+503" }, { name: "Eritrea", code: "+291" }, { name: "Estonia", code: "+372" },
+            { name: "Eswatini", code: "+268" }, { name: "Ethiopia", code: "+251" }, { name: "Fiji", code: "+679" },
+            { name: "Gabon", code: "+241" }, { name: "Gambia", code: "+220" }, { name: "Georgia", code: "+995" },
+            { name: "Ghana", code: "+233" }, { name: "Grenada", code: "+1-473" }, { name: "Guatemala", code: "+502" },
+            { name: "Guinea", code: "+224" }, { name: "Guinea-Bissau", code: "+245" }, { name: "Guyana", code: "+592" },
+            { name: "Hà Lan (Netherlands)", code: "+31" }, { name: "Haiti", code: "+509" }, { name: "Hàn Quốc (South Korea)", code: "+82" },
+            { name: "Hoa Kỳ (United States)", code: "+1" }, { name: "Honduras", code: "+504" }, { name: "Hồng Kông (Hong Kong)", code: "+852" },
+            { name: "Hungary", code: "+36" }, { name: "Hy Lạp (Greece)", code: "+30" }, { name: "Iceland", code: "+354" },
+            { name: "Indonesia", code: "+62" }, { name: "Iran", code: "+98" }, { name: "Iraq", code: "+964" },
+            { name: "Ireland", code: "+353" }, { name: "Israel", code: "+972" }, { name: "Jamaica", code: "+1-876" },
+            { name: "Jordan", code: "+962" }, { name: "Kazakhstan", code: "+7" }, { name: "Kenya", code: "+254" },
+            { name: "Kiribati", code: "+686" }, { name: "Kuwait", code: "+965" }, { name: "Kyrgyzstan", code: "+996" },
+            { name: "Lào (Laos)", code: "+856" }, { name: "Latvia", code: "+371" }, { name: "Lebanon", code: "+961" },
+            { name: "Lesotho", code: "+266" }, { name: "Liberia", code: "+231" }, { name: "Libya", code: "+218" },
+            { name: "Liechtenstein", code: "+423" }, { name: "Lithuania", code: "+370" }, { name: "Luxembourg", code: "+352" },
+            { name: "Ma Cao (Macau)", code: "+853" }, { name: "Madagascar", code: "+261" }, { name: "Malawi", code: "+265" },
+            { name: "Malaysia", code: "+60" }, { name: "Maldives", code: "+960" }, { name: "Mali", code: "+223" },
+            { name: "Malta", code: "+356" }, { name: "Maroc (Morocco)", code: "+212" }, { name: "Mauritania", code: "+222" },
+            { name: "Mauritius", code: "+230" }, { name: "Mexico", code: "+52" }, { name: "Micronesia", code: "+691" },
+            { name: "Moldova", code: "+373" }, { name: "Monaco", code: "+377" }, { name: "Mông Cổ (Mongolia)", code: "+976" },
+            { name: "Montenegro", code: "+382" }, { name: "Mozambique", code: "+258" }, { name: "Myanmar", code: "+95" },
+            { name: "Na Uy (Norway)", code: "+47" }, { name: "Nam Phi (South Africa)", code: "+27" }, { name: "Nam Sudan", code: "+211" },
+            { name: "Namibia", code: "+264" }, { name: "Nauru", code: "+674" }, { name: "Nepal", code: "+977" },
+            { name: "New Zealand", code: "+64" }, { name: "Nga (Russia)", code: "+7" }, { name: "Nhật Bản (Japan)", code: "+81" },
+            { name: "Nicaragua", code: "+505" }, { name: "Niger", code: "+227" }, { name: "Nigeria", code: "+234" },
+            { name: "Oman", code: "+968" }, { name: "Pakistan", code: "+92" }, { name: "Palau", code: "+680" },
+            { name: "Palestine", code: "+970" }, { name: "Panama", code: "+507" }, { name: "Papua New Guinea", code: "+675" },
+            { name: "Paraguay", code: "+595" }, { name: "Peru", code: "+51" }, { name: "Pháp (France)", code: "+33" },
+            { name: "Phần Lan (Finland)", code: "+358" }, { name: "Philippines", code: "+63" }, { name: "Qatar", code: "+974" },
+            { name: "Romania", code: "+40" }, { name: "Rwanda", code: "+250" }, { name: "Saint Kitts & Nevis", code: "+1-869" },
+            { name: "Saint Lucia", code: "+1-758" }, { name: "Samoa", code: "+685" }, { name: "San Marino", code: "+378" },
+            { name: "Senegal", code: "+221" }, { name: "Serbia", code: "+381" }, { name: "Seychelles", code: "+248" },
+            { name: "Sierra Leone", code: "+232" }, { name: "Singapore", code: "+65" }, { name: "Síp (Cyprus)", code: "+357" },
+            { name: "Slovakia", code: "+421" }, { name: "Slovenia", code: "+386" }, { name: "Somalia", code: "+252" },
+            { name: "Sri Lanka", code: "+94" }, { name: "Sudan", code: "+249" }, { name: "Suriname", code: "+597" },
+            { name: "Syria", code: "+963" }, { name: "Tajikistan", code: "+992" }, { name: "Tanzania", code: "+255" },
+            { name: "Tây Ban Nha (Spain)", code: "+34" }, { name: "Thái Lan (Thailand)", code: "+66" }, { name: "Thổ Nhĩ Kỳ (Turkey)", code: "+90" },
+            { name: "Thụy Điển (Sweden)", code: "+46" }, { name: "Thụy Sĩ (Switzerland)", code: "+41" }, { name: "Togo", code: "+228" },
+            { name: "Tonga", code: "+676" }, { name: "Triều Tiên (North Korea)", code: "+850" }, { name: "Trinidad & Tobago", code: "+1-868" },
+            { name: "Trung Quốc (China)", code: "+86" }, { name: "Tunisia", code: "+216" }, { name: "Turkmenistan", code: "+993" },
+            { name: "Tuvalu", code: "+688" }, { name: "Úc (Australia)", code: "+61" }, { name: "Uganda", code: "+256" },
+            { name: "Ukraina (Ukraine)", code: "+380" }, { name: "Uruguay", code: "+598" }, { name: "Uzbekistan", code: "+998" },
+            { name: "Vanuatu", code: "+678" }, { name: "Vatican", code: "+379" }, { name: "Venezuela", code: "+58" },
+            { name: "Việt Nam", code: "+84", default: true }, { name: "Ý (Italy)", code: "+39" }, { name: "Yemen", code: "+967" },
+            { name: "Zambia", code: "+260" }, { name: "Zimbabwe", code: "+263" }
+        ].sort((a, b) => a.name.localeCompare(b.name, 'vi'));
 
         let currentConfig = {};
         let menuArray = [];
@@ -1343,8 +1560,12 @@
         let studentVideosArray = [];
         let newsArray = [];
         let communityArray = [];
+        let studentTypesArray = [];
+        let leadStatusesArray = [];
         let adminUsersList = [];
+        let adminLeadsList = [];
         let lastSearchMatchedItems = [];
+        let activeSubPageIndices = { parentIdx: null, childIdx: null };
 
         let bannerSwiperInstance = null;
         let eventSwiperInstance = null;
@@ -1368,6 +1589,11 @@
 
         function formatDoc(cmd, value = null) {
             document.execCommand(cmd, false, value);
+            // Kích hoạt sự kiện input trên phần tử đang focus để đảm bảo dữ liệu định dạng chữ được ghi nhận
+            const activeEl = document.activeElement;
+            if (activeEl && activeEl.classList.contains('editable')) {
+                activeEl.dispatchEvent(new Event('input', { bubbles: true }));
+            }
         }
 
         function stripHtmlTags(str) {
@@ -1400,8 +1626,20 @@
             return (match && match[1]) ? match[1] : "";
         }
 
-        // Lọc bỏ hoàn toàn dữ liệu EEC cũ và icon mặc định cũ (3135715.png)
-// Lọc bỏ hoàn toàn dữ liệu EEC cũ và giữ nguyên chữ thường cho email studybeeenglishadmin01@gmail.com
+        function initCountryCodesDropdown() {
+            const selectEl = document.getElementById('f_country_code');
+            if (!selectEl) return;
+            selectEl.innerHTML = '';
+            WORLD_COUNTRY_CODES.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.code;
+                opt.textContent = `${item.name} (${item.code})`;
+                if (item.default) opt.selected = true;
+                selectEl.appendChild(opt);
+            });
+        }
+
+        // Lọc bỏ dữ liệu EEC cũ NHƯNG TUYỆT ĐỐI KHÔNG GHI ĐÈ lên dữ liệu mới mà Admin đã tùy chỉnh
         function sanitizeLegacyEECData(cfg) {
             if (!cfg || typeof cfg !== 'object') return;
 
@@ -1417,7 +1655,6 @@
                     .replace(/Về EEC/gi, "Về chúng tôi")
                     .replace(/\bEEC\b/g, "STUDY BEE ENGLISH")
                     .replace(/eeceducationeec@gmail\.com/gi, "studybeeenglishadmin01@gmail.com")
-                    // Tự động sửa lại nếu email lỡ bị tách thành STUDY BEE ENGLISHadmin01@gmail.com trước đó
                     .replace(/STUDY\s*BEE\s*ENGLISHadmin01@gmail\.com/gi, "studybeeenglishadmin01@gmail.com");
             };
 
@@ -1427,7 +1664,6 @@
                 }
             }
 
-            // Thay thế icon mặc định cũ 3135715.png bằng bộ icon STUDY BEE ENGLISH mới
             if (!cfg.favicon || cfg.favicon.includes("3135715.png")) {
                 cfg.favicon = DEFAULT_BEE_FAVICON;
             }
@@ -1435,16 +1671,12 @@
                 cfg.logo = DEFAULT_BEE_LOGO;
             }
 
-            cfg.footerCol1Title = "VỀ STUDY BEE ENGLISH";
-            cfg.footerCol2Title = "THÔNG TIN ĐƠN VỊ";
-            cfg.footerCompanyName = stripWhiteBackgroundHtml(cfg.footerCompanyName || "HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH");
-            cfg.footerMsdn = stripWhiteBackgroundHtml(cfg.footerMsdn || "Mã số thuế: 087199003168");
-            cfg.footerAddress = stripWhiteBackgroundHtml(cfg.footerAddress || "Địa chỉ: Ấp Trung Tâm, Xã Thường Phước, Tỉnh Đồng Tháp, Việt Nam");
-            cfg.footerEmail = "Email: studybeeenglishadmin01@gmail.com";
-            cfg.link_email = "studybeeenglishadmin01@gmail.com";
-            if (!cfg.email_cc || cfg.email_cc.toLowerCase().includes("eec") || cfg.email_cc.includes("STUDY BEE ENGLISH")) {
-                cfg.email_cc = "studybeeenglishadmin01@gmail.com";
-            }
+            // Chỉ làm sạch nền trắng chữ ở Footer chứ không ép cứng lại văn bản mặc định
+            if (cfg.footerCompanyName) cfg.footerCompanyName = stripWhiteBackgroundHtml(cfg.footerCompanyName);
+            if (cfg.footerMsdn) cfg.footerMsdn = stripWhiteBackgroundHtml(cfg.footerMsdn);
+            if (cfg.footerAddress) cfg.footerAddress = stripWhiteBackgroundHtml(cfg.footerAddress);
+            if (cfg.footerPhone) cfg.footerPhone = stripWhiteBackgroundHtml(cfg.footerPhone);
+            if (cfg.footerEmail) cfg.footerEmail = stripWhiteBackgroundHtml(cfg.footerEmail);
         }
 
         function initDefaultDataIfEmpty() {
@@ -1453,6 +1685,11 @@
                 favicon: DEFAULT_BEE_FAVICON,
                 logo: DEFAULT_BEE_LOGO,
                 primaryColor: "#0c389b",
+                og_title: "STUDY BEE ENGLISH - Nền tảng học tiếng Anh trực tuyến",
+                og_description: "Nền tảng học tiếng Anh giao tiếp trực tuyến 1 kèm 1 và 1 kèm 4 uy tín, cam kết đầu ra cùng đội ngũ giảng viên giàu kinh nghiệm tại STUDY BEE ENGLISH.",
+                og_image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80",
+                og_url: window.location.origin || "https://studybeeenglish.edu.vn",
+                og_type: "website",
                 formMascot: "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
                 aiChatIcon: "https://cdn-icons-png.flaticon.com/512/8943/8943377.png",
                 gemini_api_key: "",
@@ -1507,6 +1744,14 @@
                 }
             }
 
+            if (!Array.isArray(studentTypesArray) || studentTypesArray.length === 0) {
+                studentTypesArray = ["Học sinh/Sinh viên", "Người đi làm", "Phụ huynh"];
+            }
+
+            if (!Array.isArray(leadStatusesArray) || leadStatusesArray.length === 0) {
+                leadStatusesArray = ["Chờ phản hồi", "Đã liên hệ", "Đang tư vấn", "Đã đăng ký học", "Hẹn gọi lại"];
+            }
+
             if (!Array.isArray(menuArray) || menuArray.length === 0) {
                 menuArray = [
                     { id: "m1", title: "Về chúng tôi", type: "about", link: "#ve-chung-toi", content: "", children: [] },
@@ -1522,16 +1767,10 @@
                     { id: "m6", title: "Thư viện", type: "link", link: "#tin-tuc", content: "", children: [] }
                 ];
             } else {
+                // Chỉ chuyển hướng các mục cũ nếu vẫn đang trỏ tới anchor cũ #tai-sao hoặc #giang-vien
                 menuArray.forEach(m => {
-                    const lowerTitle = String(m.title || "").toLowerCase();
-                    if (lowerTitle.includes("về ") || lowerTitle.includes("giới thiệu")) {
-                        m.title = "Về chúng tôi";
-                        m.type = "about";
-                    }
-                    if (lowerTitle.includes("giáo viên") || lowerTitle.includes("giảng viên")) {
-                        m.title = "Đội ngũ giáo viên";
-                        m.type = "teachers";
-                    }
+                    if (m.type === "link" && m.link === "#tai-sao") m.type = "about";
+                    if (m.type === "link" && m.link === "#giang-vien") m.type = "teachers";
                 });
             }
 
@@ -1797,10 +2036,13 @@
             try { if (cfg.studentVideosData) studentVideosArray = JSON.parse(cfg.studentVideosData); } catch(e) {}
             try { if (cfg.newsData) newsArray = JSON.parse(cfg.newsData); } catch(e) {}
             try { if (cfg.communityData) communityArray = JSON.parse(cfg.communityData); } catch(e) {}
+            try { if (cfg.studentTypesData) studentTypesArray = JSON.parse(cfg.studentTypesData); } catch(e) {}
+            try { if (cfg.leadStatusesData) leadStatusesArray = JSON.parse(cfg.leadStatusesData); } catch(e) {}
         }
 
         function renderAllSectionsSafely() {
             try { applyConfigToDOM(); } catch(e) { console.error("applyConfigToDOM err:", e); }
+            try { syncStudentTypesDropdown(); } catch(e) { console.error("syncStudentTypesDropdown err:", e); }
             try { renderNavigationMenu(); } catch(e) { console.error("renderNavigationMenu err:", e); }
             try { renderAboutPage(); } catch(e) { console.error("renderAboutPage err:", e); }
             try { renderTeachersPage(); } catch(e) { console.error("renderTeachersPage err:", e); }
@@ -1817,8 +2059,10 @@
             try { checkAuth(); } catch(e) { console.error("checkAuth err:", e); }
         }
 
-        // 1. Tải cấu hình
+        // 1. Tải cấu hình (Thêm ?t=Date.now() và cache: 'no-store' để mọi trình duyệt mới luôn nhận được dữ liệu mới nhất)
         async function loadConfig() {
+            initCountryCodesDropdown();
+
             try {
                 const cachedStr = localStorage.getItem(CONFIG_CACHE_KEY);
                 if (cachedStr) {
@@ -1833,7 +2077,7 @@
             renderAllSectionsSafely();
 
             try {
-                let res = await fetch(APPS_SCRIPT_URL);
+                let res = await fetch(APPS_SCRIPT_URL + "?t=" + Date.now(), { cache: "no-store" });
                 if (!res.ok) throw new Error("Network error");
                 const rawConfig = await res.json();
                 
@@ -1856,7 +2100,7 @@
             }
         }
 
-        // 2. Áp dụng cấu hình chung lên DOM
+        // 2. Áp dụng cấu hình chung & Thẻ Meta Open Graph lên DOM
         function applyConfigToDOM() {
             const color = String(currentConfig.primaryColor || "#0c389b");
             document.documentElement.style.setProperty('--primary-color', color);
@@ -1865,7 +2109,28 @@
             
             document.getElementById('dom_siteTitle').textContent = String(currentConfig.siteTitle || "STUDY BEE ENGLISH");
             document.getElementById('set_siteTitle').value = String(currentConfig.siteTitle || "STUDY BEE ENGLISH");
-            
+
+            // Cập nhật thẻ Meta Open Graph (Preview khi gửi link)
+            const ogTitle = String(currentConfig.og_title || currentConfig.siteTitle || "STUDY BEE ENGLISH");
+            const ogDesc = String(currentConfig.og_description || "Nền tảng học tiếng Anh trực tuyến STUDY BEE ENGLISH");
+            const ogImage = String(currentConfig.og_image || "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1200&q=80");
+            const ogUrl = String(currentConfig.og_url || window.location.href);
+            const ogType = String(currentConfig.og_type || "website");
+
+            const mTitle = document.getElementById('meta_og_title');
+            const mDesc = document.getElementById('meta_og_description');
+            const mImg = document.getElementById('meta_og_image');
+            const mUrl = document.getElementById('meta_og_url');
+            const mType = document.getElementById('meta_og_type');
+            if (mTitle) mTitle.setAttribute('content', ogTitle);
+            if (mDesc) mDesc.setAttribute('content', ogDesc);
+            if (mImg) mImg.setAttribute('content', ogImage);
+            if (mUrl) mUrl.setAttribute('content', ogUrl);
+            if (mType) mType.setAttribute('content', ogType);
+
+            const ogPreviewImg = document.getElementById('set_og_image_preview');
+            if (ogPreviewImg) ogPreviewImg.src = ogImage;
+
             const favUrl = (currentConfig.favicon && !currentConfig.favicon.includes("3135715.png"))
                 ? String(currentConfig.favicon)
                 : DEFAULT_BEE_FAVICON;
@@ -1879,20 +2144,17 @@
             if (logoImg) logoImg.src = logoUrl;
             if (footerLogoImg) footerLogoImg.src = logoUrl;
 
-            // Ảnh linh vật tách nền ở Form tư vấn
             const mascotImg = document.getElementById('dom_formMascot');
             if (mascotImg) {
                 mascotImg.src = String(currentConfig.formMascot || "https://cdn-icons-png.flaticon.com/512/4712/4712109.png");
             }
 
-            // Icon nút Chatbox AI Gemini
             const aiIconUrl = String(currentConfig.aiChatIcon || "https://cdn-icons-png.flaticon.com/512/8943/8943377.png");
             const aiBtnImg = document.getElementById('dom_aiChatIcon');
             const aiHeaderImg = document.getElementById('dom_aiChatHeaderIcon');
             if (aiBtnImg) aiBtnImg.src = aiIconUrl;
             if (aiHeaderImg) aiHeaderImg.src = aiIconUrl;
 
-            // Đổ chữ cho các thẻ [data-key]
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (currentConfig[key] !== undefined && currentConfig[key] !== "") {
@@ -1906,7 +2168,11 @@
 
             currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
 
-            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject', 'gemini_api_key'];
+            const settingKeys = [
+                'link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes',
+                'email_cc', 'email_sender_name', 'email_subject', 'gemini_api_key',
+                'og_title', 'og_description', 'og_image', 'og_url', 'og_type'
+            ];
             settingKeys.forEach(k => {
                 const inputEl = document.getElementById('set_' + k);
                 if (inputEl && currentConfig[k] !== undefined) {
@@ -1942,7 +2208,62 @@
         }
 
         // =========================================================================
-        // 2B. TÌM KIẾM KHÓA HỌC & GIÁO VIÊN TRÊN HEADER
+        // 2B. QUẢN LÝ LỰA CHỌN "BẠN LÀ" TRONG FORM TƯ VẤN
+        // =========================================================================
+        function syncStudentTypesDropdown() {
+            const selectEl = document.getElementById('f_type');
+            if (!selectEl) return;
+            selectEl.innerHTML = '';
+            studentTypesArray.forEach(t => {
+                const cleanText = String(t || "").trim();
+                if (cleanText) {
+                    const opt = document.createElement('option');
+                    opt.value = cleanText;
+                    opt.textContent = cleanText;
+                    selectEl.appendChild(opt);
+                }
+            });
+        }
+
+        function openStudentTypesManager() {
+            renderStudentTypesManagerList();
+            document.getElementById('studentTypesModal').classList.remove('hidden');
+        }
+
+        function renderStudentTypesManagerList() {
+            const container = document.getElementById('studentTypesListContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            studentTypesArray.forEach((item, idx) => {
+                container.insertAdjacentHTML('beforeend', `
+                    <div class="flex items-center gap-2 bg-gray-50 p-2 rounded-lg border">
+                        <input type="text" value="${item}" oninput="studentTypesArray[${idx}] = this.value" class="border p-1.5 rounded flex-1 text-sm bg-white font-medium">
+                        ${studentTypesArray.length > 1 ? `
+                            <button type="button" onclick="studentTypesArray.splice(${idx}, 1); renderStudentTypesManagerList();" class="text-red-600 px-2.5 py-1 hover:bg-red-50 rounded"><i class="fa fa-trash"></i></button>
+                        ` : ''}
+                    </div>
+                `);
+            });
+        }
+
+        function addStudentTypeOption() {
+            const inp = document.getElementById('newStudentTypeInput');
+            const val = inp.value.trim();
+            if (!val) return;
+            studentTypesArray.push(val);
+            inp.value = '';
+            renderStudentTypesManagerList();
+        }
+
+        async function saveStudentTypesAndClose() {
+            studentTypesArray = studentTypesArray.map(s => String(s || "").trim()).filter(Boolean);
+            syncStudentTypesDropdown();
+            document.getElementById('studentTypesModal').classList.add('hidden');
+            await saveAllToGoogleSheet(true);
+        }
+
+        // =========================================================================
+        // 2C. TÌM KIẾM KHÓA HỌC & GIÁO VIÊN TRÊN HEADER
         // =========================================================================
         function handleHeaderSearch(rawQuery) {
             const resultsBox = document.getElementById('headerSearchResults');
@@ -1957,7 +2278,6 @@
 
             let html = '';
 
-            // 1. Tìm trong danh sách Khóa học VIP
             const matchedCourses = [];
             coursesArray.forEach((c, idx) => {
                 const titleClean = stripHtmlTags(c.title);
@@ -1968,7 +2288,6 @@
                 }
             });
 
-            // Tìm thêm trong các trang con khóa học (E1, E2, E3, E4...)
             menuArray.forEach((m, mIdx) => {
                 (m.children || []).forEach((ch, cIdx) => {
                     const chTitle = stripHtmlTags(ch.title);
@@ -1980,7 +2299,6 @@
                 });
             });
 
-            // 2. Tìm trong danh sách Giáo viên
             const matchedTeachers = [];
             teachersArray.forEach((t, idx) => {
                 const nameClean = stripHtmlTags(t.name);
@@ -2084,7 +2402,6 @@
             }, 200);
         }
 
-        // Ẩn hộp tìm kiếm khi click ra ngoài
         document.addEventListener('click', (e) => {
             const wrapper = document.getElementById('headerSearchWrapper');
             const box = document.getElementById('headerSearchResults');
@@ -2095,6 +2412,7 @@
 
         // 3. Chuyển đổi giữa các trang
         function hideAllMainViews() {
+            harvestAllLiveDomEdits();
             document.getElementById('homePageView').classList.add('hidden');
             document.getElementById('subPageView').classList.add('hidden');
             document.getElementById('aboutPageView').classList.add('hidden');
@@ -2103,11 +2421,13 @@
 
         function showHomePage() {
             hideAllMainViews();
+            activeSubPageIndices = { parentIdx: null, childIdx: null };
             document.getElementById('homePageView').classList.remove('hidden');
         }
 
         function openAboutPageView() {
             hideAllMainViews();
+            activeSubPageIndices = { parentIdx: null, childIdx: null };
             renderAboutPage();
             document.getElementById('aboutPageView').classList.remove('hidden');
             checkAuth();
@@ -2116,6 +2436,7 @@
 
         function openTeachersPageView() {
             hideAllMainViews();
+            activeSubPageIndices = { parentIdx: null, childIdx: null };
             renderTeachersPage();
             document.getElementById('teachersPageView').classList.remove('hidden');
             checkAuth();
@@ -2123,8 +2444,9 @@
         }
 
         function openSubPageView(parentIdx, childIdx) {
-            const target = childIdx !== null ? menuArray[parentIdx].children[childIdx] : menuArray[parentIdx];
             hideAllMainViews();
+            activeSubPageIndices = { parentIdx, childIdx };
+            const target = childIdx !== null ? menuArray[parentIdx].children[childIdx] : menuArray[parentIdx];
             const subView = document.getElementById('subPageView');
             const contentArea = document.getElementById('subPageContentArea');
             subView.classList.remove('hidden');
@@ -2167,8 +2489,8 @@
                                 </button>
                             </div>
                         </div>
-                        <h4 oninput="aboutPageObj.pillars[${idx}].title = this.innerHTML" class="editable font-black text-brand text-lg uppercase mb-2">${p.title}</h4>
-                        <div oninput="aboutPageObj.pillars[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm md:text-[15px] leading-relaxed text-justify flex-1">${p.desc}</div>
+                        <h4 data-sync-group="aboutPillar" data-sync-idx="${idx}" data-sync-field="title" oninput="aboutPageObj.pillars[${idx}].title = this.innerHTML" class="editable font-black text-brand text-lg uppercase mb-2">${p.title}</h4>
+                        <div data-sync-group="aboutPillar" data-sync-idx="${idx}" data-sync-field="desc" oninput="aboutPageObj.pillars[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm md:text-[15px] leading-relaxed text-justify flex-1">${p.desc}</div>
                     </div>
                 `);
             });
@@ -2194,10 +2516,10 @@
                                 <div class="motto-badge px-6 py-2.5 rounded">
                                     <span class="motto-pin left-3"></span>
                                     <span class="motto-pin right-3"></span>
-                                    <h3 oninput="aboutPageObj.commitments[${idx}].title = this.innerHTML" class="editable font-black text-base md:text-lg uppercase text-yellow-400">${cm.title}</h3>
+                                    <h3 data-sync-group="aboutCommit" data-sync-idx="${idx}" data-sync-field="title" oninput="aboutPageObj.commitments[${idx}].title = this.innerHTML" class="editable font-black text-base md:text-lg uppercase text-yellow-400">${cm.title}</h3>
                                 </div>
                             </div>
-                            <div oninput="aboutPageObj.commitments[${idx}].desc = this.innerHTML" class="editable text-gray-800 text-base leading-relaxed text-justify">${cm.desc}</div>
+                            <div data-sync-group="aboutCommit" data-sync-idx="${idx}" data-sync-field="desc" oninput="aboutPageObj.commitments[${idx}].desc = this.innerHTML" class="editable text-gray-800 text-base leading-relaxed text-justify">${cm.desc}</div>
                         </div>
                     </div>
                 `);
@@ -2219,8 +2541,8 @@
                         <div class="w-14 h-14 rounded-full bg-yellow-400 text-brand flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg">
                             <i class="fa-solid ${idx === 0 ? 'fa-user-graduate' : (idx === 1 ? 'fa-heart' : 'fa-lightbulb')}"></i>
                         </div>
-                        <h3 oninput="teacherPageObj.highlights[${idx}].title = this.innerHTML" class="editable text-yellow-400 font-black text-lg md:text-xl uppercase mb-3">${hl.title}</h3>
-                        <div oninput="teacherPageObj.highlights[${idx}].desc = this.innerHTML" class="editable text-white/95 text-sm md:text-[15px] leading-relaxed">${hl.desc}</div>
+                        <h3 data-sync-group="teacherHighlight" data-sync-idx="${idx}" data-sync-field="title" oninput="teacherPageObj.highlights[${idx}].title = this.innerHTML" class="editable text-yellow-400 font-black text-lg md:text-xl uppercase mb-3">${hl.title}</h3>
+                        <div data-sync-group="teacherHighlight" data-sync-idx="${idx}" data-sync-field="desc" oninput="teacherPageObj.highlights[${idx}].desc = this.innerHTML" class="editable text-white/95 text-sm md:text-[15px] leading-relaxed">${hl.desc}</div>
                     </div>
                 `);
             });
@@ -2254,14 +2576,14 @@
 
                                 <div class="w-full md:w-7/12">
                                     <div class="teacher-bio-card p-6 md:p-8">
-                                        <h3 oninput="teachersArray[${idx}].name = this.innerHTML; renderTeachersSection();" class="editable text-xl md:text-2xl font-black text-brand uppercase mb-1">
+                                        <h3 data-sync-group="teacherDetail" data-sync-idx="${idx}" data-sync-field="name" oninput="teachersArray[${idx}].name = this.innerHTML; renderTeachersSection();" class="editable text-xl md:text-2xl font-black text-brand uppercase mb-1">
                                             ${t.name}
                                         </h3>
                                         <div class="flex flex-wrap items-center gap-2 mb-4 pb-3 border-b border-gray-200 text-xs font-bold text-gray-600">
-                                            <span oninput="teachersArray[${idx}].role = this.innerHTML; renderTeachersSection();" class="editable bg-blue-50 text-brand px-3 py-1 rounded-full">${t.role || 'Giảng viên STUDY BEE ENGLISH'}</span>
-                                            <span oninput="teachersArray[${idx}].exp = this.innerHTML; renderTeachersSection();" class="editable bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">${t.exp || 'Giảng viên giàu kinh nghiệm'}</span>
+                                            <span data-sync-group="teacherDetail" data-sync-idx="${idx}" data-sync-field="role" oninput="teachersArray[${idx}].role = this.innerHTML; renderTeachersSection();" class="editable bg-blue-50 text-brand px-3 py-1 rounded-full">${t.role || 'Giảng viên STUDY BEE ENGLISH'}</span>
+                                            <span data-sync-group="teacherDetail" data-sync-idx="${idx}" data-sync-field="exp" oninput="teachersArray[${idx}].exp = this.innerHTML; renderTeachersSection();" class="editable bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">${t.exp || 'Giảng viên giàu kinh nghiệm'}</span>
                                         </div>
-                                        <div oninput="teachersArray[${idx}].bio = this.innerHTML" class="editable rich-content text-gray-800 text-sm md:text-[15px] leading-relaxed text-justify">
+                                        <div data-sync-group="teacherDetail" data-sync-idx="${idx}" data-sync-field="bio" oninput="teachersArray[${idx}].bio = this.innerHTML" class="editable rich-content text-gray-800 text-sm md:text-[15px] leading-relaxed text-justify">
                                             ${bioContent}
                                         </div>
                                     </div>
@@ -2409,9 +2731,7 @@
             await saveAllToGoogleSheet();
         }
 
-        // =========================================================================
-        // 5. RENDER SLIDESHOW BANNER TRÀN KHUNG (HIỂN THỊ TRỰC TIẾP ẢNH, KHÔNG PHỦ CHỮ)
-        // =========================================================================
+        // 5. Render Slideshow Banner Tràn Khung
         function renderBannersSlider() {
             if (bannerSwiperInstance) {
                 bannerSwiperInstance.destroy(true, true);
@@ -2457,29 +2777,32 @@
             });
         }
 
-        function addNewBannerSlide() {
+        async function addNewBannerSlide() {
             bannersArray.push({
                 img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80",
                 link: "#tu-van"
             });
             renderBannersSlider();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function editBannerLink(idx) {
+        async function editBannerLink(idx) {
             const url = prompt("Nhập đường dẫn khi học viên bấm vào Banner này:", bannersArray[idx].link || "#tu-van");
             if (url !== null) {
                 bannersArray[idx].link = url.trim();
                 renderBannersSlider();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
-        function deleteBannerSlide(idx) {
+        async function deleteBannerSlide(idx) {
             if (confirm("Xóa Banner này?")) {
                 bannersArray.splice(idx, 1);
                 renderBannersSlider();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
@@ -2538,16 +2861,17 @@
             return true;
         }
 
-        function editEventLink(idx) {
+        async function editEventLink(idx) {
             const newUrl = prompt("Nhập đường dẫn (URL) khi bấm vào sự kiện này:", eventsArray[idx].link || "https://");
             if (newUrl !== null && newUrl.trim() !== "") {
                 eventsArray[idx].link = newUrl.trim();
                 renderEventsSlider();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
-        function addEventSlide() {
+        async function addEventSlide() {
             eventsArray.push({
                 img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&q=80",
                 link: "#tu-van",
@@ -2555,13 +2879,15 @@
             });
             renderEventsSlider();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function deleteEventSlide(idx) {
+        async function deleteEventSlide(idx) {
             if (confirm("Xóa sự kiện này?")) {
                 eventsArray.splice(idx, 1);
                 renderEventsSlider();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
@@ -2577,8 +2903,8 @@
                             <i class="${item.icon}"></i>
                             <span class="admin-only hidden absolute -top-2 -right-6 bg-yellow-400 text-black text-[10px] font-bold px-1.5 py-0.5 rounded shadow">Đổi Icon</span>
                         </div>
-                        <h3 oninput="reasonsArray[${idx}].title = this.innerHTML" class="editable text-lg font-bold mb-3 text-brand">${item.title}</h3>
-                        <div oninput="reasonsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm leading-relaxed">${item.desc}</div>
+                        <h3 data-sync-group="reason" data-sync-idx="${idx}" data-sync-field="title" oninput="reasonsArray[${idx}].title = this.innerHTML" class="editable text-lg font-bold mb-3 text-brand">${item.title}</h3>
+                        <div data-sync-group="reason" data-sync-idx="${idx}" data-sync-field="desc" oninput="reasonsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm leading-relaxed">${item.desc}</div>
                     </div>
                 `);
             });
@@ -2605,13 +2931,14 @@
             });
         }
 
-        function selectReasonIcon(iconClass) {
+        async function selectReasonIcon(iconClass) {
             if (activeReasonIconIndex === null) return;
             reasonsArray[activeReasonIconIndex].icon = iconClass;
             reasonsArray[activeReasonIconIndex].color = document.getElementById('iconColorPicker').value;
             document.getElementById('iconPickerModal').classList.add('hidden');
             renderReasonsSection();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
         // 8. Render KHÓA HỌC TIẾNG ANH ONLINE VIP
@@ -2652,11 +2979,11 @@
                                 <div class="motto-badge px-6 py-3 rounded">
                                     <span class="motto-pin left-3"></span>
                                     <span class="motto-pin right-3"></span>
-                                    <h3 oninput="coursesArray[${idx}].title = this.innerHTML; syncCourseDropdown();" class="editable font-black text-base md:text-lg uppercase tracking-wide text-yellow-400">${course.title}</h3>
+                                    <h3 data-sync-group="course" data-sync-idx="${idx}" data-sync-field="title" oninput="coursesArray[${idx}].title = this.innerHTML; syncCourseDropdown();" class="editable font-black text-base md:text-lg uppercase tracking-wide text-yellow-400">${course.title}</h3>
                                 </div>
                             </div>
 
-                            <div oninput="coursesArray[${idx}].desc = this.innerHTML" class="editable rich-content text-gray-800 mb-6 text-justify leading-relaxed text-[15px] md:text-base">${course.desc}</div>
+                            <div data-sync-group="course" data-sync-idx="${idx}" data-sync-field="desc" oninput="coursesArray[${idx}].desc = this.innerHTML" class="editable rich-content text-gray-800 mb-6 text-justify leading-relaxed text-[15px] md:text-base">${course.desc}</div>
                             
                             <div class="flex flex-wrap items-center gap-4">
                                 <button type="button" onclick="toggleCourseDetail(${idx})" id="btnToggleDetail_${idx}" class="border border-brand text-brand bg-white font-bold py-2.5 px-8 rounded-full hover:bg-brand hover:text-white transition text-sm shadow-sm">
@@ -2668,7 +2995,7 @@
                                 <div class="admin-only hidden text-xs text-purple-700 font-bold mb-1">
                                     <i class="fa fa-pen"></i> Nội dung chi tiết (Học viên bấm "Xem chi tiết" sẽ hiển thị phần này):
                                 </div>
-                                <div oninput="coursesArray[${idx}].detailDesc = this.innerHTML" class="editable rich-content bg-white p-5 rounded-xl border border-blue-200 text-gray-700 text-sm leading-relaxed shadow-sm">${detailText}</div>
+                                <div data-sync-group="course" data-sync-idx="${idx}" data-sync-field="detailDesc" oninput="coursesArray[${idx}].detailDesc = this.innerHTML" class="editable rich-content bg-white p-5 rounded-xl border border-blue-200 text-gray-700 text-sm leading-relaxed shadow-sm">${detailText}</div>
                                 <div class="mt-3">
                                     <a href="#tu-van" onclick="selectCourseInForm(${idx})" class="inline-block bg-yellow-400 text-brand font-extrabold py-2 px-6 rounded-full hover:bg-yellow-500 transition text-xs shadow">
                                         Đăng ký tư vấn lộ trình này <i class="fa fa-arrow-right ml-1"></i>
@@ -2716,7 +3043,7 @@
             }
         }
 
-        function addNewCourse() {
+        async function addNewCourse() {
             coursesArray.push({
                 title: "KHÓA HỌC TIẾNG ANH VIP MỚI",
                 desc: "♦ <b>Mô tả khóa học:</b> Nhập thông tin giới thiệu khóa học tại đây.<br>♦ Đầu ra cam kết theo chuẩn quốc tế.",
@@ -2725,17 +3052,19 @@
             });
             renderCoursesList();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function deleteCourse(idx) {
+        async function deleteCourse(idx) {
             if (confirm("Xóa khóa học này?")) {
                 coursesArray.splice(idx, 1);
                 renderCoursesList();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
-        // 9. Render GIẢNG VIÊN TÀI NĂNG – TÂM HUYẾT (Đồng bộ trực tiếp với Trang Đội ngũ giáo viên)
+        // 9. Render GIẢNG VIÊN TÀI NĂNG – TÂM HUYẾT
         function renderTeachersSection() {
             const container = document.getElementById('teachersContainer');
             if (!container) return;
@@ -2752,8 +3081,8 @@
                                 <i class="fa-solid fa-star text-brand"></i>
                             </div>
                             <div>
-                                <div oninput="teachersArray[${idx}].name = this.innerHTML; renderTeachersPage();" class="editable font-black text-brand text-sm uppercase leading-tight">${t.name}</div>
-                                <div oninput="teachersArray[${idx}].role = this.innerHTML; renderTeachersPage();" class="editable text-xs text-gray-600">${t.role || 'Giảng viên STUDY BEE ENGLISH'}</div>
+                                <div data-sync-group="teacherHome" data-sync-idx="${idx}" data-sync-field="name" oninput="teachersArray[${idx}].name = this.innerHTML; renderTeachersPage();" class="editable font-black text-brand text-sm uppercase leading-tight">${t.name}</div>
+                                <div data-sync-group="teacherHome" data-sync-idx="${idx}" data-sync-field="role" oninput="teachersArray[${idx}].role = this.innerHTML; renderTeachersPage();" class="editable text-xs text-gray-600">${t.role || 'Giảng viên STUDY BEE ENGLISH'}</div>
                             </div>
                         </div>
 
@@ -2767,7 +3096,7 @@
                         </div>
 
                         <div class="-mt-4 relative z-10 mx-3">
-                            <div oninput="teachersArray[${idx}].exp = this.innerHTML; renderTeachersPage();" class="editable bg-brand text-white text-xs font-bold py-2.5 px-4 rounded-lg text-center shadow-[0_3px_0_#eab308]">
+                            <div data-sync-group="teacherHome" data-sync-idx="${idx}" data-sync-field="exp" oninput="teachersArray[${idx}].exp = this.innerHTML; renderTeachersPage();" class="editable bg-brand text-white text-xs font-bold py-2.5 px-4 rounded-lg text-center shadow-[0_3px_0_#eab308]">
                                 ${t.exp}
                             </div>
                         </div>
@@ -2776,7 +3105,7 @@
             });
         }
 
-        function addTeacherCard() {
+        async function addTeacherCard() {
             teachersArray.push({
                 name: "GIÁO VIÊN MỚI",
                 role: "Giảng viên STUDY BEE ENGLISH",
@@ -2787,14 +3116,16 @@
             renderTeachersSection();
             renderTeachersPage();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function deleteTeacherCard(idx) {
+        async function deleteTeacherCard(idx) {
             if (confirm("Xóa giảng viên này khỏi danh sách?")) {
                 teachersArray.splice(idx, 1);
                 renderTeachersSection();
                 renderTeachersPage();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
@@ -2812,9 +3143,9 @@
                     container.insertAdjacentHTML('beforeend', `
                         <div class="text-center">
                             <div class="achieve-card py-8 px-4 mb-4 flex items-center justify-center">
-                                <span oninput="achievementsArray[${idx}].number = this.innerHTML" class="editable text-4xl md:text-5xl font-black text-brand tracking-tight">${ach.number}</span>
+                                <span data-sync-group="achieve" data-sync-idx="${idx}" data-sync-field="number" oninput="achievementsArray[${idx}].number = this.innerHTML" class="editable text-4xl md:text-5xl font-black text-brand tracking-tight">${ach.number}</span>
                             </div>
-                            <div oninput="achievementsArray[${idx}].label = this.innerHTML" class="editable font-bold text-gray-900 text-base md:text-lg leading-snug">
+                            <div data-sync-group="achieve" data-sync-idx="${idx}" data-sync-field="label" oninput="achievementsArray[${idx}].label = this.innerHTML" class="editable font-bold text-gray-900 text-base md:text-lg leading-snug">
                                 ${ach.label}
                             </div>
                         </div>
@@ -2847,12 +3178,12 @@
                         <div class="student-review-box w-full pt-10 pb-7 px-6 md:px-8 mt-1 relative z-20">
                             <div class="absolute -top-6 left-1/2 -translate-x-1/2 z-30 whitespace-nowrap">
                                 <div class="student-name-badge text-base md:text-lg font-extrabold">
-                                    <span oninput="testimonialsArray[${idx}].prefix = this.innerHTML" class="editable text-white">${item.prefix || 'Học viên'}</span>
-                                    <span oninput="testimonialsArray[${idx}].name = this.innerHTML" class="editable text-yellow-400 ml-1">${item.name}</span>
+                                    <span data-sync-group="testimonial" data-sync-idx="${idx}" data-sync-field="prefix" oninput="testimonialsArray[${idx}].prefix = this.innerHTML" class="editable text-white">${item.prefix || 'Học viên'}</span>
+                                    <span data-sync-group="testimonial" data-sync-idx="${idx}" data-sync-field="name" oninput="testimonialsArray[${idx}].name = this.innerHTML" class="editable text-yellow-400 ml-1">${item.name}</span>
                                 </div>
                             </div>
 
-                            <div oninput="testimonialsArray[${idx}].content = this.innerHTML" class="editable text-gray-900 text-sm md:text-[15px] leading-relaxed text-justify mt-2">
+                            <div data-sync-group="testimonial" data-sync-idx="${idx}" data-sync-field="content" oninput="testimonialsArray[${idx}].content = this.innerHTML" class="editable text-gray-900 text-sm md:text-[15px] leading-relaxed text-justify mt-2">
                                 ${item.content}
                             </div>
                         </div>
@@ -2861,7 +3192,7 @@
             });
         }
 
-        function addTestimonialCard() {
+        async function addTestimonialCard() {
             testimonialsArray.push({
                 prefix: "Học viên",
                 name: "Tên Học Viên",
@@ -2870,13 +3201,15 @@
             });
             renderTestimonialsSection();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function deleteTestimonialCard(idx) {
+        async function deleteTestimonialCard(idx) {
             if (confirm("Xóa chia sẻ của học viên này?")) {
                 testimonialsArray.splice(idx, 1);
                 renderTestimonialsSection();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
@@ -2961,7 +3294,7 @@
             `;
         }
 
-        function editStudentVideoUrl(idx) {
+        async function editStudentVideoUrl(idx) {
             const currentUrl = studentVideosArray[idx].youtubeUrl || "https://youtu.be/";
             const newUrl = prompt("Dán đường dẫn Video YouTube (Watch, Share youtu.be hoặc Shorts):", currentUrl);
             if (newUrl !== null && newUrl.trim() !== "") {
@@ -2973,22 +3306,25 @@
                 studentVideosArray[idx].youtubeUrl = newUrl.trim();
                 renderStudentVideosSection();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
-        function addStudentVideo() {
+        async function addStudentVideo() {
             const url = prompt("Dán đường dẫn Video YouTube mới:", "https://youtu.be/XGm8vrJ7Kaw");
             if (!url) return;
             studentVideosArray.push({ youtubeUrl: url.trim(), thumb: "" });
             renderStudentVideosSection();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function deleteStudentVideo(idx) {
+        async function deleteStudentVideo(idx) {
             if (confirm("Xóa video này?")) {
                 studentVideosArray.splice(idx, 1);
                 renderStudentVideosSection();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
@@ -3024,16 +3360,16 @@
 
                         <div class="mb-3">
                             <span class="inline-flex items-center gap-2 bg-[#dfe5f2] text-gray-900 font-bold text-xs md:text-sm px-4 py-1.5 rounded-md">
-                                <span oninput="newsArray[${idx}].category = this.innerHTML" class="editable">${item.category}</span>
+                                <span data-sync-group="news" data-sync-idx="${idx}" data-sync-field="category" oninput="newsArray[${idx}].category = this.innerHTML" class="editable">${item.category}</span>
                                 <i class="fa-solid fa-chevron-right text-brand text-[10px]"></i>
                             </span>
                         </div>
 
-                        <h3 oninput="newsArray[${idx}].title = this.innerHTML" class="editable font-black text-gray-900 text-base md:text-lg uppercase leading-snug mb-2.5">
+                        <h3 data-sync-group="news" data-sync-idx="${idx}" data-sync-field="title" oninput="newsArray[${idx}].title = this.innerHTML" class="editable font-black text-gray-900 text-base md:text-lg uppercase leading-snug mb-2.5">
                             ${item.title}
                         </h3>
 
-                        <div oninput="newsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm md:text-[15px] leading-relaxed text-justify">
+                        <div data-sync-group="news" data-sync-idx="${idx}" data-sync-field="desc" oninput="newsArray[${idx}].desc = this.innerHTML" class="editable text-gray-700 text-sm md:text-[15px] leading-relaxed text-justify">
                             ${item.desc}
                         </div>
                     </div>
@@ -3050,16 +3386,17 @@
             return true;
         }
 
-        function editNewsLink(idx) {
+        async function editNewsLink(idx) {
             const url = prompt("Nhập đường dẫn (URL) cho bài viết này:", newsArray[idx].link || "#tu-van");
             if (url !== null && url.trim() !== "") {
                 newsArray[idx].link = url.trim();
                 renderNewsSection();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
-        function addNewsCard() {
+        async function addNewsCard() {
             newsArray.push({
                 category: "Blog",
                 title: "TIÊU ĐỀ BÀI VIẾT MỚI",
@@ -3069,13 +3406,15 @@
             });
             renderNewsSection();
             checkAuth();
+            await saveAllToGoogleSheet(true);
         }
 
-        function deleteNewsCard(idx) {
+        async function deleteNewsCard(idx) {
             if (confirm("Xóa bài viết tin tức này?")) {
                 newsArray.splice(idx, 1);
                 renderNewsSection();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
@@ -3103,7 +3442,7 @@
                                 <div class="w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center shadow">
                                     ${iconHtml}
                                 </div>
-                                <span oninput="communityArray[${idx}].handle = this.innerHTML" class="editable font-bold text-gray-800 text-sm">${item.handle}</span>
+                                <span data-sync-group="community" data-sync-idx="${idx}" data-sync-field="handle" oninput="communityArray[${idx}].handle = this.innerHTML" class="editable font-bold text-gray-800 text-sm">${item.handle}</span>
                             </div>
 
                             <div class="community-frame aspect-[16/10] mb-5 relative group">
@@ -3121,13 +3460,13 @@
                                 </div>
                             </div>
 
-                            <div oninput="communityArray[${idx}].bullets = this.innerHTML" class="editable rich-content text-gray-800 text-sm md:text-[15px] leading-relaxed mb-6 px-1">
+                            <div data-sync-group="community" data-sync-idx="${idx}" data-sync-field="bullets" oninput="communityArray[${idx}].bullets = this.innerHTML" class="editable rich-content text-gray-800 text-sm md:text-[15px] leading-relaxed mb-6 px-1">
                                 ${item.bullets}
                             </div>
                         </div>
 
                         <a href="${item.link || '#'}" target="_blank" onclick="return handleCommunityClick(event, ${idx})" class="block w-full border border-brand text-brand font-medium py-2.5 px-4 rounded-md text-center hover:bg-brand hover:text-white transition text-sm md:text-base">
-                            <span oninput="communityArray[${idx}].btnText = this.innerHTML" class="editable">${item.btnText || 'Đăng ký theo dõi'}</span>
+                            <span data-sync-group="community" data-sync-idx="${idx}" data-sync-field="btnText" oninput="communityArray[${idx}].btnText = this.innerHTML" class="editable">${item.btnText || 'Đăng ký theo dõi'}</span>
                             <i class="fa-solid fa-arrow-right-long ml-1.5 text-xs"></i>
                         </a>
                     </div>
@@ -3144,17 +3483,18 @@
             return true;
         }
 
-        function editCommunityLink(idx) {
+        async function editCommunityLink(idx) {
             const url = prompt("Nhập đường dẫn (URL) kênh mạng xã hội:", communityArray[idx].link || "https://");
             if (url !== null && url.trim() !== "") {
                 communityArray[idx].link = url.trim();
                 renderCommunitySection();
                 checkAuth();
+                await saveAllToGoogleSheet(true);
             }
         }
 
         // =========================================================================
-        // 14. CÔNG CỤ CẮT ẢNH ĐA TỶ LỆ CHO MỌI BANNER & HÌNH ẢNH
+        // 14. CÔNG CỤ CẮT ẢNH ĐA TỶ LỆ & TỰ ĐỘNG ĐỒNG BỘ LÊN GOOGLE SHEETS
         // =========================================================================
         function openCropperModal(type, key, aspectRatio, width, height, titleText, isCircle = false) {
             cropJob = { type, key, aspectRatio, width, height, isCircle };
@@ -3239,7 +3579,7 @@
             }
             const btn = document.getElementById('confirmCropUploadBtn');
             const oldHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang cắt & tải lên Drive...';
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang cắt & đồng bộ lên Drive...';
             btn.disabled = true;
 
             try {
@@ -3252,7 +3592,6 @@
                     canvas = getRoundedCanvas(canvas);
                 }
 
-                // Giữ định dạng PNG trong suốt cho Logo, Favicon, Mascot tách nền và Icon AI
                 const usePng = (cropJob.isCircle || cropJob.key === 'logo' || cropJob.key === 'favicon' || cropJob.key === 'formMascot' || cropJob.key === 'aiChatIcon');
                 const mimeType = usePng ? 'image/png' : 'image/jpeg';
                 const base64Data = canvas.toDataURL(mimeType, 0.92);
@@ -3272,9 +3611,16 @@
                     if (cropJob.type === 'avatar') {
                         document.getElementById('prof_avatar_preview').src = res.url;
                         document.getElementById('prof_avatar_preview').setAttribute('data-uploaded-url', res.url);
+                        closeCropperModal();
+                        return;
                     } else if (cropJob.type === 'config') {
                         currentConfig[cropJob.key] = res.url;
-                        localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify(currentConfig));
+                        if (cropJob.key === 'og_image') {
+                            const ogInput = document.getElementById('set_og_image');
+                            const ogPrev = document.getElementById('set_og_image_preview');
+                            if (ogInput) ogInput.value = res.url;
+                            if (ogPrev) ogPrev.src = res.url;
+                        }
                         applyConfigToDOM();
                     } else if (cropJob.type === 'aboutBanner') {
                         aboutPageObj.bannerImg = res.url;
@@ -3331,6 +3677,8 @@
                         checkAuth();
                     }
                     closeCropperModal();
+                    // Tự động lưu cấu hình ảnh mới lên Google Sheets để mọi trình duyệt khác nhận được ngay
+                    await saveAllToGoogleSheet(true);
                 } else {
                     alert("Lỗi từ Google Drive: " + res.message);
                 }
@@ -3344,7 +3692,7 @@
         }
 
         // =========================================================================
-        // 15. TRỢ LÝ AI GEMINI CHATBOX (TRẢ LỜI MỌI CÂU HỎI WEB & HẰNG NGÀY)
+        // 15. TRỢ LÝ AI GEMINI CHATBOX
         // =========================================================================
         function toggleAiChatWindow() {
             const win = document.getElementById('aiChatWindow');
@@ -3398,23 +3746,19 @@ ${teachersText}
             `.trim();
         }
 
-        // Bộ trí tuệ nhân tạo tích hợp sẵn (Hoạt động tức thì ngay cả khi chưa nhập API Key)
         function generateSmartLocalAiResponse(question) {
             const q = question.toLowerCase().trim();
 
-            // 1. Hỏi về khóa học / lộ trình
             if (q.includes("khóa học") || q.includes("khoa hoc") || q.includes("lộ trình") || q.includes("học gì") || q.includes("toeic") || q.includes("ielts") || q.includes("trẻ em") || q.includes("người đi làm") || q.includes("e1") || q.includes("e2")) {
                 const listHtml = coursesArray.map(c => `<li><b>${stripHtmlTags(c.title)}</b>: ${stripHtmlTags(c.desc).slice(0, 160)}...</li>`).join("");
                 return `Tại <b>STUDY BEE ENGLISH</b>, chúng tôi đào tạo các chương trình nổi bật sau:<ul class="list-disc pl-4 mt-1 space-y-1">${listHtml}<li><b>Hệ thống lớp giao tiếp E1 - E4:</b> Từ mất gốc (chuẩn hóa 44 âm IPA) đến giao tiếp phản xạ chuyên nghiệp, luyện thi TOEIC/IELTS 1 kèm 1 và 1 kèm 4.</li></ul><div class="mt-2 text-xs text-brand font-bold">👉 Bạn có thể để lại SĐT ở mục Tư vấn hoặc gọi Hotline ${currentConfig.link_phone || '0362938989'} để được kiểm tra trình độ miễn phí nhé!</div>`;
             }
 
-            // 2. Hỏi về giáo viên / giảng viên
             if (q.includes("giáo viên") || q.includes("giao vien") || q.includes("giảng viên") || q.includes("thầy") || q.includes("cô")) {
                 const tList = teachersArray.map(t => `<li><b>${stripHtmlTags(t.name)}</b> (${stripHtmlTags(t.exp)})</li>`).join("");
                 return `Đội ngũ giảng viên tại <b>STUDY BEE ENGLISH</b> đều có trình độ chuyên môn cao, chứng chỉ quốc tế TESOL và nhiều năm kinh nghiệm:<ul class="list-disc pl-4 mt-1 space-y-1">${tList}</ul><div class="mt-2">Bạn có thể bấm vào mục <b>"Đội ngũ giáo viên"</b> trên thanh Menu để xem chi tiết hồ sơ từng thầy cô nhé!</div>`;
             }
 
-            // 3. Hỏi về thông tin công ty, địa chỉ, mã số thuế, liên hệ
             if (q.includes("địa chỉ") || q.includes("ở đâu") || q.includes("liên hệ") || q.includes("số điện thoại") || q.includes("hotline") || q.includes("mã số thuế") || q.includes("công ty") || q.includes("email") || q.includes("zalo")) {
                 return `Thông tin chính thức của đơn vị chúng tôi:<br>
                 • <b>Đơn vị:</b> ${stripHtmlTags(currentConfig.footerCompanyName)}<br>
@@ -3424,12 +3768,10 @@ ${teachersText}
                 • <b>Email:</b> ${currentConfig.link_email}`;
             }
 
-            // 4. Hỏi về học phí / ưu đãi
             if (q.includes("học phí") || q.includes("hoc phi") || q.includes("giá") || q.includes("bao nhiêu tiền") || q.includes("ưu đãi")) {
                 return `Hiện tại <b>STUDY BEE ENGLISH</b> đang có chương trình <b>ưu đãi học phí lên đến 40%</b> cho các lộ trình học trực tuyến 1 kèm 1 và 1 kèm 4.<br>Do lộ trình được thiết kế cá nhân hóa theo trình độ đầu vào của từng học viên, bạn hãy điền thông tin ở khung <b>Đăng ký tư vấn</b> hoặc nhắn Zalo <b>${currentConfig.link_phone}</b> để nhận báo giá chi tiết nhất nhé!`;
             }
 
-            // 5. Các câu hỏi giao tiếp thường ngày, thời gian, tính toán, tiếng Anh
             if (q.includes("xin chào") || q.includes("hello") || q.includes("hi ") || q === "hi" || q.includes("chào bạn")) {
                 return `Chào bạn! Rất vui được trò chuyện cùng bạn hôm nay. Bạn đang muốn tìm hiểu về khóa học tiếng Anh tại <b>STUDY BEE ENGLISH</b> hay có câu hỏi nào cần mình giải đáp không? 😊`;
             }
@@ -3446,7 +3788,6 @@ ${teachersText}
                 3. <b>Luyện phản xạ nghe - nói hàng ngày</b> cùng người hướng dẫn (như mô hình 1 kèm 1 tại STUDY BEE ENGLISH).`;
             }
 
-            // Phép tính toán học đơn giản
             if (/^[\d\s\+\-\*\/\(\)\.]+$/.test(q)) {
                 try {
                     const result = Function('"use strict";return (' + q + ')')();
@@ -3456,7 +3797,7 @@ ${teachersText}
 
             return `Cảm ơn câu hỏi của bạn! Về nội dung <b>"${stripHtmlTags(question)}"</b>:<br>
             • Nếu bạn cần hỗ trợ chuyên sâu về lộ trình tiếng Anh tại <b>STUDY BEE ENGLISH</b>, đội ngũ chuyên môn luôn sẵn sàng hỗ trợ qua Hotline/Zalo: <b>${currentConfig.link_phone || '0362938989'}</b> hoặc Email: <b>${currentConfig.link_email}</b>.<br>
-            • <i>(Mẹo cho Quản trị viên: Bạn có thể dán mã Gemini API Key miễn phí trong mục "Cài đặt Web & AI" để mở khóa khả năng trả lời tự do mọi chủ đề đời sống không giới hạn của Google Gemini!)</i>`;
+            • <i>(Mẹo cho Quản trị viên: Bạn có thể dán mã Gemini API Key miễn phí trong mục "Cài đặt Web, OG & AI" để mở khóa khả năng trả lời tự do mọi chủ đề đời sống không giới hạn!)</i>`;
         }
 
         document.getElementById('aiChatForm').addEventListener('submit', async (e) => {
@@ -3483,7 +3824,6 @@ ${teachersText}
                 const siteContext = buildSiteContextForAI();
                 const apiKey = String(currentConfig.gemini_api_key || "").trim();
 
-                // Nếu Admin đã nhập Gemini API Key -> Gọi trực tiếp Google Gemini hoặc qua Apps Script
                 if (apiKey) {
                     const directUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
                     const systemInstruction = `Bạn là Trợ lý AI thông minh của HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH. Hãy trả lời thân thiện, chính xác mọi câu hỏi về website STUDY BEE ENGLISH dựa trên dữ liệu sau, đồng thời trả lời thông minh mọi câu hỏi kiến thức, tiếng Anh và đời sống hằng ngày của người dùng:\n${siteContext}`;
@@ -3509,7 +3849,6 @@ ${teachersText}
                     }
                 }
 
-                // Thử gọi qua Apps Script backend
                 const res = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
                     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -3537,7 +3876,7 @@ ${teachersText}
             }
         });
 
-        // 16. Cài đặt Web & AI Gemini Modal
+        // 16. Cài đặt Web, OG & AI Gemini Modal
         document.getElementById('openSettingsModalBtn').onclick = () => {
             document.getElementById('settingsModal').classList.remove('hidden');
         };
@@ -3555,7 +3894,11 @@ ${teachersText}
             currentConfig.siteTitle = document.getElementById('set_siteTitle').value;
             currentConfig.primaryColor = document.getElementById('set_primaryColorHex').value || document.getElementById('set_primaryColor').value;
             
-            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject', 'gemini_api_key'];
+            const settingKeys = [
+                'link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes',
+                'email_cc', 'email_sender_name', 'email_subject', 'gemini_api_key',
+                'og_title', 'og_description', 'og_image', 'og_url', 'og_type'
+            ];
             settingKeys.forEach(k => {
                 const el = document.getElementById('set_' + k);
                 if (el) currentConfig[k] = el.value.trim();
@@ -3567,7 +3910,7 @@ ${teachersText}
             await saveAllToGoogleSheet();
         }
 
-        // 17. Phân quyền Admin & Quản lý Tài khoản
+        // 17. Phân quyền Admin & Tự động đồng bộ khi sửa Link
         function checkAuth() {
             const role = localStorage.getItem('role');
             const user = localStorage.getItem('user');
@@ -3595,7 +3938,7 @@ ${teachersText}
                 
                 document.querySelectorAll('.admin-link').forEach(el => {
                     el.classList.add('is-admin');
-                    el.onclick = (e) => {
+                    el.onclick = async (e) => {
                         e.preventDefault();
                         const key = el.getAttribute('data-link-key');
                         const currentVal = String(currentConfig[key] || "");
@@ -3603,6 +3946,7 @@ ${teachersText}
                         if (newVal !== null && newVal.trim() !== "") {
                             currentConfig[key] = (key === 'link_phone') ? normalizePhoneString(newVal.trim()) : newVal.trim();
                             applyConfigToDOM();
+                            await saveAllToGoogleSheet(true);
                         }
                     };
                 });
@@ -3620,17 +3964,89 @@ ${teachersText}
             }
         }
 
-        // Lưu toàn bộ cấu hình lên Google Sheets & Cập nhật Cache ngay lập tức
-        async function saveAllToGoogleSheet() {
-            const btn = document.getElementById('saveChangesBtn');
-            const oldHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang lưu...';
-            btn.disabled = true;
-
+        // =========================================================================
+        // 17B. THU THẬP TOÀN BỘ NỘI DUNG TRÊN MÀN HÌNH & LƯU ĐỒNG BỘ 100% LÊN SHEET
+        // =========================================================================
+        function harvestAllLiveDomEdits() {
+            // 1. Gom tất cả thẻ [data-key]
             document.querySelectorAll('[data-key]').forEach(el => {
                 const k = el.getAttribute('data-key');
                 currentConfig[k] = k.startsWith('footer') ? stripWhiteBackgroundHtml(el.innerHTML) : el.innerHTML;
             });
+
+            // 2. Gom các trường tĩnh trên trang Về chúng tôi
+            const aboutMap = {
+                quoteTitle: 'about_quoteTitle_dom',
+                quoteDesc: 'about_quoteDesc_dom',
+                introTitle: 'about_introTitle_dom',
+                introText: 'about_introText_dom',
+                coreBrandTitle: 'about_coreBrandTitle_dom',
+                coreSectionSubtitle: 'about_coreSectionSubtitle_dom',
+                commitTitle: 'about_commitTitle_dom',
+                commitSubtitle: 'about_commitSubtitle_dom'
+            };
+            for (let prop in aboutMap) {
+                const domEl = document.getElementById(aboutMap[prop]);
+                if (domEl && aboutPageObj) {
+                    aboutPageObj[prop] = domEl.innerHTML;
+                }
+            }
+
+            // 3. Gom các trường tĩnh trên trang Đội ngũ giáo viên
+            const tListTitle = document.getElementById('teacherPage_listTitle_dom');
+            const tListSub = document.getElementById('teacherPage_listSubtitle_dom');
+            if (tListTitle && teacherPageObj) teacherPageObj.listTitle = tListTitle.innerHTML;
+            if (tListSub && teacherPageObj) teacherPageObj.listSubtitle = tListSub.innerHTML;
+
+            // 4. Gom toàn bộ các phần tử danh sách động có gắn data-sync-group
+            const isTeachersPageVisible = !document.getElementById('teachersPageView').classList.contains('hidden');
+            document.querySelectorAll('[data-sync-group]').forEach(el => {
+                const group = el.getAttribute('data-sync-group');
+                const idx = Number(el.getAttribute('data-sync-idx'));
+                const field = el.getAttribute('data-sync-field');
+                const val = el.innerHTML;
+
+                if (group === 'reason' && reasonsArray[idx]) reasonsArray[idx][field] = val;
+                else if (group === 'course' && coursesArray[idx]) coursesArray[idx][field] = val;
+                else if (group === 'achieve' && achievementsArray[idx]) achievementsArray[idx][field] = val;
+                else if (group === 'testimonial' && testimonialsArray[idx]) testimonialsArray[idx][field] = val;
+                else if (group === 'news' && newsArray[idx]) newsArray[idx][field] = val;
+                else if (group === 'community' && communityArray[idx]) communityArray[idx][field] = val;
+                else if (group === 'aboutPillar' && aboutPageObj?.pillars?.[idx]) aboutPageObj.pillars[idx][field] = val;
+                else if (group === 'aboutCommit' && aboutPageObj?.commitments?.[idx]) aboutPageObj.commitments[idx][field] = val;
+                else if (group === 'teacherHighlight' && teacherPageObj?.highlights?.[idx]) teacherPageObj.highlights[idx][field] = val;
+                else if (group === 'teacherDetail' && isTeachersPageVisible && teachersArray[idx]) teachersArray[idx][field] = val;
+                else if (group === 'teacherHome' && !isTeachersPageVisible && teachersArray[idx]) teachersArray[idx][field] = val;
+            });
+
+            // 5. Gom nội dung trang con tự soạn nếu đang mở
+            const subView = document.getElementById('subPageView');
+            if (subView && !subView.classList.contains('hidden') && activeSubPageIndices.parentIdx !== null) {
+                const contentArea = document.getElementById('subPageContentArea');
+                const pIdx = activeSubPageIndices.parentIdx;
+                const cIdx = activeSubPageIndices.childIdx;
+                const target = (cIdx !== null) ? menuArray[pIdx]?.children?.[cIdx] : menuArray[pIdx];
+                if (target && contentArea) {
+                    target.content = contentArea.innerHTML;
+                }
+            }
+        }
+
+        async function saveAllToGoogleSheet(isSilent = false) {
+            const btn = document.getElementById('saveChangesBtn');
+            const syncBadge = document.getElementById('syncStatusIndicator');
+            const oldHtml = btn ? btn.innerHTML : '';
+
+            if (!isSilent && btn) {
+                btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang lưu...';
+                btn.disabled = true;
+            } else if (syncBadge) {
+                syncBadge.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Đang đồng bộ...';
+                syncBadge.classList.remove('hidden');
+            }
+
+            // Thu thập toàn bộ nội dung vừa chỉnh sửa trên DOM
+            harvestAllLiveDomEdits();
 
             currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
             currentConfig.menuData = JSON.stringify(menuArray);
@@ -3646,6 +4062,8 @@ ${teachersText}
             currentConfig.studentVideosData = JSON.stringify(studentVideosArray);
             currentConfig.newsData = JSON.stringify(newsArray);
             currentConfig.communityData = JSON.stringify(communityArray);
+            currentConfig.studentTypesData = JSON.stringify(studentTypesArray);
+            currentConfig.leadStatusesData = JSON.stringify(leadStatusesArray);
 
             localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify(currentConfig));
 
@@ -3657,21 +4075,224 @@ ${teachersText}
                 }).then(r => r.json());
 
                 if (res.success) {
-                    alert("Đã lưu toàn bộ giao diện và dữ liệu thành công!");
+                    if (!isSilent) {
+                        alert("Đã lưu và đồng bộ toàn bộ dữ liệu lên Google Sheets thành công! Mọi trình duyệt khác đều đã được cập nhật.");
+                    } else if (syncBadge) {
+                        syncBadge.innerHTML = '<i class="fa fa-check-circle"></i> Đã đồng bộ';
+                        setTimeout(() => syncBadge.classList.add('hidden'), 3000);
+                    }
                 } else {
-                    alert("Lỗi khi lưu: " + res.message);
+                    if (!isSilent) alert("Lỗi khi lưu: " + res.message);
                 }
             } catch (err) {
-                alert("Lỗi kết nối khi lưu cấu hình!");
+                if (!isSilent) alert("Lỗi kết nối khi lưu cấu hình!");
             } finally {
-                btn.innerHTML = oldHtml;
-                btn.disabled = false;
+                if (!isSilent && btn) {
+                    btn.innerHTML = oldHtml;
+                    btn.disabled = false;
+                }
             }
         }
 
-        document.getElementById('saveChangesBtn').onclick = saveAllToGoogleSheet;
+        document.getElementById('saveChangesBtn').onclick = () => saveAllToGoogleSheet(false);
 
-        // 18. Quản lý Tài khoản, Phân quyền & Reset Mật khẩu (Dành cho Admin)
+        // =========================================================================
+        // 18. QUẢN LÝ DANH SÁCH KHÁCH ĐĂNG KÝ TƯ VẤN (LEADS) & TÙY CHỈNH TÌNH TRẠNG
+        // =========================================================================
+        function openLeadsManagerModal() {
+            renderLeadStatusBadgesAndFilter();
+            document.getElementById('leadsManagerModal').classList.remove('hidden');
+            fetchLeadsForAdmin();
+        }
+
+        function renderLeadStatusBadgesAndFilter() {
+            const badgesBox = document.getElementById('leadStatusBadgesContainer');
+            const filterSelect = document.getElementById('leadFilterStatus');
+            const currentFilter = filterSelect ? filterSelect.value : 'ALL';
+
+            if (badgesBox) {
+                badgesBox.innerHTML = '';
+                leadStatusesArray.forEach((st, idx) => {
+                    badgesBox.insertAdjacentHTML('beforeend', `
+                        <span class="inline-flex items-center gap-1.5 bg-white border border-gray-300 px-2.5 py-1 rounded-full text-xs font-bold text-gray-800 shadow-sm">
+                            <span>${st}</span>
+                            ${leadStatusesArray.length > 1 ? `
+                                <button type="button" onclick="removeLeadStatusOption(${idx})" class="text-red-500 hover:text-red-700" title="Xóa tình trạng này"><i class="fa fa-times"></i></button>
+                            ` : ''}
+                        </span>
+                    `);
+                });
+            }
+
+            if (filterSelect) {
+                filterSelect.innerHTML = '<option value="ALL">-- Tất cả tình trạng --</option>';
+                leadStatusesArray.forEach(st => {
+                    const opt = document.createElement('option');
+                    opt.value = st;
+                    opt.textContent = st;
+                    if (st === currentFilter) opt.selected = true;
+                    filterSelect.appendChild(opt);
+                });
+            }
+        }
+
+        async function addLeadStatusOption() {
+            const newSt = prompt("Nhập tên tình trạng mới (vd: Đã hẹn lịch test, Đã đóng học phí, Sai số...):");
+            if (newSt !== null && newSt.trim() !== "") {
+                const cleanSt = newSt.trim();
+                if (!leadStatusesArray.includes(cleanSt)) {
+                    leadStatusesArray.push(cleanSt);
+                    renderLeadStatusBadgesAndFilter();
+                    renderLeadsTable();
+                    await saveAllToGoogleSheet(true);
+                }
+            }
+        }
+
+        async function removeLeadStatusOption(idx) {
+            if (!confirm(`Xóa lựa chọn tình trạng "${leadStatusesArray[idx]}"?`)) return;
+            leadStatusesArray.splice(idx, 1);
+            renderLeadStatusBadgesAndFilter();
+            renderLeadsTable();
+            await saveAllToGoogleSheet(true);
+        }
+
+        async function fetchLeadsForAdmin() {
+            const tbody = document.getElementById('adminLeadsTableBody');
+            tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-gray-500"><i class="fa fa-spinner fa-spin mr-1 text-brand"></i> Đang tải dữ liệu đăng ký tư vấn từ Google Sheets...</td></tr>';
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: 'get_leads' })
+                }).then(r => r.json());
+
+                if (res.success && Array.isArray(res.leads)) {
+                    adminLeadsList = res.leads;
+                    renderLeadsTable();
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-red-500">Không thể tải dữ liệu. Hãy đảm bảo bạn đã cập nhật Code.gs mới nhất.</td></tr>';
+                }
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-red-500">Lỗi kết nối khi tải danh sách đăng ký tư vấn!</td></tr>';
+            }
+        }
+
+        function getStatusColorClass(statusStr) {
+            const s = String(statusStr || "").toLowerCase();
+            if (s.includes("chờ")) return "bg-amber-100 text-amber-800 border-amber-300";
+            if (s.includes("đã liên hệ") || s.includes("đã đăng ký")) return "bg-emerald-100 text-emerald-800 border-emerald-300";
+            if (s.includes("đang")) return "bg-blue-100 text-blue-800 border-blue-300";
+            return "bg-purple-100 text-purple-800 border-purple-300";
+        }
+
+        function renderLeadsTable() {
+            const tbody = document.getElementById('adminLeadsTableBody');
+            const kw = (document.getElementById('leadSearchInput')?.value || "").toLowerCase().trim();
+            const statusFilter = document.getElementById('leadFilterStatus')?.value || 'ALL';
+
+            const filtered = adminLeadsList.filter(item => {
+                const matchStatus = (statusFilter === 'ALL') || (item.status === statusFilter);
+                const fullText = `${item.name} ${item.phone} ${item.email} ${item.course} ${item.type} ${item.message}`.toLowerCase();
+                const matchKw = !kw || fullText.includes(kw);
+                return matchStatus && matchKw;
+            });
+
+            const countEl = document.getElementById('leadsSummaryCount');
+            if (countEl) countEl.textContent = `Hiển thị: ${filtered.length} / ${adminLeadsList.length} đăng ký`;
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-gray-500">Chưa có học viên đăng ký tư vấn nào khớp với bộ lọc hiện tại.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filtered.forEach(lead => {
+                const allOptions = [...leadStatusesArray];
+                if (lead.status && !allOptions.includes(lead.status)) {
+                    allOptions.unshift(lead.status);
+                }
+                const colorCls = getStatusColorClass(lead.status);
+
+                tbody.insertAdjacentHTML('beforeend', `
+                    <tr class="hover:bg-blue-50/40 transition align-top">
+                        <td class="p-3 text-gray-500 whitespace-nowrap text-xs">${lead.time || ''}</td>
+                        <td class="p-3 font-bold text-gray-900">${stripHtmlTags(lead.name)}</td>
+                        <td class="p-3 font-bold text-brand whitespace-nowrap">
+                            <a href="tel:${lead.phone.replace(/[^\d\+]/g, '')}" class="hover:underline"><i class="fa fa-phone mr-1 text-xs"></i>${stripHtmlTags(lead.phone)}</a>
+                        </td>
+                        <td class="p-3 text-xs text-gray-700">
+                            <div class="font-medium break-all">${stripHtmlTags(lead.email)}</div>
+                            <div class="text-gray-500">Năm sinh: <b>${stripHtmlTags(lead.year)}</b></div>
+                        </td>
+                        <td class="p-3">
+                            <span class="bg-gray-100 text-gray-800 px-2.5 py-1 rounded-md text-xs font-bold">${stripHtmlTags(lead.type)}</span>
+                        </td>
+                        <td class="p-3 max-w-xs">
+                            <div class="font-bold text-brand text-xs mb-1">${stripHtmlTags(lead.course)}</div>
+                            <div class="text-gray-600 text-xs italic">${stripHtmlTags(lead.message) || 'Không có câu hỏi thêm'}</div>
+                        </td>
+                        <td class="p-3 whitespace-nowrap">
+                            <select onchange="updateLeadStatusByAdmin(${lead.rowNumber}, this.value, this)" class="border rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none ${colorCls}">
+                                ${allOptions.map(st => `<option value="${st}" class="bg-white text-gray-900" ${st === lead.status ? 'selected' : ''}>${st}</option>`).join('')}
+                            </select>
+                        </td>
+                        <td class="p-3 text-right">
+                            <button type="button" onclick="deleteLeadByAdmin(${lead.rowNumber})" class="text-red-500 hover:bg-red-50 px-2.5 py-1.5 rounded-lg transition" title="Xóa đăng ký này">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        async function updateLeadStatusByAdmin(rowNumber, newStatus, selectEl) {
+            if (selectEl) {
+                selectEl.className = `border rounded-lg px-2.5 py-1.5 text-xs font-bold cursor-pointer outline-none ${getStatusColorClass(newStatus)}`;
+            }
+            const target = adminLeadsList.find(l => l.rowNumber === rowNumber);
+            if (target) target.status = newStatus;
+
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: 'update_lead_status',
+                        rowNumber: rowNumber,
+                        status: newStatus
+                    })
+                }).then(r => r.json());
+
+                if (!res.success) {
+                    alert("Lỗi khi lưu tình trạng: " + res.message);
+                }
+            } catch (err) {
+                alert("Lỗi kết nối khi cập nhật tình trạng!");
+            }
+        }
+
+        async function deleteLeadByAdmin(rowNumber) {
+            if (!confirm("Bạn có chắc chắn muốn xóa bản ghi đăng ký tư vấn này?")) return;
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({ action: 'delete_lead', rowNumber: rowNumber })
+                }).then(r => r.json());
+
+                if (res.success) {
+                    fetchLeadsForAdmin();
+                } else {
+                    alert("Lỗi: " + res.message);
+                }
+            } catch (err) {
+                alert("Lỗi kết nối máy chủ!");
+            }
+        }
+
+        // 19. Quản lý Tài khoản, Phân quyền & Reset Mật khẩu (Dành cho Admin)
         function openUserManagerModal() {
             resetAdminUserForm();
             document.getElementById('userManagerModal').classList.remove('hidden');
@@ -3810,7 +4431,7 @@ ${teachersText}
             }
         }
 
-        // 19. Đăng nhập & Tùy chỉnh Hồ sơ Cá nhân
+        // 20. Đăng nhập & Tùy chỉnh Hồ sơ Cá nhân
         document.getElementById('loginBtn').onclick = () => {
             const savedUser = localStorage.getItem('saved_login_user') || '';
             const savedPass = localStorage.getItem('saved_login_pass') || '';
@@ -3933,22 +4554,30 @@ ${teachersText}
             }
         });
 
-        // 20. Gửi Form Tư Vấn
+        // 21. Gửi Form Tư Vấn (Gửi kèm mã vùng quốc tế + giữ số 0 + trạng thái mặc định)
         document.getElementById('consultForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitConsultBtn');
             btn.innerHTML = 'Đang gửi... <i class="fa fa-spinner fa-spin"></i>';
             btn.disabled = true;
 
+            const countryCode = document.getElementById('f_country_code').value || "+84";
+            let rawPhone = document.getElementById('f_phone').value.trim();
+            if (countryCode === "+84") {
+                rawPhone = normalizePhoneString(rawPhone);
+            }
+
             const payload = {
                 action: 'submit_form',
                 name: document.getElementById('f_name').value.trim(),
-                phone: normalizePhoneString(document.getElementById('f_phone').value.trim()),
+                countryCode: countryCode,
+                phone: rawPhone,
                 year: document.getElementById('f_year').value.trim(),
                 email: document.getElementById('f_email').value.trim(),
                 type: document.getElementById('f_type').value,
                 course: document.getElementById('f_course').value,
-                message: document.getElementById('f_msg').value.trim()
+                message: document.getElementById('f_msg').value.trim(),
+                status: leadStatusesArray[0] || "Chờ phản hồi"
             };
             try {
                 let res = await fetch(APPS_SCRIPT_URL, {
@@ -3959,6 +4588,7 @@ ${teachersText}
                 if (res.success) {
                     alert("Đăng ký thành công! Hệ thống đã gửi email xác nhận vào hộp thư của bạn.");
                     document.getElementById('consultForm').reset();
+                    document.getElementById('f_country_code').value = "+84";
                 } else {
                     alert("Lỗi: " + res.message);
                 }
@@ -3975,3 +4605,4 @@ ${teachersText}
     </script>
 </body>
 </html>	
+	
