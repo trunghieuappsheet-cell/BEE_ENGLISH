@@ -1393,7 +1393,7 @@
                     <i class="fa fa-clipboard-list text-yellow-400 text-xl"></i>
                     <div>
                         <h2 class="text-lg md:text-xl font-black uppercase">Theo dõi Học viên Đăng ký Tư vấn (Leads)</h2>
-                        <p class="text-xs text-yellow-300">Quản lý danh sách đăng ký và cập nhật tình trạng chăm sóc học viên trực tiếp lên Google Sheets</p>
+                        <p class="text-xs text-yellow-300">Quản lý danh sách đăng ký và cập nhật tình trạng chăm sóc học viên trực tiếp lên Máy chủ</p>
                     </div>
                 </div>
                 <button type="button" onclick="document.getElementById('leadsManagerModal').classList.add('hidden')" class="text-white/80 hover:text-white text-2xl px-2"><i class="fa fa-times"></i></button>
@@ -4076,7 +4076,7 @@ ${teachersText}
 
                 if (res.success) {
                     if (!isSilent) {
-                        alert("Đã lưu và đồng bộ toàn bộ dữ liệu lên Google Sheets thành công! Mọi trình duyệt khác đều đã được cập nhật.");
+                        alert("Đã lưu và đồng bộ toàn bộ dữ liệu lên Máy chủ thành công! Mọi trình duyệt khác đều đã được cập nhật.");
                     } else if (syncBadge) {
                         syncBadge.innerHTML = '<i class="fa fa-check-circle"></i> Đã đồng bộ';
                         setTimeout(() => syncBadge.classList.add('hidden'), 3000);
@@ -4159,7 +4159,7 @@ ${teachersText}
 
         async function fetchLeadsForAdmin() {
             const tbody = document.getElementById('adminLeadsTableBody');
-            tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-gray-500"><i class="fa fa-spinner fa-spin mr-1 text-brand"></i> Đang tải dữ liệu đăng ký tư vấn từ Google Sheets...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-gray-500"><i class="fa fa-spinner fa-spin mr-1 text-brand"></i> Đang tải dữ liệu đăng ký tư vấn từ Máy chủ...</td></tr>';
             try {
                 const res = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
