@@ -4,8 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="dom_siteTitle">STUDY BEE ENGLISH - Nền tảng học tiếng Anh trực tuyến</title>
-    <link id="dynamic-favicon" rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" type="image/x-icon">
+    <!-- Thiết lập mặc định Favicon mới của STUDY BEE ENGLISH ngay khi vừa tải trang -->
+    <link id="dynamic-favicon" rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230c389b'/><circle cx='50' cy='50' r='30' fill='%23facc15'/><path d='M30 42h40M28 52h44M34 62h32' stroke='%230c389b' stroke-width='6' stroke-linecap='round'/><text x='50' y='88' font-family='Arial' font-weight='900' font-size='14' fill='%23ffffff' text-anchor='middle'>STUDY BEE</text></svg>" type="image/svg+xml">
     
+    <!-- Script nạp tức thì Favicon & Màu sắc từ bộ nhớ đệm để không bao giờ nháy icon cũ -->
+    <script>
+        (function() {
+            try {
+                var cached = localStorage.getItem("studybee_config_cache_v4");
+                if (cached) {
+                    var cfg = JSON.parse(cached);
+                    if (cfg.favicon && !cfg.favicon.includes("3135715.png")) {
+                        document.getElementById("dynamic-favicon").href = cfg.favicon;
+                    }
+                    if (cfg.siteTitle) document.title = cfg.siteTitle;
+                    if (cfg.primaryColor) document.documentElement.style.setProperty('--primary-color', cfg.primaryColor);
+                }
+            } catch (e) {}
+        })();
+    </script>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -197,9 +215,9 @@
         .prep-label { display: block; color: white; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
 
         /* Floating Contact */
-        .floating-contact { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 40; }
-        .floating-contact a { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.25); transition: transform 0.2s; }
-        .floating-contact a:hover { transform: scale(1.1); }
+        .floating-contact { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 12px; z-index: 40; align-items: center; }
+        .floating-contact .contact-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.28); transition: transform 0.2s; position: relative; }
+        .floating-contact .contact-btn:hover { transform: scale(1.1); }
 
         /* Rich Text Content */
         .rich-content ul { list-style-type: disc; padding-left: 1.5rem; margin-top: 0.5rem; margin-bottom: 0.5rem; }
@@ -229,7 +247,7 @@
                 <i class="fa fa-users-gear"></i> Quản lý Tài khoản
             </button>
             <button type="button" id="openSettingsModalBtn" class="bg-blue-600 text-white font-bold px-4 py-2.5 rounded-full shadow-xl hover:bg-blue-700 transition flex items-center gap-1.5 text-sm">
-                <i class="fa fa-cogs"></i> Cài đặt Web & Email CC
+                <i class="fa fa-cogs"></i> Cài đặt Web & AI
             </button>
             <button type="button" id="saveChangesBtn" class="bg-green-600 text-white font-bold px-6 py-2.5 rounded-full shadow-2xl hover:bg-green-700 transition flex items-center gap-2 text-sm">
                 <i class="fa fa-save"></i> LƯU GIAO DIỆN
@@ -237,19 +255,25 @@
         </div>
     </div>
 
-    <!-- Topbar -->
-    <div class="bg-brand text-white py-2 text-sm">
+    <!-- Topbar (Tích hợp Ô Tìm kiếm Khóa học & Giáo viên thông minh) -->
+    <div class="bg-brand text-white py-2 text-sm relative z-40">
         <div class="max-w-7xl mx-auto px-4 flex flex-wrap justify-between items-center gap-2">
             <div class="flex flex-wrap gap-4 sm:gap-6 items-center">
                 <span><b>Hotline:</b> <i class="fa fa-phone ml-1"></i> <a href="tel:0362938989" id="dom_link_phone" data-link-key="link_phone" class="admin-link font-bold hover:underline">0362938989</a></span>
                 <span class="text-yellow-400"><i class="fa fa-envelope mr-1"></i> <a href="mailto:studybeeenglishadmin01@gmail.com" id="dom_link_email" data-link-key="link_email" class="admin-link font-bold hover:underline">studybeeenglishadmin01@gmail.com</a></span>
             </div>
             <div class="flex items-center gap-4">
-                <div class="hidden sm:flex bg-white rounded overflow-hidden">
-                    <input type="text" placeholder="Tìm kiếm..." class="px-3 py-1 text-black text-xs outline-none w-40">
-                    <button class="bg-blue-500 text-white px-3 py-1 text-xs"><i class="fa fa-search"></i></button>
+                <!-- Ô tìm kiếm Khóa học & Giáo viên -->
+                <div class="relative" id="headerSearchWrapper">
+                    <div class="flex bg-white rounded-full overflow-hidden shadow-inner border border-white/20">
+                        <input type="text" id="headerSearchInput" oninput="handleHeaderSearch(this.value)" onfocus="handleHeaderSearch(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault(); triggerFirstSearchResult();}" placeholder="Tìm khóa học, giáo viên..." class="px-3.5 py-1 text-black text-xs outline-none w-44 sm:w-56">
+                        <button type="button" onclick="triggerFirstSearchResult()" class="bg-yellow-400 text-brand font-bold px-3 py-1 text-xs hover:bg-yellow-500 transition" title="Tìm kiếm"><i class="fa fa-search"></i></button>
+                    </div>
+                    <!-- Hộp gợi ý kết quả tìm kiếm -->
+                    <div id="headerSearchResults" class="hidden absolute right-0 mt-2 w-80 sm:w-96 bg-white text-gray-800 rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-50 max-h-96 overflow-y-auto"></div>
                 </div>
-                <div class="flex items-center gap-3">
+
+                <div class="flex items-center gap-2.5">
                     <a href="https://www.facebook.com/" target="_blank" data-link-key="link_fb" class="admin-link w-6 h-6 rounded-full bg-white text-brand flex items-center justify-center hover:scale-110 transition"><i class="fa-brands fa-facebook-f text-xs"></i></a>
                     <a href="https://www.youtube.com/" target="_blank" data-link-key="link_yt" class="admin-link w-6 h-6 rounded-full bg-white text-red-600 flex items-center justify-center hover:scale-110 transition"><i class="fa-brands fa-youtube text-xs"></i></a>
                     <a href="https://www.tiktok.com/" target="_blank" data-link-key="link_tt" class="admin-link w-6 h-6 rounded-full bg-white flex items-center justify-center hover:scale-110 transition"><img src="https://www.svgrepo.com/show/327400/logo-tiktok.svg" class="w-3.5 h-3.5"></a>
@@ -259,13 +283,26 @@
         </div>
     </div>
 
-    <!-- Header Navigation (Chỉ giữ 1 Logo ảnh duy nhất, đã xóa bỏ chữ STUDYBEE thừa) -->
+    <!-- Header Navigation (Logo mặc định STUDY BEE ENGLISH mới, nạp ngay không nháy) -->
     <header class="bg-white shadow-sm sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
             <div class="flex items-center gap-2 shrink-0">
                 <a href="#" onclick="showHomePage(); return false;" class="flex items-center">
-                    <img id="dom_logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="h-12 w-auto object-contain" alt="Logo STUDY BEE ENGLISH">
+                    <img id="dom_logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 100'><rect width='84' height='84' x='8' y='8' rx='20' fill='%230c389b'/><circle cx='50' cy='50' r='26' fill='%23facc15'/><path d='M32 42h36M30 50h40M35 58h30' stroke='%230c389b' stroke-width='5' stroke-linecap='round'/><text x='108' y='48' font-family='Montserrat,Arial,sans-serif' font-weight='900' font-size='30' fill='%230c389b'>STUDY BEE</text><text x='108' y='78' font-family='Montserrat,Arial,sans-serif' font-weight='700' font-size='20' fill='%23eab308' letter-spacing='3'>ENGLISH</text></svg>" class="h-12 w-auto object-contain" alt="Logo STUDY BEE ENGLISH">
                 </a>
+                <script>
+                    (function() {
+                        try {
+                            var cached = localStorage.getItem("studybee_config_cache_v4");
+                            if (cached) {
+                                var cfg = JSON.parse(cached);
+                                if (cfg.logo && !cfg.logo.includes("3135715.png")) {
+                                    document.getElementById("dom_logo").src = cfg.logo;
+                                }
+                            }
+                        } catch (e) {}
+                    })();
+                </script>
                 <button type="button" onclick="openCropperModal('config', 'logo', NaN, 300, 100, 'Logo Website (Tự do tỷ lệ hoặc 300x100px)', false)" class="admin-only hidden bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded shadow hover:bg-yellow-500">
                     <i class="fa fa-camera"></i> Đổi Logo
                 </button>
@@ -288,7 +325,7 @@
 
                 <div id="userProfileBar" class="hidden flex items-center gap-2">
                     <button type="button" onclick="openProfileModal()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full transition" title="Bấm để tùy chỉnh tài khoản">
-                        <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-8 h-8 rounded-full object-cover border border-brand">
+                        <img id="headerUserAvatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-8 h-8 rounded-full object-cover border border-brand">
                         <span id="headerUserDisplayName" class="font-bold text-sm text-brand max-w-[120px] truncate">Admin</span>
                         <i class="fa fa-gear text-xs text-gray-500"></i>
                     </button>
@@ -316,18 +353,18 @@
     <!-- KHUNG 2: TRANG "VỀ CHÚNG TÔI" (Thiết kế chuẩn theo mẫu Giới thiệu)-->
     <!-- ================================================================= -->
     <main id="aboutPageView" class="hidden bg-white">
-        <!-- Banner Giới thiệu -->
-        <div class="relative w-full aspect-[16/6] max-h-[520px] bg-gray-900 overflow-hidden">
-            <img id="about_bannerImg_dom" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80" class="w-full h-full object-cover" alt="Banner Giới thiệu">
+        <!-- Banner Giới thiệu (Có công cụ cắt ảnh theo tỷ lệ) -->
+        <div class="relative w-full bg-gray-900 overflow-hidden">
+            <img id="about_bannerImg_dom" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80" class="w-full h-auto max-h-[620px] object-cover block" alt="Banner Giới thiệu">
             <div class="admin-only hidden absolute bottom-4 right-4 z-20">
-                <button type="button" onclick="openCropperModal('aboutBanner', 0, 16/6, 1600, 600, 'Banner Trang Về Chúng Tôi (1600x600px)', false)" class="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg shadow-xl text-xs hover:bg-yellow-500">
-                    <i class="fa fa-camera mr-1"></i> Đổi Banner Giới Thiệu
+                <button type="button" onclick="openCropperModal('aboutBanner', 0, 16/6, 1920, 720, 'Cắt & Đổi Banner Trang Về Chúng Tôi (Chuẩn 16:6)', false)" class="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg shadow-xl text-xs hover:bg-yellow-500 flex items-center gap-1.5">
+                    <i class="fa fa-crop"></i> Cắt & Đổi Banner Giới Thiệu
                 </button>
             </div>
         </div>
 
         <!-- Hộp Sứ mệnh nổi giữa trang -->
-        <div class="max-w-4xl mx-auto px-4 -mt-12 md:-mt-20 relative z-10 mb-14">
+        <div class="max-w-4xl mx-auto px-4 -mt-8 md:-mt-16 relative z-10 mb-14">
             <div class="about-quote-outer">
                 <div class="about-quote-inner text-center">
                     <h1 id="about_quoteTitle_dom" oninput="aboutPageObj.quoteTitle = this.innerHTML" class="editable text-xl md:text-3xl font-black text-brand uppercase mb-4">
@@ -347,7 +384,7 @@
                     </div>
                     <div class="admin-only hidden absolute top-3 left-3 z-20">
                         <button type="button" onclick="openCropperModal('aboutIntro', 0, 16/11, 800, 550, 'Ảnh Giới Thiệu (800x550px)', false)" class="bg-yellow-400 text-black font-bold px-3 py-1.5 rounded shadow text-xs hover:bg-yellow-500">
-                            <i class="fa fa-crop mr-1"></i> Đổi ảnh
+                            <i class="fa fa-crop mr-1"></i> Cắt & Đổi ảnh
                         </button>
                     </div>
                 </div>
@@ -415,12 +452,12 @@
     <!-- KHUNG 3: TRANG "ĐỘI NGŨ GIÁO VIÊN" (Liên kết trực tiếp Trang chủ) -->
     <!-- ================================================================= -->
     <main id="teachersPageView" class="hidden bg-white">
-        <!-- Banner Giáo viên -->
-        <div class="relative w-full aspect-[16/6] max-h-[500px] bg-gray-900 overflow-hidden">
-            <img id="teacherPage_bannerImg_dom" src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1920&q=80" class="w-full h-full object-cover" alt="Banner Giáo viên">
+        <!-- Banner Giáo viên (Có công cụ cắt ảnh theo tỷ lệ) -->
+        <div class="relative w-full bg-gray-900 overflow-hidden">
+            <img id="teacherPage_bannerImg_dom" src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1920&q=80" class="w-full h-auto max-h-[620px] object-cover block" alt="Banner Giáo viên">
             <div class="admin-only hidden absolute bottom-4 right-4 z-20">
-                <button type="button" onclick="openCropperModal('teacherPageBanner', 0, 16/6, 1600, 600, 'Banner Trang Giáo Viên (1600x600px)', false)" class="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg shadow-xl text-xs hover:bg-yellow-500">
-                    <i class="fa fa-camera mr-1"></i> Đổi Banner Giáo Viên
+                <button type="button" onclick="openCropperModal('teacherPageBanner', 0, 16/6, 1920, 720, 'Cắt & Đổi Banner Trang Giáo Viên (Chuẩn 16:6)', false)" class="bg-yellow-400 text-black font-bold px-4 py-2 rounded-lg shadow-xl text-xs hover:bg-yellow-500 flex items-center gap-1.5">
+                    <i class="fa fa-crop"></i> Cắt & Đổi Banner Giáo Viên
                 </button>
             </div>
         </div>
@@ -457,12 +494,12 @@
     <!-- ================================================================= -->
     <div id="homePageView">
 
-        <!-- 1. BANNER CHÍNH TRÀN KHUNG 100% (SLIDESHOW NHIỀU BANNER TỰ TRƯỢT 5S) -->
+        <!-- 1. BANNER CHÍNH TRÀN KHUNG 100% (HIỂN THỊ ẢNH NGUYÊN BẢN, KHÔNG LỚP PHỦ CHỮ) -->
         <section class="w-full relative bg-gray-900 overflow-hidden">
             <div class="admin-only hidden bg-gray-900 text-white py-2 px-4 text-xs flex flex-wrap justify-between items-center gap-2 border-b border-gray-700">
-                <span><i class="fa fa-images text-yellow-400 mr-1"></i> <b>Slideshow Banner Tràn Khung</b> (Tự động trượt mỗi 5 giây)</span>
+                <span><i class="fa fa-images text-yellow-400 mr-1"></i> <b>Slideshow Banner Tràn Khung</b> (Hiển thị trực tiếp hình ảnh, tự trượt mỗi 5 giây)</span>
                 <button type="button" onclick="addNewBannerSlide()" class="bg-yellow-400 text-black font-bold px-3 py-1.5 rounded hover:bg-yellow-500">
-                    <i class="fa fa-plus-circle mr-1"></i> + Thêm Banner Mới (Chuẩn: 1920x680px - 16:6)
+                    <i class="fa fa-plus-circle mr-1"></i> + Thêm Banner Mới (Có công cụ cắt tỷ lệ)
                 </button>
             </div>
 
@@ -650,13 +687,20 @@
             </div>
         </section>
 
-        <!-- 8. FORM ĐĂNG KÝ TƯ VẤN (CÓ GỬI EMAIL TỰ ĐỘNG CHO HỌC VIÊN & CC) -->
+        <!-- 8. FORM ĐĂNG KÝ TƯ VẤN (THAY ICON ROBOT BẰNG HÌNH ẢNH TÁCH NỀN CHUYỂN ĐỘNG) -->
         <section id="tu-van" class="py-16 max-w-7xl mx-auto px-4">
             <div class="prep-form-bg rounded-3xl p-8 lg:p-12 flex flex-col lg:flex-row gap-12 shadow-2xl relative overflow-hidden">
                 <div class="lg:w-5/12 flex flex-col justify-center z-10">
                     <h2 data-key="formTitle" class="editable text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Bạn còn<br>câu hỏi khác?</h2>
-                    <p data-key="formSubtitle" class="editable text-white text-lg font-medium opacity-90 mb-12">Hãy để lại thông tin, chúng tôi sẽ liên hệ và hỗ trợ xử lý mọi vướng mắc của bạn</p>
-                    <div class="mt-auto hidden lg:block text-center"><i class="fa-solid fa-robot text-9xl text-[#f1c40f] opacity-80 animate-bounce"></i></div>
+                    <p data-key="formSubtitle" class="editable text-white text-lg font-medium opacity-90 mb-8">Hãy để lại thông tin, chúng tôi sẽ liên hệ và hỗ trợ xử lý mọi vướng mắc của bạn</p>
+                    
+                    <!-- Hình ảnh Linh vật tách nền (PNG) giữ nguyên hiệu ứng chuyển động animate-bounce -->
+                    <div class="mt-auto flex flex-col items-center justify-center relative group py-4">
+                        <img id="dom_formMascot" src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="w-44 h-44 md:w-52 md:h-52 object-contain drop-shadow-2xl animate-bounce" alt="Mascot">
+                        <button type="button" onclick="openCropperModal('config', 'formMascot', NaN, 500, 500, 'Hình Ảnh Tách Nền (PNG) Chuyển Động Ở Form Tư Vấn', false)" class="admin-only hidden mt-2 bg-yellow-400 text-black text-xs font-bold px-3.5 py-1.5 rounded-full shadow-lg hover:bg-yellow-500">
+                            <i class="fa fa-camera mr-1"></i> Đổi ảnh tách nền (PNG)
+                        </button>
+                    </div>
                 </div>
 
                 <div class="lg:w-7/12 z-10">
@@ -746,7 +790,7 @@
             <!-- Chỉ giữ 1 Logo ảnh duy nhất -->
             <div class="lg:col-span-2 flex flex-col items-start">
                 <a href="#" onclick="showHomePage(); return false;" class="flex items-center">
-                    <img id="dom_footer_logo" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="h-16 w-auto object-contain" alt="Logo Footer">
+                    <img id="dom_footer_logo" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 100'><rect width='84' height='84' x='8' y='8' rx='20' fill='%230c389b'/><circle cx='50' cy='50' r='26' fill='%23facc15'/><path d='M32 42h36M30 50h40M35 58h30' stroke='%230c389b' stroke-width='5' stroke-linecap='round'/><text x='108' y='48' font-family='Montserrat,Arial,sans-serif' font-weight='900' font-size='30' fill='%230c389b'>STUDY BEE</text><text x='108' y='78' font-family='Montserrat,Arial,sans-serif' font-weight='700' font-size='20' fill='%23eab308' letter-spacing='3'>ENGLISH</text></svg>" class="h-16 w-auto object-contain" alt="Logo Footer">
                 </a>
             </div>
 
@@ -826,17 +870,70 @@
         </div>
     </footer>
 
-    <!-- Thanh Liên Hệ Nổi Bên Tay Phải -->
+    <!-- ================================================================= -->
+    <!-- THANH LIÊN HỆ NỔI BÊN PHẢI + NÚT CHATBOX AI GEMINI                -->
+    <!-- ================================================================= -->
     <div class="floating-contact">
-        <a href="https://m.me/" target="_blank" data-link-key="link_mes" class="admin-link bg-[#0084ff]" title="Messenger">
+        <!-- Nút mở Chatbox AI Gemini (Có nút đổi ảnh biểu tượng cho Admin) -->
+        <div class="relative group flex flex-col items-center">
+            <button type="button" onclick="openCropperModal('config', 'aiChatIcon', 1, 200, 200, 'Biểu Tượng Nút Chatbox AI Gemini (200x200px)', true)" class="admin-only hidden mb-1 bg-yellow-400 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow hover:bg-yellow-500 whitespace-nowrap" title="Đổi biểu tượng AI">
+                <i class="fa fa-camera"></i> Đổi Icon AI
+            </button>
+            <button type="button" onclick="toggleAiChatWindow()" class="contact-btn bg-white border-2 border-brand overflow-hidden p-0.5" title="Trợ lý AI STUDY BEE ENGLISH">
+                <img id="dom_aiChatIcon" src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" class="w-full h-full object-cover rounded-full" alt="AI Gemini">
+            </button>
+        </div>
+
+        <a href="https://m.me/" target="_blank" data-link-key="link_mes" class="admin-link contact-btn bg-[#0084ff]" title="Messenger">
             <i class="fa-brands fa-facebook-messenger text-white text-2xl"></i>
         </a>
-        <a href="https://zalo.me/0362938989" target="_blank" data-link-key="link_zalo" class="admin-link bg-[#0068ff] border-2 border-white" title="Zalo">
+        <a href="https://zalo.me/0362938989" target="_blank" data-link-key="link_zalo" class="admin-link contact-btn bg-[#0068ff] border-2 border-white" title="Zalo">
             <span class="font-black text-xs tracking-tighter text-white">Zalo</span>
         </a>
-        <a href="tel:0362938989" data-link-key="link_phone" class="admin-link bg-[#f1c40f] text-black" title="Gọi ngay">
+        <a href="tel:0362938989" data-link-key="link_phone" class="admin-link contact-btn bg-[#f1c40f] text-black" title="Gọi ngay">
             <i class="fa fa-phone text-black text-xl"></i>
         </a>
+    </div>
+
+    <!-- CỬA SỔ CHATBOX AI GEMINI TRỰC TUYẾN -->
+    <div id="aiChatWindow" class="hidden fixed bottom-24 right-20 w-[350px] sm:w-[390px] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden max-h-[540px]">
+        <div class="bg-brand text-white p-3.5 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <img id="dom_aiChatHeaderIcon" src="https://cdn-icons-png.flaticon.com/512/8943/8943377.png" class="w-9 h-9 rounded-full object-cover border-2 border-yellow-400 bg-white">
+                <div>
+                    <div class="font-extrabold text-sm leading-tight">Trợ lý AI STUDY BEE</div>
+                    <div class="text-[11px] text-yellow-300 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> Sẵn sàng giải đáp 24/7
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="toggleAiChatWindow()" class="text-white/80 hover:text-white text-lg px-1"><i class="fa fa-times"></i></button>
+        </div>
+
+        <!-- Khung tin nhắn -->
+        <div id="aiChatMessages" class="p-3.5 flex-1 overflow-y-auto space-y-3 bg-gray-50 text-sm max-h-[340px] min-h-[270px]">
+            <div class="flex items-start gap-2">
+                <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-none p-3 text-gray-800 shadow-sm leading-relaxed">
+                    Xin chào! 👋 Mình là <b>Trợ lý AI của STUDY BEE ENGLISH</b>.<br>
+                    Bạn có thể hỏi mình về <b>khóa học, đội ngũ giáo viên, lộ trình học, thông tin đơn vị</b> hoặc bất kỳ <b>câu hỏi tiếng Anh, dịch thuật & đời sống hằng ngày</b> nào nhé!
+                </div>
+            </div>
+        </div>
+
+        <!-- Gợi ý câu hỏi nhanh -->
+        <div class="px-3 py-1.5 bg-gray-100 border-t border-gray-200 flex gap-1.5 overflow-x-auto text-[11px] whitespace-nowrap">
+            <button type="button" onclick="sendQuickAiPrompt('Các khóa học tại STUDY BEE ENGLISH?')" class="bg-white border border-blue-200 text-brand px-2.5 py-1 rounded-full hover:bg-blue-50 font-medium">📚 Các khóa học</button>
+            <button type="button" onclick="sendQuickAiPrompt('Đội ngũ giáo viên của trung tâm gồm những ai?')" class="bg-white border border-blue-200 text-brand px-2.5 py-1 rounded-full hover:bg-blue-50 font-medium">👩‍🏫 Đội ngũ giáo viên</button>
+            <button type="button" onclick="sendQuickAiPrompt('Thông tin liên hệ và địa chỉ của STUDY BEE ENGLISH?')" class="bg-white border border-blue-200 text-brand px-2.5 py-1 rounded-full hover:bg-blue-50 font-medium">📍 Địa chỉ & Liên hệ</button>
+        </div>
+
+        <!-- Ô nhập câu hỏi -->
+        <form id="aiChatForm" class="p-2.5 bg-white border-t flex items-center gap-2">
+            <input type="text" id="aiChatInput" placeholder="Nhập câu hỏi của bạn..." required class="flex-1 text-sm px-3.5 py-2 bg-gray-100 rounded-full outline-none focus:ring-2 focus:ring-brand">
+            <button type="submit" id="aiChatSendBtn" class="w-9 h-9 rounded-full bg-brand text-white flex items-center justify-center hover:opacity-95 shrink-0 shadow">
+                <i class="fa fa-paper-plane text-xs"></i>
+            </button>
+        </form>
     </div>
 
     <!-- MODAL 1: ĐĂNG NHẬP -->
@@ -874,7 +971,7 @@
             <form id="profileForm" class="space-y-4 text-sm">
                 <div class="flex flex-col items-center gap-2 mb-4">
                     <div class="relative group">
-                        <img id="prof_avatar_preview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="w-24 h-24 rounded-full object-cover border-4 border-brand shadow-md">
+                        <img id="prof_avatar_preview" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-24 h-24 rounded-full object-cover border-4 border-brand shadow-md">
                         <button type="button" onclick="openCropperModal('avatar', 'userAvatar', 1, 300, 300, 'Ảnh Đại Diện (Cắt hình tròn 300x300px)', true)" class="absolute bottom-0 right-0 bg-yellow-400 text-black w-8 h-8 rounded-full flex items-center justify-center shadow hover:bg-yellow-500" title="Tải lên & Cắt ảnh tròn">
                             <i class="fa fa-camera"></i>
                         </button>
@@ -954,15 +1051,15 @@
         </div>
     </div>
 
-    <!-- MODAL 5: CÀI ĐẶT WEB & CẤU HÌNH EMAIL PHẢN HỒI + CC -->
+    <!-- MODAL 5: CÀI ĐẶT WEB, AI GEMINI & EMAIL CC -->
     <div id="settingsModal" class="hidden fixed inset-0 bg-black/75 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative">
             <button type="button" onclick="document.getElementById('settingsModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl"><i class="fa fa-times"></i></button>
-            <h2 class="text-2xl font-black text-brand mb-6 border-b pb-3"><i class="fa fa-cogs mr-2"></i> Cài Đặt Website, Liên Kết & Email CC</h2>
+            <h2 class="text-2xl font-black text-brand mb-6 border-b pb-3"><i class="fa fa-cogs mr-2"></i> Cài Đặt Website, AI Gemini & Email CC</h2>
             
             <div class="space-y-6 text-sm">
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-                    <h3 class="font-bold text-base text-brand uppercase">1. Thương hiệu & Màu sắc</h3>
+                    <h3 class="font-bold text-base text-brand uppercase">1. Thương hiệu, Hình ảnh & Màu sắc</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block font-bold mb-1">Tên Website (Hiển thị trên Tab):</label>
@@ -977,14 +1074,14 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                         <div class="bg-white p-3 rounded-lg border flex items-center justify-between">
                             <div>
                                 <div class="font-bold">Favicon (Biểu tượng Tab)</div>
                                 <div class="text-xs text-gray-500">Chuẩn: <b>64x64px (1:1)</b></div>
                             </div>
                             <button type="button" onclick="openCropperModal('config', 'favicon', 1, 64, 64, 'Favicon Website (Chuẩn: 64x64px - Tỷ lệ 1:1)', false)" class="bg-yellow-400 text-black font-bold px-3 py-2 rounded-lg text-xs hover:bg-yellow-500">
-                                <i class="fa fa-upload"></i> Cắt & Tải ảnh
+                                <i class="fa fa-upload"></i> Tải Favicon
                             </button>
                         </div>
 
@@ -997,12 +1094,42 @@
                                 <i class="fa fa-upload"></i> Tải Logo
                             </button>
                         </div>
+
+                        <div class="bg-white p-3 rounded-lg border flex items-center justify-between">
+                            <div>
+                                <div class="font-bold">Ảnh tách nền Form Tư vấn</div>
+                                <div class="text-xs text-gray-500">Hỗ trợ PNG trong suốt</div>
+                            </div>
+                            <button type="button" onclick="openCropperModal('config', 'formMascot', NaN, 500, 500, 'Hình Ảnh Tách Nền (PNG) Ở Form Tư Vấn', false)" class="bg-yellow-400 text-black font-bold px-3 py-2 rounded-lg text-xs hover:bg-yellow-500">
+                                <i class="fa fa-upload"></i> Đổi ảnh
+                            </button>
+                        </div>
+
+                        <div class="bg-white p-3 rounded-lg border flex items-center justify-between">
+                            <div>
+                                <div class="font-bold">Biểu tượng Nút AI Chatbox</div>
+                                <div class="text-xs text-gray-500">Chuẩn: <b>200x200px</b></div>
+                            </div>
+                            <button type="button" onclick="openCropperModal('config', 'aiChatIcon', 1, 200, 200, 'Biểu Tượng Nút Chatbox AI Gemini', true)" class="bg-yellow-400 text-black font-bold px-3 py-2 rounded-lg text-xs hover:bg-yellow-500">
+                                <i class="fa fa-upload"></i> Đổi Icon AI
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Mục 2: Liên kết MXH -->
+                <!-- Mục 2: Cấu hình AI Gemini Chatbox -->
+                <div class="bg-purple-50/70 p-4 rounded-xl border border-purple-200 space-y-3">
+                    <h3 class="font-bold text-base text-purple-900 uppercase"><i class="fa fa-robot mr-1"></i> 2. Cấu hình Trợ lý AI Gemini</h3>
+                    <div>
+                        <label class="block font-bold mb-1">Gemini API Key (Tùy chọn - Dùng để mở rộng trả lời mọi câu hỏi nâng cao):</label>
+                        <input type="password" id="set_gemini_api_key" placeholder="Dán mã Gemini API Key (AIzaSy...) nếu có" class="w-full border p-2.5 rounded-lg bg-white">
+                        <p class="text-xs text-gray-500 mt-1">Ngay cả khi để trống API Key, hệ thống AI nội bộ vẫn tự động trả lời đầy đủ mọi câu hỏi về khóa học, giáo viên, thông tin công ty và giao tiếp hàng ngày.</p>
+                    </div>
+                </div>
+
+                <!-- Mục 3: Liên kết MXH -->
                 <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-4">
-                    <h3 class="font-bold text-base text-brand uppercase">2. Liên kết Mạng xã hội & Liên hệ</h3>
+                    <h3 class="font-bold text-base text-brand uppercase">3. Liên kết Mạng xã hội & Liên hệ</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block font-bold mb-1"><i class="fa fa-phone text-green-600 mr-1"></i> Số điện thoại (Hotline):</label>
@@ -1035,9 +1162,9 @@
                     </div>
                 </div>
 
-                <!-- Mục 3: Cấu hình Email phản hồi tự động cho học viên & CC -->
+                <!-- Mục 4: Cấu hình Email phản hồi tự động cho học viên & CC -->
                 <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200 space-y-4">
-                    <h3 class="font-bold text-base text-brand uppercase"><i class="fa fa-paper-plane mr-1"></i> 3. Cấu hình gửi Email phản hồi học viên & CC</h3>
+                    <h3 class="font-bold text-base text-brand uppercase"><i class="fa fa-paper-plane mr-1"></i> 4. Cấu hình gửi Email phản hồi học viên & CC</h3>
                     <div class="space-y-3">
                         <div>
                             <label class="block font-bold mb-1">Danh sách Email nhận CC (Cách nhau bằng dấu phẩy nếu có nhiều email):</label>
@@ -1066,23 +1193,35 @@
         </div>
     </div>
 
-    <!-- MODAL 6: CÔNG CỤ CẮT ẢNH -->
+    <!-- MODAL 6: CÔNG CỤ CẮT ẢNH THEO TỶ LỆ (HỖ TRỢ ĐỔI TỶ LỆ TRỰC TIẾP CHO MỌI BANNER & ẢNH) -->
     <div id="cropperModal" class="hidden fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
             <div class="p-4 bg-gray-900 text-white flex justify-between items-center">
                 <div>
                     <h3 id="cropModalTitle" class="font-bold text-lg text-yellow-400">Cắt & Tải Ảnh Chuẩn Tỷ Lệ Web</h3>
-                    <p id="cropModalSpec" class="text-xs text-gray-300 mt-0.5">Kích thước chuẩn: 800 x 500 px</p>
+                    <p id="cropModalSpec" class="text-xs text-gray-300 mt-0.5">Kích thước chuẩn: 1920 x 720 px</p>
                 </div>
                 <button type="button" onclick="closeCropperModal()" class="text-gray-400 hover:text-white text-2xl"><i class="fa fa-times"></i></button>
             </div>
 
-            <div class="p-4 bg-gray-100 border-b flex flex-wrap items-center justify-between gap-3">
-                <input type="file" id="cropFileInput" accept="image/*" class="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
-                <div class="flex gap-2">
-                    <button type="button" onclick="if(cropper) cropper.zoom(0.1)" class="bg-white border px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-magnifying-glass-plus"></i></button>
-                    <button type="button" onclick="if(cropper) cropper.zoom(-0.1)" class="bg-white border px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-magnifying-glass-minus"></i></button>
-                    <button type="button" onclick="if(cropper) cropper.rotate(90)" class="bg-white border px-3 py-1.5 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-rotate-right"></i></button>
+            <div class="p-3 bg-gray-100 border-b flex flex-wrap items-center justify-between gap-2">
+                <input type="file" id="cropFileInput" accept="image/*" class="text-xs sm:text-sm file:mr-2 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-600 file:text-white hover:file:bg-blue-700 cursor-pointer">
+                
+                <!-- Bộ nút chọn tỷ lệ cắt ảnh cho Banner & Hình ảnh -->
+                <div class="flex flex-wrap items-center gap-1 text-xs">
+                    <span class="font-bold text-gray-600 mr-1">Tỷ lệ:</span>
+                    <button type="button" onclick="setCropAspectRatio(16/6, 1920, 720)" class="px-2 py-1 bg-white border rounded font-bold hover:bg-blue-50">16:6 (Banner)</button>
+                    <button type="button" onclick="setCropAspectRatio(16/9, 1600, 900)" class="px-2 py-1 bg-white border rounded font-bold hover:bg-blue-50">16:9</button>
+                    <button type="button" onclick="setCropAspectRatio(16/10, 800, 500)" class="px-2 py-1 bg-white border rounded font-bold hover:bg-blue-50">16:10</button>
+                    <button type="button" onclick="setCropAspectRatio(4/3, 800, 600)" class="px-2 py-1 bg-white border rounded font-bold hover:bg-blue-50">4:3</button>
+                    <button type="button" onclick="setCropAspectRatio(1, 600, 600)" class="px-2 py-1 bg-white border rounded font-bold hover:bg-blue-50">1:1</button>
+                    <button type="button" onclick="setCropAspectRatio(NaN, 1200, 800)" class="px-2 py-1 bg-white border rounded font-bold hover:bg-blue-50">Tự do</button>
+                </div>
+
+                <div class="flex gap-1.5">
+                    <button type="button" onclick="if(cropper) cropper.zoom(0.1)" class="bg-white border px-2.5 py-1 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-magnifying-glass-plus"></i></button>
+                    <button type="button" onclick="if(cropper) cropper.zoom(-0.1)" class="bg-white border px-2.5 py-1 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-magnifying-glass-minus"></i></button>
+                    <button type="button" onclick="if(cropper) cropper.rotate(90)" class="bg-white border px-2.5 py-1 rounded text-xs font-bold hover:bg-gray-50"><i class="fa fa-rotate-right"></i></button>
                 </div>
             </div>
 
@@ -1090,7 +1229,7 @@
                 <img id="cropImagePreview" src="" class="max-w-full max-h-[50vh] hidden">
                 <div id="cropEmptyNotice" class="text-gray-400 text-sm text-center">
                     <i class="fa fa-cloud-arrow-up text-4xl mb-2 block text-yellow-400"></i>
-                    Vui lòng bấm <b>"Chọn tệp"</b> ở góc trên để tải ảnh từ máy tính và căn chỉnh khung cắt.
+                    Vui lòng bấm <b>"Chọn tệp"</b> ở góc trên để tải ảnh từ máy tính và căn chỉnh khung cắt theo tỷ lệ.
                 </div>
             </div>
 
@@ -1184,8 +1323,11 @@
 
     <!-- LOGIC XỬ LÝ CHÍNH -->
     <script>
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxlHI_LmmdUO9ojgrsxmUEOEwaA8gkUvbnafb3gVheSag_QtqAe2S6PFYNv5Xo5uVg8hQ/exec";
-        const CONFIG_CACHE_KEY = "studybee_config_cache_v3";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxIPkavZ25hWKDzB3DD00xjO-Lu-0l1QYjohLk8gYkqcwwGQKwWOd2Ep_Bn0U5MWsc0Jg/exec";
+        const CONFIG_CACHE_KEY = "studybee_config_cache_v4";
+
+        const DEFAULT_BEE_FAVICON = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230c389b'/><circle cx='50' cy='50' r='30' fill='%23facc15'/><path d='M30 42h40M28 52h44M34 62h32' stroke='%230c389b' stroke-width='6' stroke-linecap='round'/><text x='50' y='88' font-family='Arial' font-weight='900' font-size='14' fill='%23ffffff' text-anchor='middle'>STUDY BEE</text></svg>";
+        const DEFAULT_BEE_LOGO = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 100'><rect width='84' height='84' x='8' y='8' rx='20' fill='%230c389b'/><circle cx='50' cy='50' r='26' fill='%23facc15'/><path d='M32 42h36M30 50h40M35 58h30' stroke='%230c389b' stroke-width='5' stroke-linecap='round'/><text x='108' y='48' font-family='Montserrat,Arial,sans-serif' font-weight='900' font-size='30' fill='%230c389b'>STUDY BEE</text><text x='108' y='78' font-family='Montserrat,Arial,sans-serif' font-weight='700' font-size='20' fill='%23eab308' letter-spacing='3'>ENGLISH</text></svg>";
 
         let currentConfig = {};
         let menuArray = [];
@@ -1202,12 +1344,13 @@
         let newsArray = [];
         let communityArray = [];
         let adminUsersList = [];
+        let lastSearchMatchedItems = [];
 
         let bannerSwiperInstance = null;
         let eventSwiperInstance = null;
 
         let cropper = null;
-        let cropJob = { type: null, key: null, aspectRatio: 1, width: 600, height: 600, isCircle: false };
+        let cropJob = { type: null, key: null, aspectRatio: 16/6, width: 1920, height: 720, isCircle: false };
         let activeReasonIconIndex = null;
 
         const FONT_AWESOME_ICONS = [
@@ -1227,7 +1370,13 @@
             document.execCommand(cmd, false, value);
         }
 
-        // Xóa mọi style background-color trắng bị dính khi copy/paste vào phần thông tin công ty
+        function stripHtmlTags(str) {
+            if (!str) return "";
+            const tmp = document.createElement("div");
+            tmp.innerHTML = String(str);
+            return (tmp.textContent || tmp.innerText || "").trim();
+        }
+
         function stripWhiteBackgroundHtml(htmlStr) {
             if (!htmlStr) return "";
             return String(htmlStr)
@@ -1235,7 +1384,6 @@
                 .replace(/background\s*:\s*[^;"]+;?/gi, "");
         }
 
-        // Hàm chuẩn hóa số điện thoại: luôn ép về chuỗi (String) và khôi phục số 0 ở đầu
         function normalizePhoneString(val) {
             if (val === undefined || val === null || val === "") return "0362938989";
             let str = String(val).trim();
@@ -1252,7 +1400,7 @@
             return (match && match[1]) ? match[1] : "";
         }
 
-        // Tự động lọc bỏ toàn bộ dữ liệu EEC cũ nếu trong Google Sheet vẫn còn lưu từ phiên bản trước
+        // Lọc bỏ hoàn toàn dữ liệu EEC cũ và icon mặc định cũ (3135715.png)
         function sanitizeLegacyEECData(cfg) {
             if (!cfg || typeof cfg !== 'object') return;
 
@@ -1276,6 +1424,14 @@
                 }
             }
 
+            // Thay thế icon mặc định cũ 3135715.png bằng bộ icon STUDY BEE ENGLISH mới
+            if (!cfg.favicon || cfg.favicon.includes("3135715.png")) {
+                cfg.favicon = DEFAULT_BEE_FAVICON;
+            }
+            if (!cfg.logo || cfg.logo.includes("3135715.png")) {
+                cfg.logo = DEFAULT_BEE_LOGO;
+            }
+
             cfg.footerCol1Title = "VỀ STUDY BEE ENGLISH";
             cfg.footerCol2Title = "THÔNG TIN ĐƠN VỊ";
             cfg.footerCompanyName = stripWhiteBackgroundHtml(cfg.footerCompanyName || "HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH");
@@ -1288,13 +1444,15 @@
             }
         }
 
-        // Khởi tạo dữ liệu mặc định chuẩn STUDY BEE ENGLISH
         function initDefaultDataIfEmpty() {
             const defaultStudyBeeConfig = {
                 siteTitle: "STUDY BEE ENGLISH - Nền tảng học tiếng Anh trực tuyến",
-                favicon: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-                logo: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                favicon: DEFAULT_BEE_FAVICON,
+                logo: DEFAULT_BEE_LOGO,
                 primaryColor: "#0c389b",
+                formMascot: "https://cdn-icons-png.flaticon.com/512/4712/4712109.png",
+                aiChatIcon: "https://cdn-icons-png.flaticon.com/512/8943/8943377.png",
+                gemini_api_key: "",
                 email_cc: "studybeeenglishadmin01@gmail.com",
                 email_sender_name: "STUDY BEE ENGLISH",
                 email_subject: "Xác nhận đăng ký tư vấn lộ trình học tiếng Anh - STUDY BEE ENGLISH",
@@ -1361,7 +1519,6 @@
                     { id: "m6", title: "Thư viện", type: "link", link: "#tin-tuc", content: "", children: [] }
                 ];
             } else {
-                // Tự động nâng cấp menu "Về chúng tôi" và "Đội ngũ giáo viên" sang trang chuyên biệt
                 menuArray.forEach(m => {
                     const lowerTitle = String(m.title || "").toLowerCase();
                     if (lowerTitle.includes("về ") || lowerTitle.includes("giới thiệu")) {
@@ -1450,15 +1607,11 @@
                 bannersArray = [
                     {
                         img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1920&q=80",
-                        link: "#tu-van",
-                        title: "ĐẠT IELTS SPEAKING 6.5 TRONG 6 THÁNG TỪ CON SỐ 0",
-                        subtitle: "ƯU ĐÃI HỌC PHÍ LÊN ĐẾN 40% - LỘ TRÌNH TINH GỌN 1 KÈM 1 CÙNG STUDY BEE ENGLISH"
+                        link: "#tu-van"
                     },
                     {
                         img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80",
-                        link: "#khoa-hoc-vip",
-                        title: "TIẾNG ANH GIAO TIẾP TRỰC TUYẾN 1 KÈM 1",
-                        subtitle: "Bứt phá khả năng phản xạ cùng đội ngũ giảng viên giàu kinh nghiệm tại STUDY BEE ENGLISH"
+                        link: "#khoa-hoc-vip"
                     }
                 ];
             }
@@ -1530,7 +1683,6 @@
                     }
                 ];
             } else {
-                // Đảm bảo mọi giáo viên đều có trường bio để hiển thị bên trang Đội ngũ giáo viên
                 teachersArray.forEach(t => {
                     if (!t.bio) {
                         t.bio = `<strong>Chứng chỉ / Trình độ chuyên môn:</strong><br>- Giảng viên tiếng Anh chuyên ngành Sư phạm & Ngôn ngữ Anh<br>- Chứng chỉ giảng dạy tiếng Anh quốc tế TESOL<br><br><strong>Kinh nghiệm giảng dạy:</strong><br>- ${t.exp || 'Nhiều năm kinh nghiệm giảng dạy tiếng Anh giao tiếp và luyện thi chứng chỉ quốc tế.'}`;
@@ -1662,9 +1814,8 @@
             try { checkAuth(); } catch(e) { console.error("checkAuth err:", e); }
         }
 
-        // 1. Tải cấu hình (Sử dụng Cache + Sanitize để không bao giờ nháy dữ liệu cũ)
+        // 1. Tải cấu hình
         async function loadConfig() {
-            // Xóa sạch cache cũ (nếu có) và đọc cache mới
             try {
                 const cachedStr = localStorage.getItem(CONFIG_CACHE_KEY);
                 if (cachedStr) {
@@ -1689,7 +1840,6 @@
                 }
                 fetchedConfig.link_phone = normalizePhoneString(fetchedConfig.link_phone);
 
-                // Làm sạch mọi thông tin EEC cũ từ Sheet trước khi áp dụng
                 sanitizeLegacyEECData(fetchedConfig);
 
                 currentConfig = fetchedConfig;
@@ -1703,7 +1853,7 @@
             }
         }
 
-        // 2. Áp dụng cấu hình chung lên DOM (Chỉ dùng 1 Logo ảnh duy nhất & Làm sạch nền trắng Footer)
+        // 2. Áp dụng cấu hình chung lên DOM
         function applyConfigToDOM() {
             const color = String(currentConfig.primaryColor || "#0c389b");
             document.documentElement.style.setProperty('--primary-color', color);
@@ -1713,19 +1863,33 @@
             document.getElementById('dom_siteTitle').textContent = String(currentConfig.siteTitle || "STUDY BEE ENGLISH");
             document.getElementById('set_siteTitle').value = String(currentConfig.siteTitle || "STUDY BEE ENGLISH");
             
-            if (currentConfig.favicon) {
-                document.getElementById('dynamic-favicon').href = String(currentConfig.favicon);
-            }
+            const favUrl = (currentConfig.favicon && !currentConfig.favicon.includes("3135715.png"))
+                ? String(currentConfig.favicon)
+                : DEFAULT_BEE_FAVICON;
+            document.getElementById('dynamic-favicon').href = favUrl;
 
-            // Hiển thị 1 Logo ảnh duy nhất ở Header & Footer
-            const defaultLogoUrl = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-            const logoUrl = String(currentConfig.logo || "").trim() || defaultLogoUrl;
+            const logoUrl = (currentConfig.logo && !currentConfig.logo.includes("3135715.png"))
+                ? String(currentConfig.logo).trim()
+                : DEFAULT_BEE_LOGO;
             const logoImg = document.getElementById('dom_logo');
             const footerLogoImg = document.getElementById('dom_footer_logo');
             if (logoImg) logoImg.src = logoUrl;
             if (footerLogoImg) footerLogoImg.src = logoUrl;
 
-            // Đổ chữ cho các thẻ [data-key] (Đồng thời xóa nền trắng ở các thẻ thuộc Footer)
+            // Ảnh linh vật tách nền ở Form tư vấn
+            const mascotImg = document.getElementById('dom_formMascot');
+            if (mascotImg) {
+                mascotImg.src = String(currentConfig.formMascot || "https://cdn-icons-png.flaticon.com/512/4712/4712109.png");
+            }
+
+            // Icon nút Chatbox AI Gemini
+            const aiIconUrl = String(currentConfig.aiChatIcon || "https://cdn-icons-png.flaticon.com/512/8943/8943377.png");
+            const aiBtnImg = document.getElementById('dom_aiChatIcon');
+            const aiHeaderImg = document.getElementById('dom_aiChatHeaderIcon');
+            if (aiBtnImg) aiBtnImg.src = aiIconUrl;
+            if (aiHeaderImg) aiHeaderImg.src = aiIconUrl;
+
+            // Đổ chữ cho các thẻ [data-key]
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
                 if (currentConfig[key] !== undefined && currentConfig[key] !== "") {
@@ -1739,7 +1903,7 @@
 
             currentConfig.link_phone = normalizePhoneString(currentConfig.link_phone);
 
-            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject'];
+            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject', 'gemini_api_key'];
             settingKeys.forEach(k => {
                 const inputEl = document.getElementById('set_' + k);
                 if (inputEl && currentConfig[k] !== undefined) {
@@ -1774,7 +1938,159 @@
             });
         }
 
-        // 3. Chuyển đổi giữa Trang chủ, Trang Về chúng tôi, Trang Đội ngũ giáo viên & Trang con
+        // =========================================================================
+        // 2B. TÌM KIẾM KHÓA HỌC & GIÁO VIÊN TRÊN HEADER
+        // =========================================================================
+        function handleHeaderSearch(rawQuery) {
+            const resultsBox = document.getElementById('headerSearchResults');
+            const kw = String(rawQuery || "").toLowerCase().trim();
+            lastSearchMatchedItems = [];
+
+            if (!kw) {
+                resultsBox.classList.add('hidden');
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+
+            // 1. Tìm trong danh sách Khóa học VIP
+            const matchedCourses = [];
+            coursesArray.forEach((c, idx) => {
+                const titleClean = stripHtmlTags(c.title);
+                const descClean = stripHtmlTags(c.desc) + " " + stripHtmlTags(c.detailDesc);
+                if (titleClean.toLowerCase().includes(kw) || descClean.toLowerCase().includes(kw)) {
+                    matchedCourses.push({ type: 'course', index: idx, title: titleClean, img: c.img });
+                    lastSearchMatchedItems.push({ type: 'course', index: idx });
+                }
+            });
+
+            // Tìm thêm trong các trang con khóa học (E1, E2, E3, E4...)
+            menuArray.forEach((m, mIdx) => {
+                (m.children || []).forEach((ch, cIdx) => {
+                    const chTitle = stripHtmlTags(ch.title);
+                    const chContent = stripHtmlTags(ch.content);
+                    if (chTitle.toLowerCase().includes(kw) || chContent.toLowerCase().includes(kw)) {
+                        matchedCourses.push({ type: 'subpage', pIdx: mIdx, cIdx: cIdx, title: chTitle, img: '' });
+                        lastSearchMatchedItems.push({ type: 'subpage', pIdx: mIdx, cIdx: cIdx });
+                    }
+                });
+            });
+
+            // 2. Tìm trong danh sách Giáo viên
+            const matchedTeachers = [];
+            teachersArray.forEach((t, idx) => {
+                const nameClean = stripHtmlTags(t.name);
+                const expClean = stripHtmlTags(t.exp) + " " + stripHtmlTags(t.bio);
+                if (nameClean.toLowerCase().includes(kw) || expClean.toLowerCase().includes(kw)) {
+                    matchedTeachers.push({ type: 'teacher', index: idx, name: nameClean, exp: stripHtmlTags(t.exp), img: t.img });
+                    lastSearchMatchedItems.push({ type: 'teacher', index: idx });
+                }
+            });
+
+            if (matchedCourses.length > 0) {
+                html += `<div class="px-3.5 py-2 bg-blue-50 text-brand font-extrabold text-xs uppercase border-b"><i class="fa fa-graduation-cap mr-1"></i> Khóa học (${matchedCourses.length})</div>`;
+                matchedCourses.forEach(item => {
+                    if (item.type === 'course') {
+                        html += `
+                            <button type="button" onclick="navigateToCourseResult(${item.index})" class="w-full text-left px-3.5 py-2.5 hover:bg-gray-100 flex items-center gap-3 border-b border-gray-100 transition">
+                                <img src="${item.img}" class="w-10 h-10 rounded-lg object-cover shrink-0 border">
+                                <div>
+                                    <div class="font-bold text-xs text-gray-900 line-clamp-1">${item.title}</div>
+                                    <div class="text-[11px] text-brand">Khóa học VIP • Bấm để xem chi tiết</div>
+                                </div>
+                            </button>
+                        `;
+                    } else {
+                        html += `
+                            <button type="button" onclick="navigateToSubpageResult(${item.pIdx}, ${item.cIdx})" class="w-full text-left px-3.5 py-2.5 hover:bg-gray-100 flex items-center gap-3 border-b border-gray-100 transition">
+                                <div class="w-10 h-10 rounded-lg bg-brand text-yellow-400 flex items-center justify-center shrink-0 font-black text-xs">KH</div>
+                                <div>
+                                    <div class="font-bold text-xs text-gray-900 line-clamp-1">${item.title}</div>
+                                    <div class="text-[11px] text-brand">Chương trình đào tạo • Bấm để mở trang</div>
+                                </div>
+                            </button>
+                        `;
+                    }
+                });
+            }
+
+            if (matchedTeachers.length > 0) {
+                html += `<div class="px-3.5 py-2 bg-yellow-50 text-amber-900 font-extrabold text-xs uppercase border-b"><i class="fa fa-chalkboard-user mr-1"></i> Đội ngũ Giáo viên (${matchedTeachers.length})</div>`;
+                matchedTeachers.forEach(t => {
+                    html += `
+                        <button type="button" onclick="navigateToTeacherResult(${t.index})" class="w-full text-left px-3.5 py-2.5 hover:bg-gray-100 flex items-center gap-3 border-b border-gray-100 transition">
+                            <img src="${t.img}" class="w-10 h-10 rounded-full object-cover shrink-0 border border-brand">
+                            <div>
+                                <div class="font-bold text-xs text-gray-900">${t.name}</div>
+                                <div class="text-[11px] text-gray-500 line-clamp-1">${t.exp}</div>
+                            </div>
+                        </button>
+                    `;
+                });
+            }
+
+            if (!html) {
+                html = `<div class="p-4 text-center text-xs text-gray-500">Không tìm thấy khóa học hoặc giáo viên nào khớp với "<b>${stripHtmlTags(rawQuery)}</b>".</div>`;
+            }
+
+            resultsBox.innerHTML = html;
+            resultsBox.classList.remove('hidden');
+        }
+
+        function triggerFirstSearchResult() {
+            if (lastSearchMatchedItems.length > 0) {
+                const first = lastSearchMatchedItems[0];
+                if (first.type === 'course') navigateToCourseResult(first.index);
+                else if (first.type === 'subpage') navigateToSubpageResult(first.pIdx, first.cIdx);
+                else if (first.type === 'teacher') navigateToTeacherResult(first.index);
+            } else {
+                const val = document.getElementById('headerSearchInput').value;
+                handleHeaderSearch(val);
+            }
+        }
+
+        function navigateToCourseResult(idx) {
+            document.getElementById('headerSearchResults').classList.add('hidden');
+            showHomePage();
+            setTimeout(() => {
+                const card = document.querySelector(`[data-course-index="${idx}"]`);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const detailBox = document.getElementById(`courseDetailBox_${idx}`);
+                    if (detailBox && detailBox.classList.contains('hidden')) {
+                        toggleCourseDetail(idx);
+                    }
+                }
+            }, 150);
+        }
+
+        function navigateToSubpageResult(pIdx, cIdx) {
+            document.getElementById('headerSearchResults').classList.add('hidden');
+            openSubPageView(pIdx, cIdx);
+        }
+
+        function navigateToTeacherResult(idx) {
+            document.getElementById('headerSearchResults').classList.add('hidden');
+            openTeachersPageView();
+            setTimeout(() => {
+                const cards = document.querySelectorAll('#teachersDetailedListContainer > div');
+                if (cards[idx]) {
+                    cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 200);
+        }
+
+        // Ẩn hộp tìm kiếm khi click ra ngoài
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('headerSearchWrapper');
+            const box = document.getElementById('headerSearchResults');
+            if (wrapper && box && !wrapper.contains(e.target)) {
+                box.classList.add('hidden');
+            }
+        });
+
+        // 3. Chuyển đổi giữa các trang
         function hideAllMainViews() {
             document.getElementById('homePageView').classList.add('hidden');
             document.getElementById('subPageView').classList.add('hidden');
@@ -1835,7 +2151,6 @@
             document.getElementById('about_commitTitle_dom').innerHTML = aboutPageObj.commitTitle || "STUDY BEE ENGLISH CAM KẾT";
             document.getElementById('about_commitSubtitle_dom').innerHTML = aboutPageObj.commitSubtitle || "";
 
-            // Render 3 cột: Tầm nhìn - Sứ mệnh - Giá trị cốt lõi
             const pillarsContainer = document.getElementById('aboutPillarsContainer');
             pillarsContainer.innerHTML = '';
             (aboutPageObj.pillars || []).forEach((p, idx) => {
@@ -1845,7 +2160,7 @@
                             <img src="${p.img}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" alt="${p.title}">
                             <div class="admin-only hidden absolute top-2 left-2 z-20">
                                 <button type="button" onclick="openCropperModal('aboutPillar', ${idx}, 16/10, 600, 375, 'Ảnh ${p.title} (600x375px)', false)" class="bg-yellow-400 text-black font-bold px-2.5 py-1 rounded text-xs shadow">
-                                    <i class="fa fa-crop"></i> Đổi ảnh
+                                    <i class="fa fa-crop"></i> Cắt & Đổi ảnh
                                 </button>
                             </div>
                         </div>
@@ -1855,7 +2170,6 @@
                 `);
             });
 
-            // Render 3 hàng so le: STUDY BEE ENGLISH CAM KẾT
             const commitContainer = document.getElementById('aboutCommitmentsContainer');
             commitContainer.innerHTML = '';
             (aboutPageObj.commitments || []).forEach((cm, idx) => {
@@ -1868,7 +2182,7 @@
                             </div>
                             <div class="admin-only hidden absolute top-3 left-3 z-20">
                                 <button type="button" onclick="openCropperModal('aboutCommit', ${idx}, 16/10, 800, 500, 'Ảnh Cam Kết #${idx+1} (800x500px)', false)" class="bg-yellow-400 text-black font-bold px-3 py-1 rounded text-xs shadow">
-                                    <i class="fa fa-crop"></i> Đổi ảnh
+                                    <i class="fa fa-crop"></i> Cắt & Đổi ảnh
                                 </button>
                             </div>
                         </div>
@@ -1887,7 +2201,7 @@
             });
         }
 
-        // 3C. Render Trang "ĐỘI NGŨ GIÁO VIÊN" (Liên kết 2 chiều với teachersArray ở Trang chủ)
+        // 3C. Render Trang "ĐỘI NGŨ GIÁO VIÊN"
         function renderTeachersPage() {
             if (!teacherPageObj) return;
             document.getElementById('teacherPage_bannerImg_dom').src = teacherPageObj.bannerImg || "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1920&q=80";
@@ -1908,7 +2222,6 @@
                 `);
             });
 
-            // Danh sách hồ sơ chi tiết từng giáo viên (Xen kẽ dải nền Xanh & Vàng giống hệt Giáo viên.html)
             const listContainer = document.getElementById('teachersDetailedListContainer');
             listContainer.innerHTML = '';
             teachersArray.forEach((t, idx) => {
@@ -1925,19 +2238,17 @@
                                     <i class="fa fa-trash mr-1"></i> Xóa giảng viên
                                 </button>
 
-                                <!-- Ảnh Chân dung Giảng viên -->
                                 <div class="w-full md:w-5/12 flex justify-center">
                                     <div class="relative w-72 sm:w-80 aspect-square rounded-2xl overflow-hidden border-4 border-white shadow-2xl bg-[#fff9e6] group">
                                         <img src="${t.img}" class="w-full h-full object-cover" alt="${t.name}">
                                         <div class="admin-only hidden absolute top-3 left-3 z-20">
                                             <button type="button" onclick="openCropperModal('teacher', ${idx}, 1, 500, 500, 'Ảnh Giảng Viên (Chuẩn: 500x500px - 1:1)', false)" class="bg-yellow-400 text-black text-xs font-bold px-3 py-1.5 rounded shadow">
-                                                <i class="fa fa-camera mr-1"></i> Đổi ảnh
+                                                <i class="fa fa-crop mr-1"></i> Cắt & Đổi ảnh
                                             </button>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Hộp Hồ sơ Chi tiết Giảng viên -->
                                 <div class="w-full md:w-7/12">
                                     <div class="teacher-bio-card p-6 md:p-8">
                                         <h3 oninput="teachersArray[${idx}].name = this.innerHTML; renderTeachersSection();" class="editable text-xl md:text-2xl font-black text-brand uppercase mb-1">
@@ -2095,7 +2406,9 @@
             await saveAllToGoogleSheet();
         }
 
-        // 5. Render Slideshow Banner Tràn Khung 100%
+        // =========================================================================
+        // 5. RENDER SLIDESHOW BANNER TRÀN KHUNG (HIỂN THỊ TRỰC TIẾP ẢNH, KHÔNG PHỦ CHỮ)
+        // =========================================================================
         function renderBannersSlider() {
             if (bannerSwiperInstance) {
                 bannerSwiperInstance.destroy(true, true);
@@ -2108,25 +2421,18 @@
             bannersArray.forEach((bn, idx) => {
                 container.insertAdjacentHTML('beforeend', `
                     <div class="swiper-slide w-full relative">
-                        <div class="w-full relative aspect-[16/7] md:aspect-[16/6] max-h-[680px] overflow-hidden bg-gray-900">
-                            <img src="${bn.img}" class="w-full h-full object-cover" alt="Banner">
-                            <div class="absolute inset-0 bg-gradient-to-r from-black/65 via-black/35 to-transparent flex items-center">
-                                <div class="max-w-7xl mx-auto px-6 md:px-12 w-full text-white">
-                                    <h2 oninput="bannersArray[${idx}].title = this.innerHTML" class="editable text-2xl sm:text-4xl md:text-5xl font-black uppercase max-w-3xl leading-tight mb-3 drop-shadow-lg">${bn.title || ''}</h2>
-                                    <p oninput="bannersArray[${idx}].subtitle = this.innerHTML" class="editable text-sm sm:text-lg md:text-xl text-yellow-300 font-bold max-w-2xl mb-6 drop-shadow">${bn.subtitle || ''}</p>
-                                    <a href="${bn.link || '#tu-van'}" class="inline-block bg-yellow-400 text-brand font-black px-7 py-3 rounded-full text-sm md:text-base shadow-xl hover:bg-yellow-500 transition">
-                                        KHÁM PHÁ NGAY <i class="fa fa-arrow-right ml-1"></i>
-                                    </a>
-                                </div>
-                            </div>
+                        <div class="w-full relative overflow-hidden bg-gray-900">
+                            <a href="${bn.link || '#tu-van'}" class="block w-full">
+                                <img src="${bn.img}" class="w-full h-auto max-h-[680px] object-cover block" alt="Banner ${idx + 1}">
+                            </a>
 
                             <div class="admin-only hidden absolute bottom-4 right-4 bg-gray-900/90 text-white p-2.5 rounded-xl flex flex-wrap gap-2 items-center z-20 text-xs shadow-2xl border border-gray-700">
-                                <span class="text-yellow-400 font-bold">Banner #${idx + 1} (1920x680px):</span>
-                                <button type="button" onclick="openCropperModal('banner', ${idx}, 16/6, 1600, 600, 'Ảnh Banner #${idx+1} (Chuẩn: 1600x600px - Tỷ lệ 16:6)', false)" class="bg-yellow-400 text-black font-bold px-2.5 py-1 rounded hover:bg-yellow-500">
-                                    <i class="fa fa-crop"></i> Đổi ảnh
+                                <span class="text-yellow-400 font-bold">Banner #${idx + 1}:</span>
+                                <button type="button" onclick="openCropperModal('banner', ${idx}, 16/6, 1920, 720, 'Cắt & Đổi Ảnh Banner #${idx+1} (Hỗ trợ chọn tỷ lệ)', false)" class="bg-yellow-400 text-black font-bold px-3 py-1 rounded hover:bg-yellow-500">
+                                    <i class="fa fa-crop mr-1"></i> Cắt & Đổi ảnh Banner
                                 </button>
                                 <button type="button" onclick="editBannerLink(${idx})" class="bg-blue-600 text-white font-bold px-2.5 py-1 rounded hover:bg-blue-700">
-                                    <i class="fa fa-link"></i> Đổi Link
+                                    <i class="fa fa-link"></i> Đổi Link đích
                                 </button>
                                 ${bannersArray.length > 1 ? `
                                     <button type="button" onclick="deleteBannerSlide(${idx})" class="bg-red-600 text-white font-bold px-2.5 py-1 rounded hover:bg-red-700">
@@ -2151,16 +2457,14 @@
         function addNewBannerSlide() {
             bannersArray.push({
                 img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80",
-                link: "#tu-van",
-                title: "TIÊU ĐỀ BANNER MỚI",
-                subtitle: "Bấm trực tiếp vào chữ để sửa nội dung hoặc bấm Đổi ảnh ở góc phải"
+                link: "#tu-van"
             });
             renderBannersSlider();
             checkAuth();
         }
 
         function editBannerLink(idx) {
-            const url = prompt("Nhập đường dẫn khi bấm nút trên Banner này:", bannersArray[idx].link || "#tu-van");
+            const url = prompt("Nhập đường dẫn khi học viên bấm vào Banner này:", bannersArray[idx].link || "#tu-van");
             if (url !== null) {
                 bannersArray[idx].link = url.trim();
                 renderBannersSlider();
@@ -2197,7 +2501,7 @@
                                 <div class="text-[10px] text-yellow-300 text-center">Chuẩn ảnh: 600x600px (1:1)</div>
                                 <div class="flex gap-1 justify-between">
                                     <button type="button" onclick="openCropperModal('event', ${idx}, 1, 600, 600, 'Ảnh Sự Kiện #${idx+1} (Chuẩn: 600x600px - Tỷ lệ 1:1)', false)" class="bg-yellow-400 text-black font-bold px-2 py-1 rounded flex-1 hover:bg-yellow-500">
-                                        <i class="fa fa-crop"></i> Đổi ảnh
+                                        <i class="fa fa-crop"></i> Cắt ảnh
                                     </button>
                                     <button type="button" onclick="editEventLink(${idx})" class="bg-blue-600 text-white font-bold px-2 py-1 rounded flex-1 hover:bg-blue-700">
                                         <i class="fa fa-link"></i> Link
@@ -2381,9 +2685,7 @@
             if (!selectEl) return;
             selectEl.innerHTML = '';
             coursesArray.forEach((c) => {
-                const tempDiv = document.createElement('div');
-                tempDiv.innerHTML = c.title;
-                const cleanTitle = (tempDiv.textContent || tempDiv.innerText || "").trim();
+                const cleanTitle = stripHtmlTags(c.title);
                 if (cleanTitle) {
                     const opt = document.createElement('option');
                     opt.value = cleanTitle;
@@ -2394,9 +2696,7 @@
         }
 
         function selectCourseInForm(idx) {
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = coursesArray[idx].title;
-            const cleanTitle = (tempDiv.textContent || tempDiv.innerText || "").trim();
+            const cleanTitle = stripHtmlTags(coursesArray[idx].title);
             const selectEl = document.getElementById('f_course');
             if (selectEl && cleanTitle) selectEl.value = cleanTitle;
         }
@@ -2458,7 +2758,7 @@
                             <img src="${t.img}" class="w-full h-full object-cover" alt="${t.name}">
                             <div class="admin-only hidden absolute top-2 left-2 z-20">
                                 <button type="button" onclick="event.stopPropagation(); openCropperModal('teacher', ${idx}, 1, 500, 500, 'Ảnh Giảng Viên (Chuẩn: 500x500px - 1:1)', false)" class="bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded shadow">
-                                    <i class="fa fa-camera"></i> Đổi ảnh
+                                    <i class="fa fa-crop"></i> Cắt & Đổi ảnh
                                 </button>
                             </div>
                         </div>
@@ -2495,7 +2795,7 @@
             }
         }
 
-        // 10. Render NHỮNG THÀNH TỰU ĐÁNG TỰ HÀO (Hiển thị đồng bộ ở cả Trang chủ & Trang Về chúng tôi)
+        // 10. Render NHỮNG THÀNH TỰU ĐÁNG TỰ HÀO
         function renderAchievementsSection() {
             const containers = [
                 document.getElementById('achievementsContainer'),
@@ -2536,7 +2836,7 @@
                             <img src="${item.img}" class="w-full h-full object-cover" alt="${item.name}">
                             <div class="admin-only hidden absolute top-2 left-2 z-20">
                                 <button type="button" onclick="openCropperModal('testimonial', ${idx}, 4/3, 520, 390, 'Ảnh Học Viên #${idx+1} (Chuẩn: 520x390px - Tỷ lệ 4:3)', false)" class="bg-yellow-400 text-black text-xs font-bold px-2.5 py-1 rounded shadow">
-                                    <i class="fa fa-camera"></i> Đổi ảnh
+                                    <i class="fa fa-crop"></i> Cắt & Đổi ảnh
                                 </button>
                             </div>
                         </div>
@@ -2710,7 +3010,7 @@
                                 <span class="text-yellow-300">600x375px (16:10)</span>
                                 <div class="flex gap-1">
                                     <button type="button" onclick="openCropperModal('news', ${idx}, 16/10, 600, 375, 'Ảnh Tin Tức #${idx+1} (Chuẩn: 600x375px - 16:10)', false)" class="bg-yellow-400 text-black font-bold px-2 py-0.5 rounded">
-                                        <i class="fa fa-crop"></i> Đổi ảnh
+                                        <i class="fa fa-crop"></i> Cắt ảnh
                                     </button>
                                     <button type="button" onclick="editNewsLink(${idx})" class="bg-blue-600 text-white font-bold px-2 py-0.5 rounded">
                                         <i class="fa fa-link"></i> Link
@@ -2809,7 +3109,7 @@
                                     <span class="text-yellow-300">600x375px</span>
                                     <div class="flex gap-1">
                                         <button type="button" onclick="openCropperModal('community', ${idx}, 16/10, 600, 375, 'Ảnh Cộng Đồng #${idx+1} (Chuẩn: 600x375px - 16:10)', false)" class="bg-yellow-400 text-black font-bold px-2 py-0.5 rounded">
-                                            <i class="fa fa-crop"></i> Đổi ảnh
+                                            <i class="fa fa-crop"></i> Cắt ảnh
                                         </button>
                                         <button type="button" onclick="editCommunityLink(${idx})" class="bg-blue-600 text-white font-bold px-2 py-0.5 rounded">
                                             <i class="fa fa-link"></i> Link
@@ -2850,7 +3150,9 @@
             }
         }
 
-        // 14. Công cụ Cắt Ảnh (Cropper.js)
+        // =========================================================================
+        // 14. CÔNG CỤ CẮT ẢNH ĐA TỶ LỆ CHO MỌI BANNER & HÌNH ẢNH
+        // =========================================================================
         function openCropperModal(type, key, aspectRatio, width, height, titleText, isCircle = false) {
             cropJob = { type, key, aspectRatio, width, height, isCircle };
             document.getElementById('cropModalTitle').textContent = titleText;
@@ -2868,6 +3170,18 @@
                 cropper = null;
             }
             document.getElementById('cropperModal').classList.remove('hidden');
+        }
+
+        function setCropAspectRatio(ratio, w, h) {
+            cropJob.aspectRatio = ratio;
+            if (w && h) {
+                cropJob.width = w;
+                cropJob.height = h;
+                document.getElementById('cropModalSpec').innerHTML = `Kích thước xuất chuẩn: <b>${w} x ${h} px</b> ${isNaN(ratio) ? '(Tỷ lệ tự do)' : ''}`;
+            }
+            if (cropper) {
+                cropper.setAspectRatio(ratio);
+            }
         }
 
         function closeCropperModal() {
@@ -2935,9 +3249,10 @@
                     canvas = getRoundedCanvas(canvas);
                 }
 
-                const usePng = (cropJob.isCircle || cropJob.key === 'logo' || cropJob.key === 'favicon');
+                // Giữ định dạng PNG trong suốt cho Logo, Favicon, Mascot tách nền và Icon AI
+                const usePng = (cropJob.isCircle || cropJob.key === 'logo' || cropJob.key === 'favicon' || cropJob.key === 'formMascot' || cropJob.key === 'aiChatIcon');
                 const mimeType = usePng ? 'image/png' : 'image/jpeg';
-                const base64Data = canvas.toDataURL(mimeType, 0.9);
+                const base64Data = canvas.toDataURL(mimeType, 0.92);
 
                 const res = await fetch(APPS_SCRIPT_URL, {
                     method: 'POST',
@@ -2956,6 +3271,7 @@
                         document.getElementById('prof_avatar_preview').setAttribute('data-uploaded-url', res.url);
                     } else if (cropJob.type === 'config') {
                         currentConfig[cropJob.key] = res.url;
+                        localStorage.setItem(CONFIG_CACHE_KEY, JSON.stringify(currentConfig));
                         applyConfigToDOM();
                     } else if (cropJob.type === 'aboutBanner') {
                         aboutPageObj.bannerImg = res.url;
@@ -3024,7 +3340,201 @@
             }
         }
 
-        // 15. Cài đặt Web & Email CC Modal
+        // =========================================================================
+        // 15. TRỢ LÝ AI GEMINI CHATBOX (TRẢ LỜI MỌI CÂU HỎI WEB & HẰNG NGÀY)
+        // =========================================================================
+        function toggleAiChatWindow() {
+            const win = document.getElementById('aiChatWindow');
+            win.classList.toggle('hidden');
+            if (!win.classList.contains('hidden')) {
+                document.getElementById('aiChatInput').focus();
+            }
+        }
+
+        function sendQuickAiPrompt(text) {
+            document.getElementById('aiChatInput').value = text;
+            document.getElementById('aiChatForm').dispatchEvent(new Event('submit'));
+        }
+
+        function appendAiChatMessage(sender, htmlText) {
+            const box = document.getElementById('aiChatMessages');
+            if (sender === 'user') {
+                box.insertAdjacentHTML('beforeend', `
+                    <div class="flex justify-end">
+                        <div class="bg-brand text-white rounded-2xl rounded-tr-none px-3.5 py-2.5 max-w-[85%] shadow-sm leading-relaxed">
+                            ${stripHtmlTags(htmlText)}
+                        </div>
+                    </div>
+                `);
+            } else {
+                box.insertAdjacentHTML('beforeend', `
+                    <div class="flex items-start gap-2">
+                        <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-none p-3 text-gray-800 max-w-[90%] shadow-sm leading-relaxed space-y-1">
+                            ${htmlText}
+                        </div>
+                    </div>
+                `);
+            }
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function buildSiteContextForAI() {
+            const coursesText = coursesArray.map((c, i) => `${i+1}. ${stripHtmlTags(c.title)}: ${stripHtmlTags(c.desc)} ${stripHtmlTags(c.detailDesc)}`).join("\n");
+            const teachersText = teachersArray.map((t, i) => `${i+1}. ${stripHtmlTags(t.name)} (${stripHtmlTags(t.exp)}): ${stripHtmlTags(t.bio)}`).join("\n");
+            return `
+- Tên đơn vị: ${stripHtmlTags(currentConfig.footerCompanyName || "HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH")}
+- Mã số thuế: ${stripHtmlTags(currentConfig.footerMsdn || "087199003168")}
+- Địa chỉ: ${stripHtmlTags(currentConfig.footerAddress || "Ấp Trung Tâm, Xã Thường Phước, Tỉnh Đồng Tháp, Việt Nam")}
+- Điện thoại / Hotline / Zalo: ${currentConfig.link_phone || "0362938989"}
+- Email: ${currentConfig.link_email || "studybeeenglishadmin01@gmail.com"}
+- Các khóa học chính:
+${coursesText}
+- Các lớp giao tiếp người lớn: E1 (Giao tiếp cơ bản - chuẩn hóa 44 âm IPA), E2 (Giao tiếp tự tin), E3 (Giao tiếp thành thạo), E4 (Giao tiếp nâng cao), Luyện thi TOEIC/IELTS, Tiếng Anh trẻ em 1-1 và 1-4.
+- Đội ngũ giảng viên:
+${teachersText}
+            `.trim();
+        }
+
+        // Bộ trí tuệ nhân tạo tích hợp sẵn (Hoạt động tức thì ngay cả khi chưa nhập API Key)
+        function generateSmartLocalAiResponse(question) {
+            const q = question.toLowerCase().trim();
+
+            // 1. Hỏi về khóa học / lộ trình
+            if (q.includes("khóa học") || q.includes("khoa hoc") || q.includes("lộ trình") || q.includes("học gì") || q.includes("toeic") || q.includes("ielts") || q.includes("trẻ em") || q.includes("người đi làm") || q.includes("e1") || q.includes("e2")) {
+                const listHtml = coursesArray.map(c => `<li><b>${stripHtmlTags(c.title)}</b>: ${stripHtmlTags(c.desc).slice(0, 160)}...</li>`).join("");
+                return `Tại <b>STUDY BEE ENGLISH</b>, chúng tôi đào tạo các chương trình nổi bật sau:<ul class="list-disc pl-4 mt-1 space-y-1">${listHtml}<li><b>Hệ thống lớp giao tiếp E1 - E4:</b> Từ mất gốc (chuẩn hóa 44 âm IPA) đến giao tiếp phản xạ chuyên nghiệp, luyện thi TOEIC/IELTS 1 kèm 1 và 1 kèm 4.</li></ul><div class="mt-2 text-xs text-brand font-bold">👉 Bạn có thể để lại SĐT ở mục Tư vấn hoặc gọi Hotline ${currentConfig.link_phone || '0362938989'} để được kiểm tra trình độ miễn phí nhé!</div>`;
+            }
+
+            // 2. Hỏi về giáo viên / giảng viên
+            if (q.includes("giáo viên") || q.includes("giao vien") || q.includes("giảng viên") || q.includes("thầy") || q.includes("cô")) {
+                const tList = teachersArray.map(t => `<li><b>${stripHtmlTags(t.name)}</b> (${stripHtmlTags(t.exp)})</li>`).join("");
+                return `Đội ngũ giảng viên tại <b>STUDY BEE ENGLISH</b> đều có trình độ chuyên môn cao, chứng chỉ quốc tế TESOL và nhiều năm kinh nghiệm:<ul class="list-disc pl-4 mt-1 space-y-1">${tList}</ul><div class="mt-2">Bạn có thể bấm vào mục <b>"Đội ngũ giáo viên"</b> trên thanh Menu để xem chi tiết hồ sơ từng thầy cô nhé!</div>`;
+            }
+
+            // 3. Hỏi về thông tin công ty, địa chỉ, mã số thuế, liên hệ
+            if (q.includes("địa chỉ") || q.includes("ở đâu") || q.includes("liên hệ") || q.includes("số điện thoại") || q.includes("hotline") || q.includes("mã số thuế") || q.includes("công ty") || q.includes("email") || q.includes("zalo")) {
+                return `Thông tin chính thức của đơn vị chúng tôi:<br>
+                • <b>Đơn vị:</b> ${stripHtmlTags(currentConfig.footerCompanyName)}<br>
+                • <b>${stripHtmlTags(currentConfig.footerMsdn)}</b><br>
+                • <b>${stripHtmlTags(currentConfig.footerAddress)}</b><br>
+                • <b>Hotline/Zalo:</b> <a href="tel:${currentConfig.link_phone}" class="text-brand font-bold underline">${currentConfig.link_phone}</a><br>
+                • <b>Email:</b> ${currentConfig.link_email}`;
+            }
+
+            // 4. Hỏi về học phí / ưu đãi
+            if (q.includes("học phí") || q.includes("hoc phi") || q.includes("giá") || q.includes("bao nhiêu tiền") || q.includes("ưu đãi")) {
+                return `Hiện tại <b>STUDY BEE ENGLISH</b> đang có chương trình <b>ưu đãi học phí lên đến 40%</b> cho các lộ trình học trực tuyến 1 kèm 1 và 1 kèm 4.<br>Do lộ trình được thiết kế cá nhân hóa theo trình độ đầu vào của từng học viên, bạn hãy điền thông tin ở khung <b>Đăng ký tư vấn</b> hoặc nhắn Zalo <b>${currentConfig.link_phone}</b> để nhận báo giá chi tiết nhất nhé!`;
+            }
+
+            // 5. Các câu hỏi giao tiếp thường ngày, thời gian, tính toán, tiếng Anh
+            if (q.includes("xin chào") || q.includes("hello") || q.includes("hi ") || q === "hi" || q.includes("chào bạn")) {
+                return `Chào bạn! Rất vui được trò chuyện cùng bạn hôm nay. Bạn đang muốn tìm hiểu về khóa học tiếng Anh tại <b>STUDY BEE ENGLISH</b> hay có câu hỏi nào cần mình giải đáp không? 😊`;
+            }
+
+            if (q.includes("mấy giờ") || q.includes("ngày mấy") || q.includes("hôm nay")) {
+                const now = new Date();
+                return `Hiện tại là <b>${now.toLocaleTimeString('vi-VN')}</b>, ngày <b>${now.toLocaleDateString('vi-VN')}</b>. Chúc bạn một ngày học tập và làm việc thật nhiều năng lượng!`;
+            }
+
+            if (q.includes("cách học tiếng anh") || q.includes("mất gốc") || q.includes("phát âm") || q.includes("giao tiếp")) {
+                return `Để học tiếng Anh hiệu quả từ mất gốc, bạn nên áp dụng 3 bước:<br>
+                1. <b>Chuẩn hóa phát âm 44 âm IPA</b> để nghe đúng và nói chuẩn.<br>
+                2. <b>Học từ vựng theo cụm & ngữ cảnh</b> thay vì học từ đơn lẻ.<br>
+                3. <b>Luyện phản xạ nghe - nói hàng ngày</b> cùng người hướng dẫn (như mô hình 1 kèm 1 tại STUDY BEE ENGLISH).`;
+            }
+
+            // Phép tính toán học đơn giản
+            if (/^[\d\s\+\-\*\/\(\)\.]+$/.test(q)) {
+                try {
+                    const result = Function('"use strict";return (' + q + ')')();
+                    return `Kết quả phép tính <b>${q}</b> = <b>${result}</b>`;
+                } catch(e) {}
+            }
+
+            return `Cảm ơn câu hỏi của bạn! Về nội dung <b>"${stripHtmlTags(question)}"</b>:<br>
+            • Nếu bạn cần hỗ trợ chuyên sâu về lộ trình tiếng Anh tại <b>STUDY BEE ENGLISH</b>, đội ngũ chuyên môn luôn sẵn sàng hỗ trợ qua Hotline/Zalo: <b>${currentConfig.link_phone || '0362938989'}</b> hoặc Email: <b>${currentConfig.link_email}</b>.<br>
+            • <i>(Mẹo cho Quản trị viên: Bạn có thể dán mã Gemini API Key miễn phí trong mục "Cài đặt Web & AI" để mở khóa khả năng trả lời tự do mọi chủ đề đời sống không giới hạn của Google Gemini!)</i>`;
+        }
+
+        document.getElementById('aiChatForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const inputEl = document.getElementById('aiChatInput');
+            const question = inputEl.value.trim();
+            if (!question) return;
+
+            appendAiChatMessage('user', question);
+            inputEl.value = '';
+
+            const box = document.getElementById('aiChatMessages');
+            const loadingId = 'ai_loading_' + Date.now();
+            box.insertAdjacentHTML('beforeend', `
+                <div id="${loadingId}" class="flex items-start gap-2">
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-tl-none px-4 py-2.5 text-gray-500 text-xs shadow-sm">
+                        <i class="fa fa-spinner fa-spin mr-1 text-brand"></i> Trợ lý AI đang suy nghĩ...
+                    </div>
+                </div>
+            `);
+            box.scrollTop = box.scrollHeight;
+
+            try {
+                const siteContext = buildSiteContextForAI();
+                const apiKey = String(currentConfig.gemini_api_key || "").trim();
+
+                // Nếu Admin đã nhập Gemini API Key -> Gọi trực tiếp Google Gemini hoặc qua Apps Script
+                if (apiKey) {
+                    const directUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+                    const systemInstruction = `Bạn là Trợ lý AI thông minh của HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH. Hãy trả lời thân thiện, chính xác mọi câu hỏi về website STUDY BEE ENGLISH dựa trên dữ liệu sau, đồng thời trả lời thông minh mọi câu hỏi kiến thức, tiếng Anh và đời sống hằng ngày của người dùng:\n${siteContext}`;
+                    
+                    const geminiRes = await fetch(directUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            system_instruction: { parts: [{ text: systemInstruction }] },
+                            contents: [{ role: 'user', parts: [{ text: question }] }]
+                        })
+                    }).then(r => r.json());
+
+                    const loadingEl = document.getElementById(loadingId);
+                    if (loadingEl) loadingEl.remove();
+
+                    if (geminiRes.candidates && geminiRes.candidates[0]?.content?.parts?.[0]?.text) {
+                        const rawText = geminiRes.candidates[0].content.parts[0].text
+                            .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                            .replace(/\n/g, '<br>');
+                        appendAiChatMessage('ai', rawText);
+                        return;
+                    }
+                }
+
+                // Thử gọi qua Apps Script backend
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify({
+                        action: 'ask_gemini',
+                        question: question,
+                        siteContext: siteContext,
+                        apiKey: apiKey
+                    })
+                }).then(r => r.json());
+
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+
+                if (res.success && res.reply) {
+                    const formatted = String(res.reply).replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+                    appendAiChatMessage('ai', formatted);
+                } else {
+                    appendAiChatMessage('ai', generateSmartLocalAiResponse(question));
+                }
+            } catch (err) {
+                const loadingEl = document.getElementById(loadingId);
+                if (loadingEl) loadingEl.remove();
+                appendAiChatMessage('ai', generateSmartLocalAiResponse(question));
+            }
+        });
+
+        // 16. Cài đặt Web & AI Gemini Modal
         document.getElementById('openSettingsModalBtn').onclick = () => {
             document.getElementById('settingsModal').classList.remove('hidden');
         };
@@ -3042,7 +3552,7 @@
             currentConfig.siteTitle = document.getElementById('set_siteTitle').value;
             currentConfig.primaryColor = document.getElementById('set_primaryColorHex').value || document.getElementById('set_primaryColor').value;
             
-            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject'];
+            const settingKeys = ['link_phone', 'link_email', 'link_fb', 'link_yt', 'link_tt', 'link_zalo', 'link_mes', 'email_cc', 'email_sender_name', 'email_subject', 'gemini_api_key'];
             settingKeys.forEach(k => {
                 const el = document.getElementById('set_' + k);
                 if (el) currentConfig[k] = el.value.trim();
@@ -3054,12 +3564,12 @@
             await saveAllToGoogleSheet();
         }
 
-        // 16. Phân quyền Admin & Quản lý Tài khoản
+        // 17. Phân quyền Admin & Quản lý Tài khoản
         function checkAuth() {
             const role = localStorage.getItem('role');
             const user = localStorage.getItem('user');
             const displayName = localStorage.getItem('displayName') || user;
-            const avatar = localStorage.getItem('avatar') || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            const avatar = localStorage.getItem('avatar') || DEFAULT_BEE_FAVICON;
             const isAdmin = (role === 'admin');
 
             if (role) {
@@ -3158,7 +3668,7 @@
 
         document.getElementById('saveChangesBtn').onclick = saveAllToGoogleSheet;
 
-        // 17. Quản lý Tài khoản, Phân quyền & Reset Mật khẩu (Dành cho Admin)
+        // 18. Quản lý Tài khoản, Phân quyền & Reset Mật khẩu (Dành cho Admin)
         function openUserManagerModal() {
             resetAdminUserForm();
             document.getElementById('userManagerModal').classList.remove('hidden');
@@ -3297,7 +3807,7 @@
             }
         }
 
-        // 18. Đăng nhập & Tùy chỉnh Hồ sơ Cá nhân
+        // 19. Đăng nhập & Tùy chỉnh Hồ sơ Cá nhân
         document.getElementById('loginBtn').onclick = () => {
             const savedUser = localStorage.getItem('saved_login_user') || '';
             const savedPass = localStorage.getItem('saved_login_pass') || '';
@@ -3336,7 +3846,8 @@
                     localStorage.setItem('role', res.role);
                     localStorage.setItem('user', res.username);
                     localStorage.setItem('displayName', res.displayName || res.username);
-                    localStorage.setItem('avatar', res.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png");
+                    const cleanAvt = (res.avatar && !res.avatar.includes("3135715.png")) ? res.avatar : DEFAULT_BEE_FAVICON;
+                    localStorage.setItem('avatar', cleanAvt);
 
                     if (remember) {
                         localStorage.setItem('saved_login_user', u);
@@ -3364,7 +3875,7 @@
             document.getElementById('prof_username').value = localStorage.getItem('user') || '';
             document.getElementById('prof_currentPass').value = '';
             document.getElementById('prof_newPass').value = '';
-            const avt = localStorage.getItem('avatar') || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            const avt = localStorage.getItem('avatar') || DEFAULT_BEE_FAVICON;
             document.getElementById('prof_avatar_preview').src = avt;
             document.getElementById('prof_avatar_preview').setAttribute('data-uploaded-url', avt);
             document.getElementById('profMsg').classList.add('hidden');
@@ -3419,7 +3930,7 @@
             }
         });
 
-        // 19. Gửi Form Tư Vấn
+        // 20. Gửi Form Tư Vấn
         document.getElementById('consultForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('submitConsultBtn');
@@ -3456,7 +3967,7 @@
             }
         });
 
-        // Khởi chạy
+        // Khởi chạy hệ thống
         loadConfig();
     </script>
 </body>
