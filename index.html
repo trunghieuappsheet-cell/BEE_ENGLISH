@@ -1401,6 +1401,7 @@
         }
 
         // Lọc bỏ hoàn toàn dữ liệu EEC cũ và icon mặc định cũ (3135715.png)
+// Lọc bỏ hoàn toàn dữ liệu EEC cũ và giữ nguyên chữ thường cho email studybeeenglishadmin01@gmail.com
         function sanitizeLegacyEECData(cfg) {
             if (!cfg || typeof cfg !== 'object') return;
 
@@ -1410,12 +1411,14 @@
                     .replace(/CÔNG TY TNHH DỊCH VỤ VÀ ĐÀO TẠO EEC/gi, "HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH")
                     .replace(/M\.S\.D\.N:\s*0111514674/gi, "Mã số thuế: 087199003168")
                     .replace(/Số 108,\s*Đường Trần Vỹ,\s*Phường Phú Diễn,\s*TP\.\s*Hà Nội/gi, "Ấp Trung Tâm, Xã Thường Phước, Tỉnh Đồng Tháp, Việt Nam")
-                    .replace(/eeceducationeec@gmail\.com/gi, "studybeeenglishadmin01@gmail.com")
-                    .replace(/STUDYBEEENGLISH/gi, "STUDY BEE ENGLISH")
+                    .replace(/\bSTUDYBEEENGLISH\b/gi, "STUDY BEE ENGLISH")
                     .replace(/EEC Education/gi, "STUDY BEE ENGLISH")
                     .replace(/VỀ EEC EDUCATION/gi, "VỀ STUDY BEE ENGLISH")
                     .replace(/Về EEC/gi, "Về chúng tôi")
-                    .replace(/\bEEC\b/g, "STUDY BEE ENGLISH");
+                    .replace(/\bEEC\b/g, "STUDY BEE ENGLISH")
+                    .replace(/eeceducationeec@gmail\.com/gi, "studybeeenglishadmin01@gmail.com")
+                    // Tự động sửa lại nếu email lỡ bị tách thành STUDY BEE ENGLISHadmin01@gmail.com trước đó
+                    .replace(/STUDY\s*BEE\s*ENGLISHadmin01@gmail\.com/gi, "studybeeenglishadmin01@gmail.com");
             };
 
             for (let k in cfg) {
@@ -1437,9 +1440,9 @@
             cfg.footerCompanyName = stripWhiteBackgroundHtml(cfg.footerCompanyName || "HỘ KINH DOANH GIẢNG DẠY NGOẠI NGỮ STUDY BEE ENGLISH");
             cfg.footerMsdn = stripWhiteBackgroundHtml(cfg.footerMsdn || "Mã số thuế: 087199003168");
             cfg.footerAddress = stripWhiteBackgroundHtml(cfg.footerAddress || "Địa chỉ: Ấp Trung Tâm, Xã Thường Phước, Tỉnh Đồng Tháp, Việt Nam");
-            cfg.footerEmail = stripWhiteBackgroundHtml(cfg.footerEmail || "Email: studybeeenglishadmin01@gmail.com");
+            cfg.footerEmail = "Email: studybeeenglishadmin01@gmail.com";
             cfg.link_email = "studybeeenglishadmin01@gmail.com";
-            if (!cfg.email_cc || cfg.email_cc.includes("eec")) {
+            if (!cfg.email_cc || cfg.email_cc.toLowerCase().includes("eec") || cfg.email_cc.includes("STUDY BEE ENGLISH")) {
                 cfg.email_cc = "studybeeenglishadmin01@gmail.com";
             }
         }
